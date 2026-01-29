@@ -1,0 +1,794 @@
+const mongoose = require('mongoose');
+const Product = require('./models/product');
+const Category = require('./models/category');
+const Admin = require('./models/admin');
+require('dotenv').config();
+
+const products = [
+  // ===== CATEGORY 1: PHOTO FRAMES (13 Products) =====
+  { 
+    _id: "f1",
+    categoryId: "frames", 
+    name: "4x6 Black Premium Frame", 
+    price: 199, 
+    image: "/images/4 x 6 black frame 199.jpg", 
+    images: ["/images/4 x 6 black frame 199.jpg", "/images/4 x 6 p2.jpg", "/images/4 x 6 p3.jpg", "/images/4 x 6 p4.jpg"],
+    description: "Classic black wooden frame perfect for 4x6 photos. Premium quality with glass protection.",
+    inStock: true 
+  },
+  { 
+    _id: "f1b",
+    categoryId: "frames", 
+    name: "4x6 White Premium Frame", 
+    price: 199, 
+    image: "/images/4 x 6 white frame 199.jpg", 
+    images: ["/images/4 x 6 white frame 199.jpg"],
+    description: "Elegant white frame for 4x6 prints. Modern and minimalist design.",
+    inStock: true 
+  },
+  { 
+    _id: "f2",
+    categoryId: "frames", 
+    name: "4x4 Compact Frame", 
+    price: 149, 
+    image: "/images/4 x 4 149.jpg", 
+    images: ["/images/4 x 4 149.jpg"],
+    description: "Small square frame for miniature photos or artwork. Perfect for desks.",
+    inStock: true 
+  },
+  { 
+    _id: "f3",
+    categoryId: "frames", 
+    name: "5x7 White Frame", 
+    price: 299, 
+    image: "/images/5 x 7 white 299.jpg", 
+    images: ["/images/5 x 7 white 299.jpg", "/images/5 x 7 299.jpg"],
+    description: "Beautiful white wooden frame for 5x7 photos. Perfect for shelves and walls.",
+    inStock: true 
+  },
+  { 
+    _id: "f4",
+    categoryId: "frames", 
+    name: "8x12 Wall Mount Frame", 
+    price: 599, 
+    image: "/images/8 x 12 599.jpg", 
+    images: ["/images/8 x 12 599.jpg", "/images/8 x 12 (1_2 inch) 499.jpg", "/images/8 x 12 599(1_2 inch).jpg", "/images/8 x 12 mount.jpg"],
+    description: "Large 8x12 frame with easy wall mounting. Premium finish for any room.",
+    inStock: true 
+  },
+  { 
+    _id: "f5",
+    categoryId: "frames", 
+    name: "10x12 Modern Frame", 
+    price: 1299, 
+    image: "/images/10 x 12 frame 1299.jpg", 
+    images: ["/images/10 x 12 frame 1299.jpg"],
+    description: "Contemporary 10x12 frame for statement wall displays.",
+    inStock: true 
+  },
+  { 
+    _id: "f6",
+    categoryId: "frames", 
+    name: "12x18 Premium Mount Frame", 
+    price: 2199, 
+    image: "/images/12 x 18 mount 2199.jpg", 
+    images: ["/images/12 x 18 mount 2199.jpg", "/images/12 x 18 mount 2199(1).jpg", "/images/12 x 18 mount 2199(2).jpg"],
+    description: "Large premium 12x18 frame with professional mount. Perfect for gallery walls.",
+    inStock: true 
+  },
+  { 
+    _id: "f7",
+    categoryId: "frames", 
+    name: "12x18 Brown Wooden Frame", 
+    price: 1499, 
+    image: "/images/12 x 18 brown frame 1499.jpg", 
+    images: ["/images/12 x 18 brown frame 1499.jpg", "/images/12 x 18 brown p2 1499.jpg"],
+    description: "Warm brown wooden 12x18 frame with elegant finish.",
+    inStock: true 
+  },
+  { 
+    _id: "f8",
+    categoryId: "frames", 
+    name: "12x18 Classic Frame", 
+    price: 1499, 
+    image: "/images/12 x 18 1499 .jpg", 
+    images: ["/images/12 x 18 1499 .jpg"],
+    description: "Timeless 12x18 frame in classic style. Great for all photo types.",
+    inStock: true 
+  },
+  { 
+    _id: "f9",
+    categoryId: "frames", 
+    name: "12x18 Milestone Frame", 
+    price: 1499, 
+    image: "/images/12 x 18 milestone .jpg", 
+    images: ["/images/12 x 18 milestone .jpg"],
+    description: "Special milestone frame for celebrating important moments.",
+    inStock: true 
+  },
+  { 
+    _id: "f10",
+    categoryId: "frames", 
+    name: "Customized Photo Frame 199", 
+    price: 199, 
+    image: "/images/customized song frame 199.jpg", 
+    images: ["/images/customized song frame 199.jpg"],
+    description: "Personalized photo frame with custom design and text.",
+    inStock: true 
+  },
+  { 
+    _id: "f11",
+    categoryId: "frames", 
+    name: "12x18 Collage Frame", 
+    price: 3999, 
+    image: "/images/collage frame 3999.jpg", 
+    images: ["/images/collage frame 3999.jpg"],
+    description: "Large collage frame perfect for displaying multiple photos. Holds multiple pictures.",
+    inStock: true 
+  },
+  { 
+    _id: "f12",
+    categoryId: "frames", 
+    name: "Vintage Photo Frame", 
+    price: 399, 
+    image: "/images/vintage frame.jpg", 
+    images: ["/images/vintage frame.jpg", "/images/vintage frames p2.jpg", "/images/vintage frames p3.jpg", "/images/vintage frames p4.jpg"],
+    description: "Charming vintage-style frame for a nostalgic touch to any space.",
+    inStock: true 
+  },
+
+  // ===== CATEGORY 2: MAGAZINES & PHOTOBOOKS (9 Products) =====
+  { 
+    _id: "m1",
+    categoryId: "magazines", 
+    name: "Anniversary Magazine", 
+    price: 499, 
+    image: "/images/anniversary MAG.jpg", 
+    images: ["/images/anniversary MAG.jpg", "/images/anniversary MAG p2.jpg", "/images/anniversary MAG p3.jpg", "/images/anniversary MAG(1).jpg"],
+    description: "Premium hardcover anniversary magazine with custom photos and personalized layouts.",
+    inStock: true 
+  },
+  { 
+    _id: "m2",
+    categoryId: "magazines", 
+    name: "Magazine 12 Pages", 
+    price: 599, 
+    image: "/images/mag 12pgs 599.jpg", 
+    images: ["/images/mag 12pgs 599.jpg", "/images/mag 12pgs 599 p2.jpg", "/images/mag 12pgs 599 p3.jpg", "/images/mag 12pgs 599 p4.jpg", "/images/mag 12pgs 599 p5.jpg", "/images/mag 12pgs 599 p6.jpg", "/images/mag 12pgs 599 p7.jpg", "/images/mag 12pgs 599 p8.jpg"],
+    description: "Beautiful hardcover magazine with 12 premium pages for your special memories.",
+    inStock: true 
+  },
+  { 
+    _id: "m3",
+    categoryId: "magazines", 
+    name: "Magazine Design 2", 
+    price: 599, 
+    image: "/images/MAG design2.jpg", 
+    images: ["/images/MAG design2.jpg", "/images/MAG design2 p2.jpg", "/images/MAG design2 p3.jpg", "/images/MAG design2 p4.jpg", "/images/MAG design2 p5.jpg", "/images/MAG design2 p6.jpg", "/images/MAG design2 p7.jpg", "/images/MAG design2 p8.jpg", "/images/MAG design2 p9.jpg"],
+    description: "Stylish magazine with alternative design layout. Perfect for modern memories.",
+    inStock: true 
+  },
+  { 
+    _id: "m4",
+    categoryId: "magazines", 
+    name: "Premium Magazine", 
+    price: 699, 
+    image: "/images/mag(1).jpg", 
+    images: ["/images/mag(1).jpg"],
+    description: "Premium quality magazine with rich layout and vibrant printing.",
+    inStock: true 
+  },
+  { 
+    _id: "m5",
+    categoryId: "magazines", 
+    name: "Classic Magazine Design", 
+    price: 599, 
+    image: "/images/mag.jpg", 
+    images: ["/images/mag.jpg"],
+    description: "Classic design magazine for timeless memories and special occasions.",
+    inStock: true 
+  },
+  { 
+    _id: "m6",
+    categoryId: "magazines", 
+    name: "Magazine Premium Edition", 
+    price: 799, 
+    image: "/images/MAG(2).jpg", 
+    images: ["/images/MAG(2).jpg"],
+    description: "Premium edition magazine with superior paper quality and printing.",
+    inStock: true 
+  },
+  { 
+    _id: "m7",
+    categoryId: "magazines", 
+    name: "Photo Book Premium", 
+    price: 269, 
+    image: "/images/photo book 269.jpg", 
+    images: ["/images/photo book 269.jpg"],
+    description: "Elegant photo book for preserving your cherished memories beautifully.",
+    inStock: true 
+  },
+  { 
+    _id: "m8",
+    categoryId: "magazines", 
+    name: "Polaroid Album 169", 
+    price: 169, 
+    image: "/images/polaroids album 169.jpg", 
+    images: ["/images/polaroids album 169.jpg", "/images/pol album 169.jpg"],
+    description: "Beautiful album for organizing your polaroid prints and instant photos.",
+    inStock: true 
+  },
+  { 
+    _id: "m9",
+    categoryId: "magazines", 
+    name: "Custom Magnets Magazine", 
+    price: 499, 
+    image: "/images/magnizes 499.jpg", 
+    images: ["/images/magnizes 499.jpg"],
+    description: "Unique magazine-style collection with custom magnetic prints.",
+    inStock: true 
+  },
+
+  // ===== CATEGORY 3: POLAROIDS & MEMORIES (4 Products) =====
+  { 
+    _id: "pol1",
+    categoryId: "memories", 
+    name: "Polaroids Medium Set", 
+    price: 199, 
+    image: "/images/polaroids.jpg", 
+    images: ["/images/polaroids.jpg"],
+    description: "Set of instant-style polaroid prints perfect for scrapbooking and memories.",
+    inStock: true 
+  },
+  { 
+    _id: "pol2",
+    categoryId: "memories", 
+    name: "Polaroids Medium 8 Per Set", 
+    price: 199, 
+    image: "/images/POLAROIDS MEDIUM 8 PER EACH.jpg", 
+    images: ["/images/POLAROIDS MEDIUM 8 PER EACH.jpg"],
+    description: "Premium polaroid set of 8 instant prints with great quality.",
+    inStock: true 
+  },
+  { 
+    _id: "pol3",
+    categoryId: "memories", 
+    name: "Polaroid Album 169", 
+    price: 169, 
+    image: "/images/polaroids album 169.jpg", 
+    images: ["/images/polaroids album 169.jpg"],
+    description: "Beautiful leather-bound album for preserving your polaroid collection.",
+    inStock: true 
+  },
+  { 
+    _id: "mem1",
+    categoryId: "memories", 
+    name: "Memory Storage Set", 
+    price: 299, 
+    image: "/images/photo book 269.jpg", 
+    images: ["/images/photo book 269.jpg"],
+    description: "Premium set for organizing and storing your cherished memories.",
+    inStock: true 
+  },
+
+  // ===== CATEGORY 4: FLOWERS & BOUQUETS (7 Products) =====
+  { 
+    _id: "bou1",
+    categoryId: "flowers", 
+    name: "Real Flower Bouquet 249", 
+    price: 249, 
+    image: "/images/real flower boq 249.jpg", 
+    images: ["/images/real flower boq 249.jpg", "/images/real flower boq 249(1).jpg"],
+    description: "Fresh and beautiful bouquet with real flowers. Perfect for all occasions.",
+    inStock: true 
+  },
+  { 
+    _id: "bou2",
+    categoryId: "flowers", 
+    name: "Real Flowers Bouquet 249", 
+    price: 249, 
+    image: "/images/real flwr 249.jpg", 
+    images: ["/images/real flwr 249.jpg", "/images/real flwrs 249 p2.jpg", "/images/real flwrs p3 249.jpg"],
+    description: "Premium fresh flower arrangement with beautiful presentation.",
+    inStock: true 
+  },
+  { 
+    _id: "bou3",
+    categoryId: "flowers", 
+    name: "Premium Rose Bouquet 899", 
+    price: 899, 
+    image: "/images/real flwr boq 899.jpg", 
+    images: ["/images/real flwr boq 899.jpg"],
+    description: "Luxurious bouquet with premium roses. Perfect for special romantic moments.",
+    inStock: true 
+  },
+  { 
+    _id: "bou4",
+    categoryId: "flowers", 
+    name: "Artificial Single Flower Bouquet 199", 
+    price: 199, 
+    image: "/images/artificial single flower boq 199.jpg", 
+    images: ["/images/artificial single flower boq 199.jpg", "/images/artificial single flower boq 199 p2.jpg"],
+    description: "Beautiful artificial flower arrangement that lasts forever.",
+    inStock: true 
+  },
+  { 
+    _id: "bou5",
+    categoryId: "flowers", 
+    name: "Red Bouquet Arrangement", 
+    price: 249, 
+    image: "/images/red boq p2.jpg", 
+    images: ["/images/red boq p2.jpg", "/images/red boq p3.jpg"],
+    description: "Stunning red bouquet arrangement for romantic occasions.",
+    inStock: true 
+  },
+  { 
+    _id: "bou6",
+    categoryId: "flowers", 
+    name: "Art Bouquet with Flowers", 
+    price: 899, 
+    image: "/images/artboqwith,pol,flow,choc 899.jpg", 
+    images: ["/images/artboqwith,pol,flow,choc 899.jpg", "/images/artboqwith,pol,flow,cktpr, 899.jpg"],
+    description: "Beautiful artistic bouquet with mix of flowers and premium elements.",
+    inStock: true 
+  },
+  { 
+    _id: "bou7",
+    categoryId: "flowers", 
+    name: "Bouquet with Multiple Items", 
+    price: 999, 
+    image: "/images/artboqwith,pol,flow,cktpr,choc 999.jpg", 
+    images: ["/images/artboqwith,pol,flow,cktpr,choc 999.jpg", "/images/artboqwith,pol,flow,cktpr,choc 999 p2.jpg", "/images/artboqwith,pol,flow,cktpr,choc 999 p3.jpg"],
+    description: "Premium combo bouquet with flowers, polaroids, and special touches.",
+    inStock: true 
+  },
+
+  // ===== CATEGORY 5: HAMPERS & GIFT COMBOS (3 Products) =====
+  { 
+    _id: "ham1",
+    categoryId: "hampers", 
+    name: "Premium Hamper", 
+    price: 999, 
+    image: "/images/hamper.jpg", 
+    images: ["/images/hamper.jpg", "/images/hamper .jpg", "/images/HAMPER.jpg"],
+    description: "Luxury gift hamper with premium items for special occasions.",
+    inStock: true 
+  },
+  { 
+    _id: "ham2",
+    categoryId: "hampers", 
+    name: "Premium Hamper Edition", 
+    price: 999, 
+    image: "/images/HAMPER(1).jpg", 
+    images: ["/images/HAMPER(1).jpg"],
+    description: "Exclusive hamper edition with curated luxury items.",
+    inStock: true 
+  },
+  { 
+    _id: "ham3",
+    categoryId: "hampers", 
+    name: "Artistic Hamper Combo", 
+    price: 999, 
+    image: "/images/hamperc.jpeg", 
+    images: ["/images/hamperc.jpeg", "/images/artboqwith,pol,flow,cktpr,choc 999 p2.jpg"],
+    description: "Artistic combination hamper with flowers, polaroids, and special gifts.",
+    inStock: true 
+  },
+
+  // ===== CATEGORY 6: APPAREL (T-SHIRTS) (5 Products) =====
+  { 
+    _id: "t1",
+    categoryId: "apparel", 
+    name: "Customized T-Shirt 499", 
+    price: 499, 
+    image: "/images/CUSTOMIZED T-SHIRTS 499.jpg", 
+    images: ["/images/CUSTOMIZED T-SHIRTS 499.jpg", "/images/CUSTOMIZED T-SHIRTS P2 499.jpg", "/images/CUSTOMIZED T-SHIRTS P3 499.jpg"],
+    description: "Premium custom t-shirt with personalized photo print on quality cotton.",
+    inStock: true 
+  },
+  { 
+    _id: "t2",
+    categoryId: "apparel", 
+    name: "Classic T-Shirt", 
+    price: 499, 
+    image: "/images/Tshirt.jpeg", 
+    images: ["/images/Tshirt.jpeg"],
+    description: "Classic comfort t-shirt perfect for casual wear and memories.",
+    inStock: true 
+  },
+  { 
+    _id: "cap1",
+    categoryId: "apparel", 
+    name: "Custom Cap", 
+    price: 99, 
+    image: "/images/cap.jpeg", 
+    images: ["/images/cap.jpeg"],
+    description: "Personalized cap with custom design. Great gift for any season.",
+    inStock: true 
+  },
+  { 
+    _id: "pouch1",
+    categoryId: "apparel", 
+    name: "Photo Pouch 299", 
+    price: 299, 
+    image: "/images/photo cup p2 299.jpg", 
+    images: ["/images/photo cup p2 299.jpg"],
+    description: "Stylish pouch for carrying your essentials with custom photo print.",
+    inStock: true 
+  },
+  { 
+    _id: "apparel5",
+    categoryId: "apparel", 
+    name: "Apparel Collection", 
+    price: 599, 
+    image: "/images/CUSTOMIZED T-SHIRTS 499.jpg", 
+    images: ["/images/CUSTOMIZED T-SHIRTS 499.jpg", "/images/CUSTOMIZED T-SHIRTS P2 499.jpg"],
+    description: "Premium apparel collection with custom personalization options.",
+    inStock: true 
+  },
+
+  // ===== CATEGORY 7: PHONE CASES & ESSENTIALS (4 Products) =====
+  { 
+    _id: "case1",
+    categoryId: "essentials", 
+    name: "Customized Phone Case", 
+    price: 299, 
+    image: "/images/PC.jpeg", 
+    images: ["/images/PC.jpeg", "/images/CUSTOMIZED PHONE CASE.jpg", "/images/CUSTOMIZED PHONE CASE P2.jpg"],
+    description: "Durable custom phone case with your favorite photo or design.",
+    inStock: true 
+  },
+  { 
+    _id: "cup1",
+    categoryId: "essentials", 
+    name: "Photo Cup 299", 
+    price: 299, 
+    image: "/images/photo cup 299.jpg", 
+    images: ["/images/photo cup 299.jpg"],
+    description: "Premium ceramic cup with custom photo print. Perfect daily essential.",
+    inStock: true 
+  },
+  { 
+    _id: "cup2",
+    categoryId: "essentials", 
+    name: "Photo Cup Premium 299", 
+    price: 299, 
+    image: "/images/photo cup p2 299.jpg", 
+    images: ["/images/photo cup p2 299.jpg"],
+    description: "High-quality photo cup ideal for tea, coffee, or as a gift.",
+    inStock: true 
+  },
+  { 
+    _id: "ess4",
+    categoryId: "essentials", 
+    name: "Daily Essentials Set", 
+    price: 399, 
+    image: "/images/PC.jpeg", 
+    images: ["/images/PC.jpeg", "/images/photo cup 299.jpg"],
+    description: "Collection of personalized daily essentials for your lifestyle.",
+    inStock: true 
+  },
+
+  // ===== CATEGORY 8: CALENDARS & MAGNETS (3 Products) =====
+  { 
+    _id: "cal1",
+    categoryId: "addons", 
+    name: "Photo Calendar 199", 
+    price: 199, 
+    image: "/images/calender 199.jpg", 
+    images: ["/images/calender 199.jpg"],
+    description: "Beautiful calendar with your favorite photos. Perfect for walls or desks.",
+    inStock: true 
+  },
+  { 
+    _id: "mag1",
+    categoryId: "addons", 
+    name: "Fridge Magnet Set 179", 
+    price: 179, 
+    image: "/images/fridge magents 179.jpg", 
+    images: ["/images/fridge magents 179.jpg"],
+    description: "Set of decorative fridge magnets with custom photo designs.",
+    inStock: true 
+  },
+  { 
+    _id: "addon3",
+    categoryId: "addons", 
+    name: "Addon Collection", 
+    price: 299, 
+    image: "/images/calender 199.jpg", 
+    images: ["/images/calender 199.jpg", "/images/fridge magents 179.jpg"],
+    description: "Collection of cute add-ons like calendars and magnets for decoration.",
+    inStock: true 
+  },
+
+  // ===== CATEGORY 9: VINTAGE COLLECTION (3 Products) =====
+  { 
+    _id: "vf1",
+    categoryId: "vintage", 
+    name: "Vintage Frame", 
+    price: 399, 
+    image: "/images/vintage frame.jpg", 
+    images: ["/images/vintage frame.jpg", "/images/vintage frames p2.jpg", "/images/vintage frames p3.jpg", "/images/vintage frames p4.jpg"],
+    description: "Charming vintage-style frame that adds nostalgic elegance to any space.",
+    inStock: true 
+  },
+  { 
+    _id: "vl1",
+    categoryId: "vintage", 
+    name: "Vintage Letter 119", 
+    price: 119, 
+    image: "/images/vintage letter 119.JPG", 
+    images: ["/images/vintage letter 119.JPG"],
+    description: "Authentic vintage letter style prints for personalized messages.",
+    inStock: true 
+  },
+  { 
+    _id: "vintage3",
+    categoryId: "vintage", 
+    name: "Vintage Collection Bundle", 
+    price: 499, 
+    image: "/images/vintage frame.jpg", 
+    images: ["/images/vintage frame.jpg", "/images/vintage letter 119.JPG"],
+    description: "Complete vintage collection with frames and letter prints.",
+    inStock: true 
+  },
+
+  // ===== CATEGORY 10: SMART & DIGITAL SERVICES (9 Products) =====
+  { 
+    _id: "nfc1",
+    categoryId: "smart-digital", 
+    name: "NFC Review Board 799", 
+    price: 799, 
+    image: "/images/REVIEW BOARD NFC 799.jpg", 
+    images: ["/images/REVIEW BOARD NFC 799.jpg"],
+    description: "Smart NFC review board for interactive memories and feedback.",
+    inStock: true 
+  },
+  { 
+    _id: "id1",
+    categoryId: "smart-digital", 
+    name: "ID Card PVC 149", 
+    price: 149, 
+    image: "/images/ID.jpeg", 
+    images: ["/images/ID.jpeg"],
+    description: "Professional PVC ID card with high-quality printing and durability.",
+    inStock: true 
+  },
+  { 
+    _id: "d1",
+    categoryId: "smart-digital", 
+    name: "Digital Invitation", 
+    price: 299, 
+    image: "/images/digital invitation.jpg", 
+    images: ["/images/digital invitation.jpg", "/images/DI1.JPG", "/images/DI2.JPG", "/images/DI3.JPG", "/images/digital invitation p2.JPG"],
+    description: "Beautiful digital invitation designs for your special events.",
+    inStock: true 
+  },
+  { 
+    _id: "d2",
+    categoryId: "smart-digital", 
+    name: "Photo Restoration", 
+    price: 199, 
+    image: "/images/photo restoration (after).JPEG", 
+    images: ["/images/photo restoration (after).JPEG", "/images/photo restoration (before).jpg"],
+    description: "Professional photo restoration service bringing old photos back to life.",
+    inStock: true 
+  },
+  { 
+    _id: "sd5",
+    categoryId: "smart-digital", 
+    name: "Smart Digital Package", 
+    price: 999, 
+    image: "/images/REVIEW BOARD NFC 799.jpg", 
+    images: ["/images/REVIEW BOARD NFC 799.jpg", "/images/ID.jpeg"],
+    description: "Complete smart digital services package for modern memory management.",
+    inStock: true 
+  },
+  { 
+    _id: "sd6",
+    categoryId: "smart-digital", 
+    name: "Digital Services Suite", 
+    price: 1299, 
+    image: "/images/digital invitation.jpg", 
+    images: ["/images/digital invitation.jpg", "/images/photo restoration (after).JPEG"],
+    description: "Comprehensive digital services including invitations and restoration.",
+    inStock: true 
+  },
+  { 
+    _id: "sd7",
+    categoryId: "smart-digital", 
+    name: "NFC & ID Combo", 
+    price: 899, 
+    image: "/images/REVIEW BOARD NFC 799.jpg", 
+    images: ["/images/REVIEW BOARD NFC 799.jpg", "/images/ID.jpeg"],
+    description: "Premium combination of NFC technology and ID card services.",
+    inStock: true 
+  },
+  { 
+    _id: "sd8",
+    categoryId: "smart-digital", 
+    name: "Digital Experience Package", 
+    price: 1499, 
+    image: "/images/digital invitation.jpg", 
+    images: ["/images/digital invitation.jpg", "/images/REVIEW BOARD NFC 799.jpg", "/images/photo restoration (after).JPEG"],
+    description: "Premium digital experience with all smart services included.",
+    inStock: true 
+  },
+  { 
+    _id: "sd9",
+    categoryId: "smart-digital", 
+    name: "Smart Memory Management", 
+    price: 599, 
+    image: "/images/REVIEW BOARD NFC 799.jpg", 
+    images: ["/images/REVIEW BOARD NFC 799.jpg"],
+    description: "Smart solution for organizing and managing your digital memories.",
+    inStock: true 
+  }
+];
+
+const categories = [
+  {
+    _id: 'frames',
+    title: 'Photo Frames',
+    desc: 'Premium wooden, wall, table, collage & customized frames to cherish your memories.',
+    emoji: '📸',
+    showcaseProducts: ['f4', 'f6'],  // 8x12 Wall Mount & 12x18 Premium
+    subCategories: [
+      { name: 'Wooden photo frames', description: 'Classic wooden frames' },
+      { name: 'Wall frames', description: 'For wall mounting' },
+      { name: 'Table frames', description: 'For desk displays' },
+      { name: 'Collage frames', description: 'Multiple photos' }
+    ]
+  },
+  {
+    _id: 'magazines',
+    title: 'Magazines',
+    desc: 'Customized magazines - Birthday, Anniversary, Memory & Story editions.',
+    emoji: '📖',
+    showcaseProducts: ['m2', 'm3'],  // Story & Anniversary Magazines
+    subCategories: [
+      { name: 'Birthday magazines', description: 'Special birthday editions' },
+      { name: 'Anniversary magazines', description: 'Celebration editions' },
+      { name: 'Memory magazines', description: 'Photo-based stories' }
+    ]
+  },
+  {
+    _id: 'memories',
+    title: 'Polaroids & Photo Books',
+    desc: 'Small, medium & large polaroids plus premium photo books & mini albums.',
+    emoji: '🎞️',
+    showcaseProducts: ['pol1', 'pol2'],  // Polaroids Medium Set & Large Polaroids
+    subCategories: [
+      { name: 'Polaroids', description: 'Classic polaroid prints' },
+      { name: 'Photo books', description: 'Premium photo collections' },
+      { name: 'Mini albums', description: 'Portable photo albums' }
+    ]
+  },
+  {
+    _id: 'flowers',
+    title: 'Flowers & Bouquets',
+    desc: 'Fresh bouquets, artificial arrangements, rose boxes & flowers with message cards.',
+    emoji: '🌹',
+    showcaseProducts: ['bou1', 'bou2'],  // Real Flower Bouquets
+    subCategories: [
+      { name: 'Fresh bouquets', description: 'Real flowers' },
+      { name: 'Rose boxes', description: 'Premium rose collections' },
+      { name: 'Artificial arrangements', description: 'Long-lasting designs' }
+    ]
+  },
+  {
+    _id: 'hampers',
+    title: 'Hampers & Gift Combos',
+    desc: 'Birthday, anniversary, couple & custom gift hampers for every occasion.',
+    emoji: '🎁',
+    showcaseProducts: ['ham2', 'ham3'],  // Anniversary & Couple Hampers
+    subCategories: [
+      { name: 'Birthday hampers', description: 'Birthday specials' },
+      { name: 'Anniversary hampers', description: 'Romantic gift sets' },
+      { name: 'Couple combos', description: 'For two' }
+    ]
+  },
+  {
+    _id: 'apparel',
+    title: 'T-Shirts & Accessories',
+    desc: 'Customized & printed t-shirts, keychains & pouches with your designs.',
+    emoji: '👕',
+    showcaseProducts: ['t1', 't2'],  // Customized T-Shirts
+    subCategories: [
+      { name: 'T-shirts', description: 'Custom printed' },
+      { name: 'Keychains', description: 'Personalized' },
+      { name: 'Pouches', description: 'Customized bags' }
+    ]
+  },
+  {
+    _id: 'essentials',
+    title: 'Phone Cases & Cups',
+    desc: 'Custom phone cases, photo mugs & personalized cups with high-quality prints.',
+    emoji: '📱',
+    showcaseProducts: ['case1', 'cup1'],  // Phone Cases & Photo Cups
+    subCategories: [
+      { name: 'Phone cases', description: 'Protective cases' },
+      { name: 'Photo mugs', description: 'Personalized mugs' },
+      { name: 'Cups', description: 'Customized drinkware' }
+    ]
+  },
+  {
+    _id: 'vintage',
+    title: 'Vintage Collection',
+    desc: 'Aesthetic vintage frames, retro letters & old-style prints with warm nostalgic tones.',
+    emoji: '✨',
+    showcaseProducts: ['vf1', 'vl1'],  // Vintage Frame & Vintage Letter
+    subCategories: [
+      { name: 'Vintage frames', description: 'Old-style frames' },
+      { name: 'Retro prints', description: 'Nostalgic designs' },
+      { name: 'Vintage letters', description: 'Classic lettering' }
+    ]
+  },
+  {
+    _id: 'addons',
+    title: 'Calendars & Magnets',
+    desc: 'Customized calendars, photo calendars & fridge magnets for your space.',
+    emoji: '📅',
+    showcaseProducts: ['cal1', 'mag1'],  // Photo Calendar & Fridge Magnet
+    subCategories: [
+      { name: 'Calendars', description: 'Personalized calendars' },
+      { name: 'Photo magnets', description: 'Fridge magnets' },
+      { name: 'Desk calendars', description: 'Desktop versions' }
+    ]
+  },
+  {
+    _id: 'smart-digital',
+    title: 'Smart & Digital Services',
+    desc: 'NFC cards, review boards, poster design, photo & video editing services.',
+    emoji: '🤖',
+    showcaseProducts: ['nfc1', 'id1'],  // NFC Review Board & ID Card
+    subCategories: [
+      { name: 'NFC cards', description: 'Digital enabled cards' },
+      { name: 'Poster design', description: 'Custom posters' },
+      { name: 'Photo editing', description: 'Professional editing' },
+      { name: 'Video editing', description: 'Video services' }
+    ]
+  }
+];
+
+const seedDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("🔗 Connected to DB...");
+    
+    // Clear old data
+    await Product.deleteMany({});
+    await Category.deleteMany({});
+    console.log("🗑️ Old data cleared.");
+
+    // Insert products
+    await Product.insertMany(products);
+    console.log("✅ Products imported!");
+    
+    // Insert categories
+    await Category.insertMany(categories);
+    console.log("✅ Categories imported!");
+    
+    // Seed demo admin
+    await Admin.deleteMany({});
+    const demoAdmin = new Admin({
+      email: 'infinitycustomizations@gmail.com',
+      password: 'infinity@2026',
+      name: 'Admin',
+      role: 'super_admin',
+      permissions: ['view_orders', 'update_orders', 'manage_products', 'manage_categories', 'view_images'],
+      isActive: true
+    });
+    await demoAdmin.save();
+    console.log("✅ Demo admin created! Email: infinitycustomizations@gmail.com, Password: infinity@2026");
+    
+    console.log("✅ SUCCESS: All data imported into MongoDB!");
+    
+    mongoose.connection.close();
+  } catch (error) {
+    console.error("❌ Error seeding data:", error);
+    process.exit(1);
+  }
+};
+
+seedDB();
