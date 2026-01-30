@@ -13,4 +13,9 @@ Railway Deployment Checklist
    - Uploaded files are stored in `/uploads` (ephemeral on Railway—use cloud storage for persistence in production).
    - For debugging, check Railway logs and the `MONGO_URI` connectivity.
 
+
+IMPORTANT: If you are deploying **backend only** (recommended):
+- **Do not** run `sh ./start.sh` in your service start command — that script attempts to build the frontend and requires frontend dev dependencies (like Vite) which are not installed in a backend-only service.
+- Use `npm --prefix backend start` or point the Procfile to the backend start instead. This will run `node server.js` from the `backend` folder and avoids trying to run the frontend build inside the backend service.
+
 If you prefer to deploy both frontend and backend in one service, this repo includes a `start.sh` and a root `package.json` to support that. The `start.sh` will build the frontend (`frontend/dist`) and then start the backend. The backend also serves the built frontend automatically when the `frontend/dist` folder exists.
