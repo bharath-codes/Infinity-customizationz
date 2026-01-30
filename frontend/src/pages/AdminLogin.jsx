@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
-  const { loginAdmin } = useAuth();
+  const { loginAdmin } = useAuth(); // ✅ Correct name based on your AdminDashboard code
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
