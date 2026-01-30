@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ChevronDown, ChevronUp, Package, AlertCircle, Loader } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+// 1. Import your dynamic API configuration
+import { API_BASE_URL } from '../services/api'; 
 
 const UserOrders = () => {
   const navigate = useNavigate();
@@ -27,7 +29,9 @@ const UserOrders = () => {
     try {
       setLoading(true);
       setError('');
-      const res = await fetch(`http://localhost:5000/api/orders/user/${user._id}`, {
+      
+      // 2. Use the dynamic API_BASE_URL instead of http://localhost:5000
+      const res = await fetch(`${API_BASE_URL}/orders/user/${user._id}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
