@@ -1,18 +1,7 @@
 // API Service - Central hub for all API calls
-// Logic: Use Render URL from Environment Variables if available, otherwise fallback to localhost
-const VITE_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = 'https://infinity-customizations.onrender.com/api'; // <-- CHANGE THIS
 
-// This ensures that even if you forget the '/api' in your Vercel settings, the app won't break
-export const API_BASE_URL = VITE_URL 
-  ? `${VITE_URL.replace(/\/$/, '')}/api` 
-  : 'http://localhost:5000/api';
-
-console.log('🔗 API connected to:', API_BASE_URL);
-
-/**
- * Global Helper function for fetch logic
- * Handles JSON parsing, Auth headers, and standardized error catching
- */
+// Helper function for API calls
 const apiCall = async (endpoint, method = 'GET', data = null, token = null) => {
   const headers = {
     'Content-Type': 'application/json',
@@ -32,94 +21,154 @@ const apiCall = async (endpoint, method = 'GET', data = null, token = null) => {
   }
 
   try {
-    // Ensure endpoint starts with / for clean URL joining
-    const url = `${API_BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
-    const response = await fetch(url, config);
-    
-    // Handle empty responses (like 204 No Content)
-    const result = response.status !== 204 ? await response.json() : null;
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+    const result = await response.json();
 
     if (!response.ok) {
       throw {
         status: response.status,
-        message: result?.message || 'Something went wrong',
+        message: result.message || 'Something went wrong',
         data: result
       };
     }
 
     return result;
   } catch (error) {
-    console.error(`❌ API Error [${method}] ${endpoint}:`, error);
+    console.error('API Error:', error);
     throw error;
   }
 };
 
-// --- AUTHENTICATION API ---
+// --- USER AUTHENTICATION API ---
 export const userAuth = {
-  verifyCredentials: (phoneNumber, password, name) => 
-    apiCall('/auth/user/verify-credentials', 'POST', { phoneNumber, password, name }),
-  getProfile: (token) => apiCall('/auth/user/profile', 'GET', null, token),
-  updateProfile: (profileData, token) => apiCall('/auth/user/profile', 'PUT', profileData, token),
+  verifyCredentials: async (phoneNumber, password, name) => {
+    return apiCall('/auth/user/verify-credentials', 'POST', { phoneNumber, password, name });
+  },
+  verifyOTP: async (phoneNumber, otp) => {
+    return { success: true, message: 'OTP system removed' };
+  },
+  completeRegistration: async (phoneNumber, name) => {
+    return { success: true, message: 'OTP system removed' };
+  },
+  requestOTP: async (phoneNumber) => {
+    return apiCall('/auth/user/verify-credentials', 'POST', { phoneNumber, password: '' });
+  },
+  getProfile: async (token) => {
+    return apiCall('/auth/user/profile', 'GET', null, token);
+  },
+  updateProfile: async (profileData, token) => {
+    return apiCall('/auth/user/profile', 'PUT', profileData, token);
+  },
+  adminLogin: async (email, password) => {
+    return apiCall('/auth/admin/login', 'POST', { email, password });
+  },
 };
 
+// --- ADMIN AUTHENTICATION API ---
 export const adminAuth = {
-  login: (email, password) => apiCall('/auth/admin/login', 'POST', { email, password }),
-  createAdmin: (adminData, token) => apiCall('/auth/admin/create', 'POST', adminData, token),
-  getProfile: (token) => apiCall('/auth/admin/profile', 'GET', null, token),
-  updateProfile: (profileData, token) => apiCall('/auth/admin/profile', 'PUT', profileData, token),
-  changePassword: (passwords, token) => apiCall('/auth/admin/change-password', 'POST', passwords, token),
+  login: async (email, password) => {
+    return apiCall('/auth/admin/login', 'POST', { email, password });
+  },
+  createAdmin: async (adminData, token) => {
+    return apiCall('/auth/admin/create', 'POST', adminData, token);
+  },
+  getProfile: async (token) => {
+    return apiCall('/auth/admin/profile', 'GET', null, token);
+  },
+  updateProfile: async (profileData, token) => {
+    return apiCall('/auth/admin/profile', 'PUT', profileData, token);
+  },
+  changePassword: async (passwords, token) => {
+    return apiCall('/auth/admin/change-password', 'POST', passwords, token);
+  },
 };
 
 // --- PRODUCTS API ---
 export const products = {
-  getAll: () => apiCall('/products', 'GET'),
-  getByCategory: (categoryId) => apiCall(`/products/category/${categoryId}`, 'GET'),
-  getById: (id) => apiCall(`/products/${id}`, 'GET'),
-  create: (productData, token) => apiCall('/products', 'POST', productData, token),
-  update: (id, productData, token) => apiCall(`/products/${id}`, 'PUT', productData, token),
-  delete: (id, token) => apiCall(`/products/${id}`, 'DELETE', null, token),
+  getAll: async () => {
+    return apiCall('/products', 'GET');
+  },
+  getByCategory: async (categoryId) => {
+    return apiCall(`/products/category/${categoryId}`, 'GET');
+  },
+  getById: async (id) => {
+    return apiCall(`/products/${id}`, 'GET');
+  },
+  create: async (productData, token) => {
+    return apiCall('/products', 'POST', productData, token);
+  },
+  update: async (id, productData, token) => {
+    return apiCall(`/products/${id}`, 'PUT', productData, token);
+  },
+  delete: async (id, token) => {
+    return apiCall(`/products/${id}`, 'DELETE', null, token);
+  },
 };
 
 // --- CATEGORIES API ---
 export const categories = {
-  getAll: () => apiCall('/categories', 'GET'),
-  getById: (categoryId) => apiCall(`/categories/${categoryId}`, 'GET'),
-  create: (categoryData, token) => apiCall('/categories', 'POST', categoryData, token),
-  update: (categoryId, categoryData, token) => apiCall(`/categories/${categoryId}`, 'PUT', categoryData, token),
-  delete: (categoryId, token) => apiCall(`/categories/${categoryId}`, 'DELETE', null, token),
-  
-  // Showcase / Feature Management
-  addToShowcase: (categoryId, productId, token) => 
-    apiCall(`/categories/${categoryId}/showcase/${productId}`, 'POST', {}, token),
-  removeFromShowcase: (categoryId, productId, token) => 
-    apiCall(`/categories/${categoryId}/showcase/${productId}`, 'DELETE', null, token),
-  
-  // Relationships
-  addProduct: (categoryId, productId, token) => 
-    apiCall(`/categories/${categoryId}/products/${productId}`, 'POST', {}, token),
-  removeProduct: (categoryId, productId, token) => 
-    apiCall(`/categories/${categoryId}/products/${productId}`, 'DELETE', null, token),
+  getAll: async () => {
+    return apiCall('/categories', 'GET');
+  },
+  getById: async (categoryId) => {
+    return apiCall(`/categories/${categoryId}`, 'GET');
+  },
+  create: async (categoryData, token) => {
+    return apiCall('/categories', 'POST', categoryData, token);
+  },
+  update: async (categoryId, categoryData, token) => {
+    return apiCall(`/categories/${categoryId}`, 'PUT', categoryData, token);
+  },
+  delete: async (categoryId, token) => {
+    return apiCall(`/categories/${categoryId}`, 'DELETE', null, token);
+  },
+  addToShowcase: async (categoryId, productId, token) => {
+    return apiCall(`/categories/${categoryId}/showcase/${productId}`, 'POST', {}, token);
+  },
+  removeFromShowcase: async (categoryId, productId, token) => {
+    return apiCall(`/categories/${categoryId}/showcase/${productId}`, 'DELETE', null, token);
+  },
+  addProduct: async (categoryId, productId, token) => {
+    return apiCall(`/categories/${categoryId}/products/${productId}`, 'POST', {}, token);
+  },
+  removeProduct: async (categoryId, productId, token) => {
+    return apiCall(`/categories/${categoryId}/products/${productId}`, 'DELETE', null, token);
+  },
 };
 
 // --- ORDERS API ---
 export const orders = {
-  create: (orderData, token) => apiCall('/orders/create', 'POST', orderData, token),
-  getMyOrders: (token) => apiCall('/orders/my-orders', 'GET', null, token),
-  getById: (id, token) => apiCall(`/orders/${id}`, 'GET', null, token),
-  uploadImages: (orderId, images, token) => apiCall(`/orders/${orderId}/upload-images`, 'POST', { images }, token),
-  
-  // Admin Endpoints
-  getAll: (filters, token) => {
+  create: async (orderData, token) => {
+    return apiCall('/orders/create', 'POST', orderData, token);
+  },
+  getMyOrders: async (token) => {
+    return apiCall('/orders/my-orders', 'GET', null, token);
+  },
+  getById: async (id, token) => {
+    return apiCall(`/orders/${id}`, 'GET', null, token);
+  },
+  uploadImages: async (orderId, images, token) => {
+    return apiCall(`/orders/${orderId}/upload-images`, 'POST', { images }, token);
+  },
+  getAll: async (filters, token) => {
     const params = new URLSearchParams(filters).toString();
     return apiCall(`/orders/admin/orders?${params}`, 'GET', null, token);
   },
-  getAdminById: (id, token) => apiCall(`/orders/admin/orders/${id}`, 'GET', null, token),
-  updateStatus: (id, statusData, token) => apiCall(`/orders/admin/orders/${id}/status`, 'PUT', statusData, token),
-  getImages: (id, token) => apiCall(`/orders/admin/orders/${id}/images`, 'GET', null, token),
-  addNotes: (id, notes, token) => apiCall(`/orders/admin/orders/${id}/notes`, 'PUT', { notes }, token),
-  triggerShipment: (id, token) => apiCall(`/orders/admin/orders/${id}/ship`, 'POST', {}, token),
+  getAdminById: async (id, token) => {
+    return apiCall(`/orders/admin/orders/${id}`, 'GET', null, token);
+  },
+  updateStatus: async (id, statusData, token) => {
+    return apiCall(`/orders/admin/orders/${id}/status`, 'PUT', statusData, token);
+  },
+  getImages: async (id, token) => {
+    return apiCall(`/orders/admin/orders/${id}/images`, 'GET', null, token);
+  },
+  addNotes: async (id, notes, token) => {
+    return apiCall(`/orders/admin/orders/${id}/notes`, 'PUT', { notes }, token);
+  },
+  triggerShipment: async (id, token) => {
+    return apiCall(`/orders/admin/orders/${id}/ship`, 'POST', {}, token);
+  },
 };
 
-// Standard grouped export and individual named exports for flexibility
-const api = { userAuth, adminAuth, products, categories, orders };
-export default api;
+export default { userAuth, adminAuth, products, categories, orders };
