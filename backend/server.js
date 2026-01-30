@@ -362,6 +362,18 @@ app.get('/api/categories/:categoryId/showcase-images', async (req, res) => {
   }
 });
 
+// Serve frontend build if present (allows single-repo deployment)
+const frontendBuildPath = path.join(__dirname, '..', 'frontend', 'dist');
+if (fs.existsSync(frontendBuildPath)) {
+  app.use(express.static(frontendBuildPath));
+  // Return index.html for non-API routes (SPA support)
+  app.get('*', (req, res, next) => {
+    // Skip API routes
+    if (req.path.startsWith('/api')) return next();
+    res.sendFile(path.join(frontendBuildPath, 'index.html'));
+  });
+}
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);

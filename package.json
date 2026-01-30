@@ -1,0 +1,12 @@
+{
+  "name": "infinity-shop",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "sh ./start.sh",
+    "build": "npm --prefix frontend ci && npm --prefix frontend run build"
+  },
+  "engines": {
+    "node": "16.x || 18.x || 20.x"
+  }
+}

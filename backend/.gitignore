@@ -1,3 +1,6 @@
 node_modules
 .env
 server.log
+
+# Ignore built frontend if copied into backend (optional)
+frontend/dist
