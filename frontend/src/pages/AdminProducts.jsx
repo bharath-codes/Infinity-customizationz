@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus, Edit2, Trash2, Search, X, Upload } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+
 const AdminProducts = () => {
   const navigate = useNavigate();
   const { admin, adminToken } = useAuth();
@@ -39,7 +41,7 @@ const AdminProducts = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/products');
+      const response = await fetch(`${API_BASE_URL}/products`);
       if (!response.ok) throw new Error('Failed to fetch products');
       const data = await response.json();
       setProducts(data);
@@ -59,7 +61,7 @@ const AdminProducts = () => {
 
     try {
       setUploading(true);
-      const res = await fetch('/api/upload', {
+      const res = await fetch(`${API_BASE_URL}/upload`, {
         method: 'POST',
         body: formData,
       });
@@ -67,9 +69,6 @@ const AdminProducts = () => {
       if (!res.ok) throw new Error('Upload failed');
 
       const data = await res.json();
-      // Prefix with empty string because the backend returns a relative path starting with /uploads
-      // The proxy handles requests to /uploads if we serve it or we can just use the path content
-      // Note: server.js serves /uploads statically.
       setFormData(prev => ({ ...prev, image: data.filePath }));
       setPreviewImage(data.filePath);
     } catch (error) {
@@ -88,7 +87,7 @@ const AdminProducts = () => {
     }
 
     try {
-      const url = editingId ? `/api/products/${editingId}` : '/api/products';
+      const url = editingId ? `${API_BASE_URL}/products/${editingId}` : `${API_BASE_URL}/products`;
       const method = editingId ? 'PUT' : 'POST';
 
       const res = await fetch(url, {
@@ -135,7 +134,7 @@ const AdminProducts = () => {
     if (!window.confirm('Are you sure you want to delete this product?')) return;
 
     try {
-      const res = await fetch(`/api/products/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/products/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${adminToken}`
