@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { LogOut, Package, ShoppingCart, TrendingUp, ChevronRight, AlertCircle, Settings, BarChart3 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+// 1. Import the dynamic API URL from your service file
+import { API_BASE_URL } from '../services/api'; 
 
 const AdminDashboard = () => {
   const { admin, logoutAdmin } = useAuth();
@@ -26,14 +28,14 @@ const AdminDashboard = () => {
       setLoading(true);
       setError('');
       
-      // Fetch orders
-      const ordersRes = await fetch('http://localhost:5000/api/orders/admin/orders', {
+      // 2. Use template literals with API_BASE_URL instead of 'http://localhost:5000'
+      const ordersRes = await fetch(`${API_BASE_URL}/orders/admin/orders`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
       });
       const orders = ordersRes.ok ? await ordersRes.json() : [];
 
-      // Fetch categories
-      const categoriesRes = await fetch('http://localhost:5000/api/categories');
+      // 3. Use API_BASE_URL here as well
+      const categoriesRes = await fetch(`${API_BASE_URL}/categories`);
       const categories = categoriesRes.ok ? await categoriesRes.json() : [];
 
       const today = new Date();
@@ -72,6 +74,7 @@ const AdminDashboard = () => {
     logoutAdmin();
   };
 
+  
   const dashboardCards = [
     {
       title: 'Total Orders',
