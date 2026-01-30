@@ -13,4 +13,4 @@ Railway Deployment Checklist
    - Uploaded files are stored in `/uploads` (ephemeral on Railway—use cloud storage for persistence in production).
    - For debugging, check Railway logs and the `MONGO_URI` connectivity.
 
-If you prefer to deploy both frontend and backend in one service, consider building the frontend and serving it from the backend.
+If you prefer to deploy both frontend and backend in one service, this repo includes a `start.sh` and a root `package.json` to support that. The `start.sh` will build the frontend (`frontend/dist`) and then start the backend. The backend also serves the built frontend automatically when the `frontend/dist` folder exists.
