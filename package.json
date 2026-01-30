@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "npm --prefix backend start",
-    "build": "npm --prefix frontend ci && npm --prefix frontend run build"
+    "build": "npm --prefix frontend ci && npm --prefix frontend run build",
+    "postinstall": "npm --prefix backend ci --silent"
   },
   "engines": {
     "node": "16.x || 18.x || 20.x"
