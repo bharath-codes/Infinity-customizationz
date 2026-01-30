@@ -10,8 +10,11 @@ const app = express();
 
 // MIDDLEWARE
 app.use(cors({
-  origin: ['https://infinitycustomizationss.vercel.app/', 'http://localhost:5173'], // Add both your Vercel URL and local Vite port
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  origin: [
+    'https://infinitycustomizationss.vercel.app', // Removed the trailing slash
+    'http://localhost:5173'
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Added OPTIONS for preflight requests
   credentials: true
 }));
 app.use(express.json());
