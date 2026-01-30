@@ -1,13 +1,18 @@
 // API Service - Central hub for all API calls
-// Logic: Use Render URL if available, otherwise fallback to localhost
+// Logic: Use Render URL from Environment Variables if available, otherwise fallback to localhost
 const VITE_URL = import.meta.env.VITE_API_URL;
-const API_BASE_URL = VITE_URL 
-  ? `${VITE_URL.replace(/\/$/, '')}/api`  // Removes trailing slash if user added it
+
+// This ensures that even if you forget the '/api' in your Vercel settings, the app won't break
+export const API_BASE_URL = VITE_URL 
+  ? `${VITE_URL.replace(/\/$/, '')}/api` 
   : 'http://localhost:5000/api';
 
-console.log('🔗 API connected to:', API_BASE_URL); // Debugging line
+console.log('🔗 API connected to:', API_BASE_URL);
 
-// Helper function for API calls
+/**
+ * Global Helper function for fetch logic
+ * Handles JSON parsing, Auth headers, and standardized error catching
+ */
 const apiCall = async (endpoint, method = 'GET', data = null, token = null) => {
   const headers = {
     'Content-Type': 'application/json',
@@ -27,22 +32,24 @@ const apiCall = async (endpoint, method = 'GET', data = null, token = null) => {
   }
 
   try {
-    // Ensure endpoint starts with /
+    // Ensure endpoint starts with / for clean URL joining
     const url = `${API_BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
     const response = await fetch(url, config);
-    const result = await response.json();
+    
+    // Handle empty responses (like 204 No Content)
+    const result = response.status !== 204 ? await response.json() : null;
 
     if (!response.ok) {
       throw {
         status: response.status,
-        message: result.message || 'Something went wrong',
+        message: result?.message || 'Something went wrong',
         data: result
       };
     }
 
     return result;
   } catch (error) {
-    console.error('❌ API Error:', error);
+    console.error(`❌ API Error [${method}] ${endpoint}:`, error);
     throw error;
   }
 };
@@ -53,7 +60,6 @@ export const userAuth = {
     apiCall('/auth/user/verify-credentials', 'POST', { phoneNumber, password, name }),
   getProfile: (token) => apiCall('/auth/user/profile', 'GET', null, token),
   updateProfile: (profileData, token) => apiCall('/auth/user/profile', 'PUT', profileData, token),
-  adminLogin: (email, password) => apiCall('/auth/admin/login', 'POST', { email, password }),
 };
 
 export const adminAuth = {
@@ -81,10 +87,18 @@ export const categories = {
   create: (categoryData, token) => apiCall('/categories', 'POST', categoryData, token),
   update: (categoryId, categoryData, token) => apiCall(`/categories/${categoryId}`, 'PUT', categoryData, token),
   delete: (categoryId, token) => apiCall(`/categories/${categoryId}`, 'DELETE', null, token),
-  addToShowcase: (categoryId, productId, token) => apiCall(`/categories/${categoryId}/showcase/${productId}`, 'POST', {}, token),
-  removeFromShowcase: (categoryId, productId, token) => apiCall(`/categories/${categoryId}/showcase/${productId}`, 'DELETE', null, token),
-  addProduct: (categoryId, productId, token) => apiCall(`/categories/${categoryId}/products/${productId}`, 'POST', {}, token),
-  removeProduct: (categoryId, productId, token) => apiCall(`/categories/${categoryId}/products/${productId}`, 'DELETE', null, token),
+  
+  // Showcase / Feature Management
+  addToShowcase: (categoryId, productId, token) => 
+    apiCall(`/categories/${categoryId}/showcase/${productId}`, 'POST', {}, token),
+  removeFromShowcase: (categoryId, productId, token) => 
+    apiCall(`/categories/${categoryId}/showcase/${productId}`, 'DELETE', null, token),
+  
+  // Relationships
+  addProduct: (categoryId, productId, token) => 
+    apiCall(`/categories/${categoryId}/products/${productId}`, 'POST', {}, token),
+  removeProduct: (categoryId, productId, token) => 
+    apiCall(`/categories/${categoryId}/products/${productId}`, 'DELETE', null, token),
 };
 
 // --- ORDERS API ---
@@ -106,4 +120,6 @@ export const orders = {
   triggerShipment: (id, token) => apiCall(`/orders/admin/orders/${id}/ship`, 'POST', {}, token),
 };
 
-export default { userAuth, adminAuth, products, categories, orders };
+// Standard grouped export and individual named exports for flexibility
+const api = { userAuth, adminAuth, products, categories, orders };
+export default api;
