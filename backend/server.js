@@ -9,7 +9,11 @@ require('dotenv').config();
 const app = express();
 
 // MIDDLEWARE
-app.use(cors());
+app.use(cors({
+  origin: ['https://infinitycustomizationss.vercel.app/', 'http://localhost:5173'], // Add both your Vercel URL and local Vite port
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ limit: '50mb' }));
 
