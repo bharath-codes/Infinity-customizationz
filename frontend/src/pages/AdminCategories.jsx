@@ -7,11 +7,13 @@ import api from '../services/api';
 const AdminCategories = () => {
   const { adminToken } = useAuth();
   const [categories, setCategories] = useState([]);
-  const [products, setProducts] = useState([]);
+  // cache products per category to avoid fetching all products upfront
+  const [productsByCategory, setProductsByCategory] = useState({});
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [editingCategory, setEditingCategory] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [productLoading, setProductLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -28,20 +30,31 @@ const AdminCategories = () => {
     loadInitialData();
   }, []);
 
-  // ✅ Centralized data loader
+  // Load only categories initially to avoid fetching all product payloads (images etc.)
   const loadInitialData = async () => {
     setLoading(true);
     try {
-      const [catsData, prodsData] = await Promise.all([
-        api.categories.getAll(),
-        api.products.getAll()
-      ]);
+      const catsData = await api.categories.getAll();
       setCategories(catsData);
-      setProducts(prodsData);
     } catch (err) {
-      setError(err.message || 'Failed to load data');
+      setError(err.message || 'Failed to load categories');
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Fetch products for a single category (cached). Use force=true to refetch.
+  const fetchProductsForCategory = async (categoryId, force = false) => {
+    if (!categoryId) return;
+    if (productsByCategory[categoryId] && !force) return; // already cached
+    setProductLoading(true);
+    try {
+      const prodsData = await api.products.getByCategory(categoryId);
+      setProductsByCategory(prev => ({ ...prev, [categoryId]: prodsData || [] }));
+    } catch (err) {
+      console.error('Error fetching products for category:', err);
+    } finally {
+      setProductLoading(false);
     }
   };
 
@@ -52,18 +65,24 @@ const AdminCategories = () => {
       if (selectedCategory?._id === categoryId) {
         setSelectedCategory(freshCategory);
       }
+      // ensure product list for this category is refreshed too
+      await fetchProductsForCategory(categoryId, true);
     } catch (err) {
       console.error('Error refreshing category:', err);
     }
   };
 
+  const handleSelectCategory = (category) => {
+    setSelectedCategory(category);
+    setEditingCategory(null);
+    setShowForm(false);
+    fetchProductsForCategory(category._id);
+  };
+
+  // keep a backward-compatible thin wrapper if called elsewhere
   const fetchProducts = async () => {
-    try {
-      const prodsData = await api.products.getAll();
-      setProducts(prodsData || []);
-    } catch (err) {
-      console.error('Error fetching products:', err);
-    }
+    if (!selectedCategory) return;
+    await fetchProductsForCategory(selectedCategory._id);
   };
 
   const handleSelectCategory = (category) => {
@@ -246,28 +265,36 @@ const AdminCategories = () => {
                 <p className="text-sm text-gray-500 mb-6">Select products to highlight in the homepage slideshow for this category.</p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {products.map(product => {
-                    const isFeatured = selectedCategory.showcaseProducts?.includes(product._id);
-                    return (
-                      <div key={product._id} className="flex items-center justify-between p-3 border rounded-lg bg-gray-50">
-                        <div className="flex items-center gap-3">
-                          <img src={product.images[0]} alt="" className="w-12 h-12 rounded object-cover" />
-                          <div>
-                            <p className="font-semibold text-sm">{product.name}</p>
-                            <p className="text-xs text-gray-500">₹{product.price}</p>
+                  {productLoading ? (
+                    <div className="col-span-full flex items-center justify-center p-6">
+                      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+                    </div>
+                  ) : ((productsByCategory[selectedCategory._id] || []).length === 0 ? (
+                    <div className="col-span-full text-sm text-gray-500 p-4">No products found for this category.</div>
+                  ) : (
+                    (productsByCategory[selectedCategory._id] || []).map(product => {
+                      const isFeatured = selectedCategory.showcaseProducts?.includes(product._id);
+                      return (
+                        <div key={product._id} className="flex items-center justify-between p-3 border rounded-lg bg-gray-50">
+                          <div className="flex items-center gap-3">
+                            <img loading="lazy" src={product.images?.[0]} alt={product.name} className="w-12 h-12 rounded object-cover" />
+                            <div>
+                              <p className="font-semibold text-sm">{product.name}</p>
+                              <p className="text-xs text-gray-500">₹{product.price}</p>
+                            </div>
                           </div>
+                          <button 
+                            onClick={() => toggleShowcaseProduct(selectedCategory._id, product._id)}
+                            className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
+                              isFeatured ? 'bg-purple-600 text-white shadow-lg' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                            }`}
+                          >
+                            {isFeatured ? '⭐ Featured' : 'Feature'}
+                          </button>
                         </div>
-                        <button 
-                          onClick={() => toggleShowcaseProduct(selectedCategory._id, product._id)}
-                          className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
-                            isFeatured ? 'bg-purple-600 text-white shadow-lg' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
-                          }`}
-                        >
-                          {isFeatured ? '⭐ Featured' : 'Feature'}
-                        </button>
-                      </div>
-                    );
-                  })}
+                      );
+                    })
+                  ))}
                 </div>
               </div>
             </div>
