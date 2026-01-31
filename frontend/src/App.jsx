@@ -4,6 +4,7 @@ import { storyCategories, showcaseData, products, categoryDetails } from './data
 import { ShoppingCart, Menu, X, Search, User, Heart, ChevronRight, Phone, Mail, Instagram, Truck, ShieldCheck, Gift, Star, ArrowRight, MessageCircle, Filter, CheckCircle, AlertCircle, Info, ChevronDown, Trash2, ArrowLeft, LogOut } from 'lucide-react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { CartProvider, useCart } from './contexts/CartContext';
+import { API_BASE_URL } from './services/api';
 import Login from './pages/Login';
 import UserProfile from './pages/UserProfile';
 import UserOrders from './pages/UserOrders';
@@ -219,7 +220,7 @@ const HeroCarousel = () => {
     // Fetch showcase images from first category (frames)
     const fetchShowcaseImages = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/categories/frames/showcase-images');
+        const res = await fetch(`${API_BASE_URL}/categories/frames/showcase-images`);
         const data = await res.json();
         
         if (data.images && data.images.filter(img => img).length > 0) {
@@ -312,7 +313,7 @@ const CuratedCategorySection = ({ categoryId, categoryTitle }) => {
     const fetchShowcaseProducts = async () => {
       try {
         // Get category data
-        const res = await fetch(`http://localhost:5000/api/categories/${categoryId}`);
+        const res = await fetch(`${API_BASE_URL}/categories/${categoryId}`);
         const data = await res.json();
         
         console.log(`Category ${categoryId}:`, data.showcaseProducts);
@@ -321,7 +322,7 @@ const CuratedCategorySection = ({ categoryId, categoryTitle }) => {
           try {
             // Fetch all showcase products by their IDs from the API
             const productPromises = data.showcaseProducts.map(productId =>
-              fetch(`http://localhost:5000/api/products/${productId}`)
+              fetch(`${API_BASE_URL}/products/${productId}`)
                 .then(r => r.ok ? r.json() : null)
             );
             const prods = await Promise.all(productPromises);
@@ -427,7 +428,7 @@ const CategoryPage = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/products/category/${id}`);
+        const res = await fetch(`${API_BASE_URL}/products/category/${id}`);
         const data = await res.json();
         setCatProducts(Array.isArray(data) ? data : []);
       } catch (err) {
@@ -485,7 +486,7 @@ const ProductPage = ({ addToCart }) => {
     const fetchProduct = async () => {
       try {
         // Try to fetch from API first
-        const res = await fetch(`http://localhost:5000/api/products/${id}`);
+        const res = await fetch(`${API_BASE_URL}/products/${id}`);
         if (res.ok) {
           const data = await res.json();
           setProduct(data);
