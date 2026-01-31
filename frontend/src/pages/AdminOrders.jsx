@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { AlertCircle, ChevronDown, Save, Eye, Phone, MapPin, Mail, Package } from 'lucide-react';
+import { orders } from '../services/api';
 
 const AdminOrders = () => {
   const { admin, adminToken } = useAuth();
@@ -37,14 +38,17 @@ const AdminOrders = () => {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const res = await fetch('http://localhost:5000/api/orders/admin/orders', {
-        headers: { 'Authorization': `Bearer ${adminToken}` }
-      });
-      if (!res.ok) throw new Error('Failed to fetch orders');
-      const data = await res.json();
-      setOrders(data);
+      const result = await orders.getAll({}, adminToken);
+      // API might return an array or an object with a property like `orders`
+      if (Array.isArray(result)) {
+        setOrders(result);
+      } else if (result && result.orders) {
+        setOrders(result.orders);
+      } else {
+        setOrders([]);
+      }
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Failed to fetch orders');
     } finally {
       setLoading(false);
     }
@@ -60,24 +64,17 @@ const AdminOrders = () => {
 
   const handleStatusChange = async (orderId, newStatus) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/orders/admin/orders/${orderId}/status`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${adminToken}`
-        },
-        body: JSON.stringify({ status: newStatus })
-      });
+      const result = await orders.updateStatus(orderId, { status: newStatus }, adminToken);
 
-      if (!res.ok) throw new Error('Failed to update order');
+      // result may contain the updated order under `order` or be the order itself
+      const updatedOrder = result?.order || result;
 
-      const updated = await res.json();
-      setOrders(orders.map(o => o._id === orderId ? updated.order : o));
+      setOrders(orders.map(o => o._id === orderId ? updatedOrder : o));
       setSuccess(`Order marked as ${newStatus}`);
       setEditingOrderId(null);
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Failed to update order');
       setTimeout(() => setError(''), 3000);
     }
   };
