@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { AlertCircle, ChevronDown, Save, Eye, Phone, MapPin, Mail, Package } from 'lucide-react';
-import { orders } from '../services/api';
+import { orders as ordersApi } from '../services/api';
 
 const AdminOrders = () => {
   const { admin, adminToken } = useAuth();
@@ -38,7 +38,7 @@ const AdminOrders = () => {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const result = await orders.getAll({}, adminToken);
+      const result = await ordersApi.getAll({}, adminToken);
       // API might return an array or an object with a property like `orders`
       if (Array.isArray(result)) {
         setOrders(result);
@@ -64,7 +64,7 @@ const AdminOrders = () => {
 
   const handleStatusChange = async (orderId, newStatus) => {
     try {
-      const result = await orders.updateStatus(orderId, { status: newStatus }, adminToken);
+      const result = await ordersApi.updateStatus(orderId, { status: newStatus }, adminToken);
 
       // result may contain the updated order under `order` or be the order itself
       const updatedOrder = result?.order || result;
