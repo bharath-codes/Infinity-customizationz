@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ChevronDown, ChevronUp, Package, AlertCircle, Loader } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { API_BASE_URL } from '../services/api';
+import { API_BASE_URL, orders } from '../services/api';
 
 const UserOrders = () => {
   const navigate = useNavigate();
@@ -28,19 +28,25 @@ const UserOrders = () => {
     try {
       setLoading(true);
       setError('');
-      const res = await fetch(`${API_BASE_URL}/orders/user/${user._id}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
 
-      if (!res.ok) {
-        throw new Error('Failed to fetch orders');
+      // Use centralized Orders API (auth token required)
+      const result = await orders.getMyOrders(token);
+
+      // Normalize response which might be an array or an object with `orders`
+      if (Array.isArray(result)) {
+        setOrders(result);
+      } else if (result && result.orders) {
+        setOrders(result.orders);
+      } else if (result && result.data && Array.isArray(result.data.orders)) {
+        setOrders(result.data.orders);
+      } else {
+        setOrders([]);
       }
-
-      const data = await res.json();
-      setOrders(Array.isArray(data) ? data : data.orders || []);
     } catch (err) {
-      console.error('Error:', err);
-      setError('Failed to load your orders. Please try again.');
+      console.error('Error fetching user orders:', err);
+      // Show backend-friendly message if available
+      const msg = err?.message || (err?.data && err.data.message) || 'Failed to load your orders. Please try again.';
+      setError(msg);
     } finally {
       setLoading(false);
     }
