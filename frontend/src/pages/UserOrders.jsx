@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ChevronDown, ChevronUp, Package, AlertCircle, Loader } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
-import { API_BASE_URL, orders } from '../services/api';
+import { API_BASE_URL, orders as ordersApi } from '../services/api';
 
 const UserOrders = () => {
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ const UserOrders = () => {
       setError('');
 
       // Use centralized Orders API (auth token required)
-      const result = await orders.getMyOrders(token);
+      const result = await ordersApi.getMyOrders(token);
 
       // Normalize response which might be an array or an object with `orders`
       if (Array.isArray(result)) {
