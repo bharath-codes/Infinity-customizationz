@@ -6,8 +6,11 @@ import api from '../services/api';
 
 const AdminCategories = () => {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   const { adminToken } = useAuth();
 =======
+=======
+>>>>>>> Stashed changes
     // Use environment variable for API base URL, fallback to localhost for dev
     const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
   const { admin, adminToken } = useAuth();
@@ -39,6 +42,7 @@ const AdminCategories = () => {
     setLoading(true);
     try {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       const [catsData, prodsData] = await Promise.all([
         api.categories.getAll(),
         api.products.getAll()
@@ -46,6 +50,8 @@ const AdminCategories = () => {
       setCategories(catsData);
       setProducts(prodsData);
 =======
+=======
+>>>>>>> Stashed changes
       const res = await fetch(`${API_BASE_URL}/categories`);
       if (!res.ok) throw new Error('Failed to fetch categories');
       const data = await res.json();
@@ -62,11 +68,14 @@ const AdminCategories = () => {
   const refreshCategory = async (categoryId) => {
     try {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       const freshCategory = await api.categories.getById(categoryId);
       setCategories(categories.map(c => c._id === categoryId ? freshCategory : c));
       if (selectedCategory?._id === categoryId) {
         setSelectedCategory(freshCategory);
 =======
+=======
+>>>>>>> Stashed changes
       const res = await fetch(`${API_BASE_URL}/categories/${categoryId}`);
       if (res.ok) {
         const freshCategory = await res.json();
@@ -118,8 +127,11 @@ const AdminCategories = () => {
     if (!window.confirm('Are you sure you want to delete this category? This cannot be undone.')) return;
     try {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       await api.categories.delete(categoryId, adminToken);
 =======
+=======
+>>>>>>> Stashed changes
       const res = await fetch(`${API_BASE_URL}/categories/${categoryId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${adminToken}` }
