@@ -1,5 +1,5 @@
 // API Service - Central hub for all API calls
-const API_BASE_URL = 'https://infinity-customizations.onrender.com/api'; // <-- CHANGE THIS
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://infinity-customizations.onrender.com/api'; // environment-aware API base URL
 
 // Helper function for API calls
 const apiCall = async (endpoint, method = 'GET', data = null, token = null) => {
