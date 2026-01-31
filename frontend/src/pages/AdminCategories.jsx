@@ -85,12 +85,6 @@ const AdminCategories = () => {
     await fetchProductsForCategory(selectedCategory._id);
   };
 
-  const handleSelectCategory = (category) => {
-    setSelectedCategory(category);
-    setEditingCategory(null);
-    setShowForm(false);
-  };
-
   const handleEditCategory = (category) => {
     setEditingCategory(category);
     setFormData({
