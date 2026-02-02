@@ -620,13 +620,6 @@ const ProductPage = ({ addToCart }) => {
             <button onClick={handleBuyNow} className="w-full bg-brand-blue text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition">Buy Now</button>
             <button onClick={handleAddToCart} className="w-full bg-gray-200 text-brand-dark py-4 rounded-xl font-bold text-lg hover:bg-gray-300 transition">Add to Cart</button>
 
-            <button
-              onClick={() => window.open(`https://wa.me/918985993948?text=${encodeURIComponent(`Hi, I want to send photos for product ${product?.name || ''}.`)}`, '_blank')}
-              className="w-full bg-[#25D366] text-white py-3 rounded-xl font-bold hover:bg-[#20ba5c] transition flex items-center justify-center gap-3"
-            >
-              📸 Send Photos via WhatsApp
-            </button>
-
             <button type="button" onClick={() => setShowTerms(s => !s)} className="w-full text-sm text-gray-600 hover:text-brand-blue underline">{showTerms ? 'Hide' : 'View'} Return & Refund Policy</button>
 
             {showTerms && (

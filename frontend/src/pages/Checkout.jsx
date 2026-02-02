@@ -319,8 +319,8 @@ const Checkout = () => {
                   {/* Submit Button */}
                   <button
                     type="submit"
-                    disabled={loading}
-                    className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-colors"
+                    disabled={loading || !orderData.acceptedTerms}
+                    className={`w-full bg-green-600 hover:bg-green-700 ${(!orderData.acceptedTerms && !loading) ? 'opacity-60 cursor-not-allowed' : ''} disabled:bg-gray-400 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-colors`}
                   >
                     {loading ? (
                       <>

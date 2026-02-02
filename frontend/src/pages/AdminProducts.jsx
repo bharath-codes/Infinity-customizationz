@@ -92,13 +92,17 @@ const AdminProducts = () => {
       const url = editingId ? `${API_BASE_URL}/products/${editingId}` : `${API_BASE_URL}/products`;
       const method = editingId ? 'PUT' : 'POST';
 
+      // Ensure images array has no empty slots at the end
+      const imagesToSend = (formData.images || []).filter(img => img);
+      const payload = { ...formData, images: imagesToSend };
+
       const res = await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${adminToken}`
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(payload)
       });
 
       if (!res.ok) {
@@ -157,6 +161,35 @@ const AdminProducts = () => {
     setEditingId(null);
     setShowAddForm(false);
     setPreviewImage('');
+  }; 
+
+  const handleMultiImageUpload = async (index, file) => {
+    if (!file) return;
+
+    const fd = new FormData();
+    fd.append('image', file);
+
+    try {
+      setUploading(true);
+      const res = await fetch(`${API_BASE_URL}/upload`, {
+        method: 'POST',
+        body: fd
+      });
+
+      if (!res.ok) throw new Error('Upload failed');
+
+      const data = await res.json();
+      const backendBase = API_BASE_URL.replace(/\/api$/, '');
+      const fileUrl = data.filePath && data.filePath.startsWith('http') ? data.filePath : `${backendBase}${data.filePath}`;
+      const imgs = [...(formData.images || ['', '', ''])];
+      imgs[index] = fileUrl;
+      setFormData(prev => ({ ...prev, images: imgs }));
+    } catch (err) {
+      console.error('Image upload failed:', err);
+      alert('Image upload failed');
+    } finally {
+      setUploading(false);
+    }
   };
 
   const filteredProducts = products.filter(product =>
@@ -289,39 +322,33 @@ const AdminProducts = () => {
               <div className="md:col-span-2 border-2 border-gray-200 rounded-lg p-4">
                 <label className="text-gray-700 font-bold mb-3 block">📸 Product Images (Up to 3)</label>
                 <div className="space-y-3">
-                  <input
-                    type="text"
-                    placeholder="Image 1 URL (e.g., /images/product.jpg)"
-                    value={formData.images?.[0] || ''}
-                    onChange={(e) => {
-                      const imgs = [...(formData.images || ['', '', ''])];
-                      imgs[0] = e.target.value;
-                      setFormData({ ...formData, images: imgs });
-                    }}
-                    className="w-full px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-brand-blue text-sm"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Image 2 URL (optional)"
-                    value={formData.images?.[1] || ''}
-                    onChange={(e) => {
-                      const imgs = [...(formData.images || ['', '', ''])];
-                      imgs[1] = e.target.value;
-                      setFormData({ ...formData, images: imgs });
-                    }}
-                    className="w-full px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-brand-blue text-sm"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Image 3 URL (optional)"
-                    value={formData.images?.[2] || ''}
-                    onChange={(e) => {
-                      const imgs = [...(formData.images || ['', '', ''])];
-                      imgs[2] = e.target.value;
-                      setFormData({ ...formData, images: imgs });
-                    }}
-                    className="w-full px-4 py-2 border border-gray-200 rounded focus:outline-none focus:border-brand-blue text-sm"
-                  />
+                  {/* File uploads for 3 product images */}
+                  <div className="grid grid-cols-3 gap-3">
+                    {[0,1,2].map((i) => (
+                      <div key={i} className="flex flex-col items-center gap-2">
+                        <div className="w-24 h-24 bg-gray-100 rounded overflow-hidden border flex items-center justify-center">
+                          {formData.images?.[i] ? (
+                            <img loading="lazy" src={formData.images[i]} alt={`img-${i+1}`} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="text-xs text-gray-400">No Image</div>
+                          )}
+                        </div>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleMultiImageUpload(i, e.target.files[0])}
+                          className="text-xs text-gray-500"
+                        />
+                        {formData.images?.[i] && (
+                          <button type="button" onClick={() => {
+                            const imgs = [...(formData.images || ['', '', ''])];
+                            imgs[i] = '';
+                            setFormData({ ...formData, images: imgs });
+                          }} className="text-xs text-red-500 underline">Remove</button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
               <div className="flex items-center gap-2 px-4">
