@@ -407,7 +407,7 @@ const Checkout = () => {
                       </p>
                       <div className="flex justify-center">
                         <div className="w-64 h-64 border-2 border-gray-300 rounded-lg p-2 bg-white flex items-center justify-center">
-                          <img src="/images/phonepe-qr.png" alt="PhonePe QR" className="w-full h-full object-contain" />
+                          <img loading="lazy" src="/images/phonepe-qr.png" alt="PhonePe QR" className="w-full h-full object-contain" />
                         </div>
                       </div>
                       <p className="text-xs text-gray-600 text-center mt-4">

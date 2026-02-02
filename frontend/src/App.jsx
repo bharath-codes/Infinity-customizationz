@@ -14,6 +14,7 @@ import AdminOrders from './pages/AdminOrders';
 import AdminProducts from './pages/AdminProducts';
 import AdminCategories from './pages/AdminCategories';
 import Checkout from './pages/Checkout';
+import SearchResults from './pages/SearchResults';
 
 // --- 1. GLOBAL CONTEXT & UTILITIES ---
 const LoaderContext = createContext();
@@ -79,6 +80,7 @@ const AnnouncementBar = () => (
 
 const Navbar = ({ cartCount }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const { isAuthenticated, user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -101,11 +103,11 @@ const Navbar = ({ cartCount }) => {
         </div>
         <div className="hidden md:flex flex-1 max-w-md mx-auto bg-gray-50 border border-gray-200 rounded-full px-4 py-2.5 items-center text-gray-500 focus-within:bg-white transition-all">
           <Search size={18} className="text-gray-400" />
-          <input type="text" placeholder="Search..." className="bg-transparent border-none outline-none text-sm ml-3 w-full text-brand-dark" />
+          <input type="text" placeholder="Search..." className="bg-transparent border-none outline-none text-sm ml-3 w-full text-brand-dark" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && searchTerm.trim()) navigate(`/search?q=${encodeURIComponent(searchTerm.trim())}`); }} />
         </div>
         <div className="flex items-center gap-4 md:gap-6 text-gray-700">
           <a href="https://wa.me/918985993948" target="_blank" rel="noreferrer" className="text-gray-700 hover:text-green-600 transition hover:scale-110"><WhatsAppIcon size={22} /></a>
-          <button className="md:hidden text-gray-700"><Search size={22} /></button>
+          <button className="md:hidden text-gray-700" onClick={() => { const t = prompt('Search'); if (t && t.trim()) navigate(`/search?q=${encodeURIComponent(t.trim())}`); }}><Search size={22} /></button>
           
           {isAuthenticated ? (
             <div className="relative group">
@@ -185,7 +187,7 @@ const Footer = () => (
         <h3 className="text-lg font-bold text-brand-gold mb-6 font-serif">Contact</h3>
         <div className="space-y-4 text-sm text-blue-100">
           <p className="flex items-start gap-3"><Phone size={18} /><span>+91 89859 93948</span></p>
-          <p className="flex items-start gap-3"><Mail size={18} /><span>support@infinitlyediting.com</span></p>
+          <p className="flex items-start gap-3"><Mail size={18} /><span>infinitycustomizations@gmail.com</span></p>
         </div>
       </div>
       <div>
@@ -211,9 +213,9 @@ const Footer = () => (
 const HeroCarousel = () => {
   const [current, setCurrent] = useState(0);
   const [slides, setSlides] = useState([
-    { id: 1, image: "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?q=80&w=2000", title: "Flat 20% Off", link: "/shop/frames" },
-    { id: 2, image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=2000", title: "New Arrival: Tees", link: "/shop/apparel" },
-    { id: 3, image: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=2000", title: "Luxury Hampers", link: "/shop/bouquets" }
+    { id: 1, image: "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?q=60&w=1200", title: "Flat 20% Off", link: "/shop/frames" },
+    { id: 2, image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=60&w=1200", title: "New Arrival: Tees", link: "/shop/apparel" },
+    { id: 3, image: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=60&w=1200", title: "Luxury Hampers", link: "/shop/bouquets" }
   ]);
 
   useEffect(() => {
@@ -257,7 +259,7 @@ const HeroCarousel = () => {
       <div className="flex transition-transform duration-700 h-full" style={{ transform: `translateX(-${current * 100}%)` }}>
         {slides.map(s => (
           <div key={s.id} className="min-w-full h-full relative">
-            <img src={s.image} className="w-full h-full object-cover" alt="" />
+            <img loading="lazy" src={s.image} className="w-full h-full object-cover" alt="" />
             <div className="absolute inset-0 bg-black/30 flex items-center px-10"><h2 className="text-3xl md:text-5xl font-serif font-bold text-white">{s.title}</h2></div>
           </div>
         ))}
@@ -274,7 +276,7 @@ const StoryCircles = () => (
         <SmartLink to={`/shop/${cat.id}`} key={index} className="flex flex-col items-center flex-shrink-0 snap-start w-[72px] md:w-24 group">
           <div className="w-[68px] h-[68px] md:w-[84px] md:h-[84px] rounded-full p-[2px] bg-gradient-to-tr from-brand-blue via-blue-400 to-brand-gold group-hover:scale-105 transition duration-300">
             <div className="w-full h-full rounded-full border-[2px] border-white overflow-hidden bg-gray-100">
-              <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" />
+              <img loading="lazy" src={cat.image} alt={cat.name} className="w-full h-full object-cover" />
             </div>
           </div>
           <span className="text-[10px] md:text-xs font-bold text-gray-800 mt-1.5 text-center truncate w-full">{cat.name}</span>
@@ -292,7 +294,7 @@ const ShowcaseCard = ({ product, activeIdx }) => {
     <SmartLink to={`/product/${productId}`} className="block group w-full">
       <div className="relative w-full aspect-[4/5] md:h-[400px] rounded-xl overflow-hidden shadow-sm border border-gray-100 bg-gray-100">
         <div className="flex h-full transition-transform duration-700 ease-in-out" style={{ transform: `translateX(-${(activeIdx % images.length) * 100}%)` }}>
-          {images.map((img, i) => (<div key={i} className="min-w-full h-full relative"><img src={img} className="w-full h-full object-cover" alt="" /></div>))}
+          {images.map((img, i) => (<div key={i} className="min-w-full h-full relative"><img loading="lazy" src={img} className="w-full h-full object-cover" alt="" /></div>))}
         </div>
         <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-brand-blue/90 p-3 pt-10">
           <h4 className="text-white font-bold text-sm truncate">{product.name}</h4>
@@ -399,7 +401,7 @@ const Home = () => {
             const productId = p._id || p.id;
             return (
               <SmartLink to={`/product/${productId}`} key={productId} className="min-w-[140px] md:min-w-[200px] snap-start bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden flex-shrink-0">
-                <div className="h-40 md:h-60 overflow-hidden relative bg-gray-50"><img src={p.image} alt={p.name} className="w-full h-full object-cover" /></div>
+                <div className="h-40 md:h-60 overflow-hidden relative bg-gray-50"><img loading="lazy" src={p.image} alt={p.name} className="w-full h-full object-cover" /></div>
                 <div className="p-2 md:p-3"><h4 className="font-bold text-gray-900 text-xs md:text-sm truncate">{p.name}</h4><span className="text-sm font-bold text-brand-blue">₹{p.price}</span></div>
               </SmartLink>
             );
@@ -458,7 +460,7 @@ const CategoryPage = () => {
             const productId = p._id || p.id;
             return (
               <SmartLink to={`/product/${productId}`} key={productId} className="block group">
-                <div className="rounded-xl overflow-hidden aspect-[4/5] bg-gray-100"><img src={p.image} className="w-full h-full object-cover group-hover:scale-105 transition" alt="" /></div>
+                <div className="rounded-xl overflow-hidden aspect-[4/5] bg-gray-100"><img loading="lazy" src={p.image} className="w-full h-full object-cover group-hover:scale-105 transition" alt="" /></div>
                 <h3 className="font-serif font-bold text-brand-dark text-sm mt-3 truncate">{p.name}</h3>
                 <p className="text-brand-blue font-bold text-sm">₹{p.price}</p>
               </SmartLink>
@@ -523,14 +525,12 @@ const ProductPage = ({ addToCart }) => {
   }, [product]);
 
   const handleAddToCart = () => {
-    const item = {...product, quantity: qty, finalPrice: product.price*qty};
-    addToCart(item);
+    const item = { ...product, id: product._id || product.id, price: Number(product.price || 0), quantity: qty };
     addToCartContext(item);
   };
 
   const handleBuyNow = () => {
-    const item = {...product, quantity: qty, finalPrice: product.price*qty};
-    addToCart(item);
+    const item = { ...product, id: product._id || product.id, price: Number(product.price || 0), quantity: qty };
     addToCartContext(item);
     navigate('/checkout');
   };
@@ -543,7 +543,7 @@ const ProductPage = ({ addToCart }) => {
   return (
     <div className="min-h-screen bg-white pb-24 md:pb-12">
       <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-2 gap-12">
-        <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-sm border border-gray-100"><img src={mainImage} className="w-full h-full object-cover" alt="" /></div>
+        <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-sm border border-gray-100"><img loading="lazy" src={mainImage} className="w-full h-full object-cover" alt="" /></div>
         <div className="space-y-6">
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-brand-dark">{product.name}</h1>
           <p className="text-3xl font-bold text-brand-blue">₹{product.price * qty}</p>
@@ -566,21 +566,22 @@ const Cart = ({ items, updateQuantity, removeItem }) => {
 
   if (items.length === 0) return <div className="min-h-screen flex flex-col items-center justify-center"><h2 className="text-xl font-bold mb-4">Bag is Empty</h2><SmartLink to="/" className="bg-brand-blue text-white px-8 py-3 rounded-full">Shop Now</SmartLink></div>;
   
-  const subtotal = items.reduce((acc, item) => acc + item.finalPrice, 0);
-  const total = subtotal + (subtotal > 999 ? 0 : 99);
+  const subtotal = items.reduce((acc, item) => acc + (Number(item.price) * item.quantity), 0);
+  const shipping = subtotal > 999 ? 0 : 100;
+  const total = subtotal + shipping;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
       <div className="lg:col-span-8 space-y-4">
         <h2 className="text-2xl font-serif font-bold text-brand-dark mb-6">Shopping Bag ({items.length})</h2>
         {items.map((item, i) => (
-          <div key={i} className="bg-white p-4 rounded-xl border flex gap-4 shadow-sm">
-            <img src={item.image} className="w-24 h-24 rounded-lg object-cover" alt="" />
+          <div key={item.id || item._id || i} className="bg-white p-4 rounded-xl border flex gap-4 shadow-sm">
+            <img loading="lazy" src={item.image} className="w-24 h-24 rounded-lg object-cover" alt="" />
             <div className="flex-1 flex flex-col justify-between">
-              <div className="flex justify-between font-bold text-gray-800 text-sm"><h3>{item.name}</h3><button onClick={() => removeItem(i)} className="text-gray-400"><Trash2 size={18}/></button></div>
+              <div className="flex justify-between font-bold text-gray-800 text-sm"><h3>{item.name}</h3><button onClick={() => removeItem(item.id || item._id)} className="text-gray-400"><Trash2 size={18}/></button></div>
               <div className="flex justify-between items-center mt-4">
-                <div className="flex items-center border rounded-md"><button onClick={() => updateQuantity(i, -1)} className="px-3 py-1">-</button><span className="px-2 font-bold">{item.quantity}</span><button onClick={() => updateQuantity(i, 1)} className="px-3 py-1">+</button></div>
-                <span className="font-bold text-brand-blue">₹{item.finalPrice}</span>
+                <div className="flex items-center border rounded-md"><button onClick={() => updateQuantity(item.id || item._id, Math.max(1, item.quantity - 1))} className="px-3 py-1">-</button><span className="px-2 font-bold">{item.quantity}</span><button onClick={() => updateQuantity(item.id || item._id, item.quantity + 1)} className="px-3 py-1">+</button></div>
+                <span className="font-bold text-brand-blue">₹{Number(item.price) * item.quantity}</span>
               </div>
             </div>
           </div>
@@ -594,16 +595,7 @@ const Cart = ({ items, updateQuantity, removeItem }) => {
 // --- 6. MAIN APP WRAPPER ---
 
 const AppContent = () => {
-  const [cart, setCart] = useState([]);
-  const addToCart = (p) => setCart([...cart, p]);
-  const updateQuantity = (idx, c) => {
-    const n = [...cart]; if (n[idx].quantity + c > 0) {
-      const u = n[idx].finalPrice / n[idx].quantity;
-      n[idx].quantity += c; n[idx].finalPrice = u * n[idx].quantity;
-      setCart(n);
-    }
-  };
-  const removeItem = (idx) => setCart(cart.filter((_, i) => i !== idx));
+  const { cart, addToCart, updateQuantity, removeFromCart } = useCart();
 
   return (
     <div className="min-h-screen font-sans bg-brand-light text-brand-dark flex flex-col">
@@ -615,8 +607,9 @@ const AppContent = () => {
         <Route path="/orders" element={<UserOrders />} />
         <Route path="/shop/:id" element={<CategoryPage />} />
         <Route path="/product/:id" element={<ProductPage addToCart={addToCart} />} />
-        <Route path="/cart" element={<Cart items={cart} updateQuantity={updateQuantity} removeItem={removeItem} />} />
+        <Route path="/cart" element={<Cart items={cart} updateQuantity={updateQuantity} removeItem={removeFromCart} />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/search" element={<SearchResults />} />
         
         {/* Admin Routes */}
         <Route path="/admin/login" element={<AdminLogin />} />

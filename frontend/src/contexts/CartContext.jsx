@@ -23,18 +23,20 @@ export const CartProvider = ({ children }) => {
   }, [cart]);
 
   const addToCart = (product) => {
-    const existingItem = cart.find(item => item.id === product.id);
+    const id = product.id || product._id;
+    const normalized = { ...product, id, price: Number(product.price || 0), quantity: product.quantity || 1 };
+    const existingItem = cart.find(item => (item.id || item._id) === id);
     
     if (existingItem) {
       // Update quantity if product already exists
       setCart(cart.map(item =>
-        item.id === product.id
-          ? { ...item, quantity: item.quantity + product.quantity }
+        (item.id || item._id) === id
+          ? { ...item, quantity: item.quantity + normalized.quantity }
           : item
       ));
     } else {
       // Add new product
-      setCart([...cart, product]);
+      setCart([...cart, normalized]);
     }
   };
 

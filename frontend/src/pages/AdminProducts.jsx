@@ -211,7 +211,7 @@ const AdminProducts = () => {
                     {uploading ? (
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-blue"></div>
                     ) : previewImage ? (
-                      <img src={previewImage} alt="Preview" className="w-full h-full object-cover" />
+                      <img loading="lazy" src={previewImage} alt="Preview" className="w-full h-full object-cover" />
                     ) : (
                       <Upload className="w-8 h-8 text-gray-400" />
                     )}
@@ -397,7 +397,7 @@ const AdminProducts = () => {
             filteredProducts.map((product) => (
               <div key={product._id} className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow relative group">
                 {product.image ? (
-                  <img src={product.image} alt={product.name} className="w-full h-56 object-cover" />
+                  <img loading="lazy" src={product.image} alt={product.name} className="w-full h-56 object-cover" />
                 ) : (
                   <div className="w-full h-56 bg-gray-100 flex items-center justify-center text-gray-400">
                     No Image
