@@ -259,7 +259,10 @@ const HeroCarousel = () => {
       <div className="flex transition-transform duration-700 h-full" style={{ transform: `translateX(-${current * 100}%)` }}>
         {slides.map(s => (
           <div key={s.id} className="min-w-full h-full relative">
-            <img loading="lazy" src={s.image} className="w-full h-full object-cover" alt="" />
+            <picture>
+              <source type="image/webp" srcSet={`${s.image}?q=60&w=400 400w, ${s.image}?q=60&w=800 800w, ${s.image}?q=60&w=1200 1200w`} />
+              <img loading="lazy" decoding="async" src={s.image} srcSet={`${s.image}?q=60&w=400 400w, ${s.image}?q=60&w=800 800w, ${s.image}?q=60&w=1200 1200w`} sizes="100vw" className="w-full h-full object-cover" alt="" />
+            </picture>
             <div className="absolute inset-0 bg-black/30 flex items-center px-10"><h2 className="text-3xl md:text-5xl font-serif font-bold text-white">{s.title}</h2></div>
           </div>
         ))}
@@ -294,7 +297,14 @@ const ShowcaseCard = ({ product, activeIdx }) => {
     <SmartLink to={`/product/${productId}`} className="block group w-full">
       <div className="relative w-full aspect-[4/5] md:h-[400px] rounded-xl overflow-hidden shadow-sm border border-gray-100 bg-gray-100">
         <div className="flex h-full transition-transform duration-700 ease-in-out" style={{ transform: `translateX(-${(activeIdx % images.length) * 100}%)` }}>
-          {images.map((img, i) => (<div key={i} className="min-w-full h-full relative"><img loading="lazy" src={img} className="w-full h-full object-cover" alt="" /></div>))}
+          {images.map((img, i) => (
+            <div key={i} className="min-w-full h-full relative">
+              <picture>
+                <source type="image/webp" srcSet={`${img}?q=60&w=400 400w, ${img}?q=60&w=800 800w, ${img}?q=60&w=1200 1200w`} />
+                <img loading="lazy" decoding="async" src={img} srcSet={`${img}?q=60&w=400 400w, ${img}?q=60&w=800 800w, ${img}?q=60&w=1200 1200w`} sizes="100vw" className="w-full h-full object-cover" alt="" />
+              </picture>
+            </div>
+          ))}
         </div>
         <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-brand-blue/90 p-3 pt-10">
           <h4 className="text-white font-bold text-sm truncate">{product.name}</h4>
@@ -401,7 +411,12 @@ const Home = () => {
             const productId = p._id || p.id;
             return (
               <SmartLink to={`/product/${productId}`} key={productId} className="min-w-[140px] md:min-w-[200px] snap-start bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden flex-shrink-0">
-                <div className="h-40 md:h-60 overflow-hidden relative bg-gray-50"><img loading="lazy" src={p.image} alt={p.name} className="w-full h-full object-cover" /></div>
+                <div className="h-40 md:h-60 overflow-hidden relative bg-gray-50">
+                  <picture>
+                    <source type="image/webp" srcSet={`${p.image}?q=60&w=400 400w, ${p.image}?q=60&w=800 800w`} />
+                    <img loading="lazy" decoding="async" src={p.image} srcSet={`${p.image}?q=60&w=400 400w, ${p.image}?q=60&w=800 800w`} sizes="(max-width: 768px) 50vw, 20vw" alt={p.name} className="w-full h-full object-cover" />
+                  </picture>
+                </div>
                 <div className="p-2 md:p-3"><h4 className="font-bold text-gray-900 text-xs md:text-sm truncate">{p.name}</h4><span className="text-sm font-bold text-brand-blue">₹{p.price}</span></div>
               </SmartLink>
             );
@@ -460,7 +475,12 @@ const CategoryPage = () => {
             const productId = p._id || p.id;
             return (
               <SmartLink to={`/product/${productId}`} key={productId} className="block group">
-                <div className="rounded-xl overflow-hidden aspect-[4/5] bg-gray-100"><img loading="lazy" src={p.image} className="w-full h-full object-cover group-hover:scale-105 transition" alt="" /></div>
+                <div className="rounded-xl overflow-hidden aspect-[4/5] bg-gray-100">
+                  <picture>
+                    <source type="image/webp" srcSet={`${p.image}?q=60&w=400 400w, ${p.image}?q=60&w=800 800w`} />
+                    <img loading="lazy" decoding="async" src={p.image} srcSet={`${p.image}?q=60&w=400 400w, ${p.image}?q=60&w=800 800w`} sizes="(max-width: 768px) 50vw, 25vw" className="w-full h-full object-cover group-hover:scale-105 transition" alt="" />
+                  </picture>
+                </div>
                 <h3 className="font-serif font-bold text-brand-dark text-sm mt-3 truncate">{p.name}</h3>
                 <p className="text-brand-blue font-bold text-sm">₹{p.price}</p>
               </SmartLink>
@@ -543,7 +563,12 @@ const ProductPage = ({ addToCart }) => {
   return (
     <div className="min-h-screen bg-white pb-24 md:pb-12">
       <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-2 gap-12">
-        <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-sm border border-gray-100"><img loading="lazy" src={mainImage} className="w-full h-full object-cover" alt="" /></div>
+        <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+          <picture>
+            <source type="image/webp" srcSet={`${mainImage}?q=60&w=400 400w, ${mainImage}?q=60&w=800 800w, ${mainImage}?q=60&w=1200 1200w`} />
+            <img loading="lazy" decoding="async" src={mainImage} srcSet={`${mainImage}?q=60&w=400 400w, ${mainImage}?q=60&w=800 800w, ${mainImage}?q=60&w=1200 1200w`} sizes="(max-width: 768px) 80vw, 40vw" className="w-full h-full object-cover" alt="" />
+          </picture>
+        </div>
         <div className="space-y-6">
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-brand-dark">{product.name}</h1>
           <p className="text-3xl font-bold text-brand-blue">₹{product.price * qty}</p>
