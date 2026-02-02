@@ -401,6 +401,9 @@ const Home = () => {
     { categoryId: "smart-digital", categoryTitle: "Smart & Digital Services" },
   ];
 
+  const location = useLocation();
+  const hidePriceOnHome = location.pathname === '/';
+
   return (
     <div className="bg-brand-light min-h-screen">
       <AnnouncementBar />
@@ -419,7 +422,10 @@ const Home = () => {
                     <img loading="lazy" decoding="async" src={p.image} srcSet={`${p.image}?q=60&w=400 400w, ${p.image}?q=60&w=800 800w`} sizes="(max-width: 768px) 50vw, 20vw" alt={p.name} className="w-full h-full object-cover" />
                   </picture>
                 </div>
-                <div className="p-2 md:p-3"><h4 className="font-bold text-gray-900 text-xs md:text-sm truncate">{p.name}</h4><span className="text-sm font-bold text-brand-blue">₹{p.price}</span></div>
+                <div className="p-2 md:p-3">
+              <h4 className="font-bold text-gray-900 text-xs md:text-sm truncate">{p.name}</h4>
+              {!hidePriceOnHome && <span className="text-sm font-bold text-brand-blue">₹{p.price}</span>}
+            </div>
               </SmartLink>
             );
           })}
