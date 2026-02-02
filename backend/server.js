@@ -9,16 +9,34 @@ require('dotenv').config();
 const app = express();
 
 // MIDDLEWARE
+const allowedOrigins = [
+  'https://infinitycustomizationss.vercel.app',
+  'http://localhost:5173',
+  'https://infinitycustomizations.com',
+  'https://www.infinitycustomizations.com'
+];
+
 app.use(cors({
-  origin: [
-    'https://infinitycustomizationss.vercel.app', // Removed the trailing slash
-    'http://localhost:5173'
-  ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Added OPTIONS for preflight requests
+  origin: (origin, callback) => {
+    // allow requests with no origin (e.g. curl, server-to-server)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error('Not allowed by CORS'));
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true
 }));
-app.use(express.json());
-app.use(express.urlencoded({ limit: '50mb' }));
+
+// parse JSON and capture raw body for debugging when JSON parse fails
+app.use(express.json({
+  verify: (req, res, buf, encoding) => {
+    if (buf && buf.length) {
+      req.rawBody = buf.toString(encoding || 'utf8');
+    }
+  },
+  limit: '50mb'
+}));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // SERVE UPLOADS STATICALLY
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -384,6 +402,9 @@ if (fs.existsSync(frontendBuildPath)) {
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
+  if (req && req.rawBody) {
+    console.error('Raw request body:', req.rawBody);
+  }
   res.status(500).json({ message: 'Server Error', error: err.message });
 });
 
