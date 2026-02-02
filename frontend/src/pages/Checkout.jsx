@@ -23,12 +23,14 @@ const Checkout = () => {
     state: '',
     pincode: '',
     paymentMethod: 'upi',
-    customerNotes: ''
+    customerNotes: '',
+    acceptedTerms: false
   });
 
   const [orderDetails, setOrderDetails] = useState(null);
   const [upiData, setUpiData] = useState(null);
   const [paymentConfirmed, setPaymentConfirmed] = useState(false);
+  const [showPolicy, setShowPolicy] = useState(false);
 
   // Check if user is logged in
   if (!isAuthenticated) {
@@ -82,6 +84,7 @@ const Checkout = () => {
     if (!orderData.city.trim()) return 'City is required';
     if (!orderData.state.trim()) return 'State is required';
     if (!orderData.pincode.trim()) return 'Pincode is required';
+    if (!orderData.acceptedTerms) return 'You must accept the Return & Refund Policy to proceed';
     return null;
   };
 
@@ -246,6 +249,39 @@ const Checkout = () => {
                       onChange={handleInputChange}
                       className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-brand-blue transition-colors h-20"
                     />
+                  </div>
+
+                  {/* Terms & Refund Policy */}
+                  <div>
+                    <label className="flex items-start gap-3">
+                      <input
+                        type="checkbox"
+                        name="acceptedTerms"
+                        checked={orderData.acceptedTerms}
+                        onChange={(e) => setOrderData(prev => ({ ...prev, acceptedTerms: e.target.checked }))}
+                        className="mt-1 w-4 h-4"
+                      />
+                      <div>
+                        <div className="text-sm">I agree to the <button type="button" onClick={() => setShowPolicy(s => !s)} className="text-brand-blue underline">Return & Refund Policy</button></div>
+                        {showPolicy && (
+                          <div className="mt-2 text-sm text-gray-700 bg-gray-50 p-3 rounded border">
+                            <p className="mb-2">Returns or replacements are accepted only if the product is completely damaged (100% damaged) at the time of delivery.</p>
+                            <p className="mb-2">A clear unboxing video proof is mandatory to claim any return or replacement.</p>
+                            <p className="mb-2">Without proper video proof, no refund or replacement will be provided.</p>
+                            <p className="mb-2">Claims must be raised within 24 hours of delivery.</p>
+                            <p className="mb-2">No returns or refunds for:</p>
+                            <ul className="list-disc list-inside mb-2">
+                              <li>Minor defects</li>
+                              <li>Change of mind</li>
+                              <li>Wrong order placed</li>
+                              <li>Dissatisfaction with color, size, or design</li>
+                            </ul>
+                            <p className="mb-2">If approved, replacement will be provided. Refunds will be processed only if replacement is not possible.</p>
+                            <p className="mb-0">By placing an order, you agree to this policy.</p>
+                          </div>
+                        )}
+                      </div>
+                    </label>
                   </div>
 
                   {/* Payment Method */}
@@ -587,14 +623,26 @@ const Checkout = () => {
           {/* Action Buttons */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <a
-              href={`https://wa.me/${orderData.phoneNumber?.replace(/\D/g, '')}?text=Hi! I've placed order ${upiData?.orderId}. My payment of ₹${upiData?.amount} is pending confirmation. Reference: ${upiData?.orderId}`}
+              href={`https://wa.me/918985993948?text=${encodeURIComponent(`Hi, I have placed order ${upiData?.orderId}. My payment of ₹${upiData?.amount} is pending confirmation. Order ID: ${upiData?.orderId}`)}`}
+              target="_blank"
+              rel="noreferrer"
+              className="block text-center bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors"
+            >
+              📞 Notify Admin on WhatsApp
+            </a>
+
+            <a
+              href={`https://wa.me/918985993948?text=${encodeURIComponent(`Hi, I placed order ${upiData?.orderId}. I want to send product photos for customization. Order ID: ${upiData?.orderId}`)}`}
+              target="_blank"
+              rel="noreferrer"
               className="block text-center bg-[#25D366] text-white py-3 rounded-lg font-bold hover:bg-[#20ba5c] transition-colors"
             >
-              📞 Notify on WhatsApp
+              📸 Send Photos via WhatsApp
             </a>
+
             <button
               onClick={() => navigate('/')}
-              className="bg-brand-blue text-white py-3 rounded-lg font-bold hover:bg-brand-dark transition-colors"
+              className="md:col-span-2 bg-brand-blue text-white py-3 rounded-lg font-bold hover:bg-brand-dark transition-colors"
             >
               Continue Shopping
             </button>

@@ -1,5 +1,5 @@
 // UPI Payment Service
-// UPI ID: 7995732336@ibl
+// UPI ID: 8985993948@ybl
 
 const generateOrderId = () => {
   const timestamp = Date.now().toString().slice(-6);
@@ -9,7 +9,7 @@ const generateOrderId = () => {
 
 const generateUpiDeepLink = (orderId, amount) => {
   // Format: upi://pay?pa=upi-id&pn=business-name&am=amount&tr=transaction-ref
-  const testUpiId = "7995732336@ibl";  // Infinitly UPI ID
+  const testUpiId = "8985993948@ybl";  // Infinitly UPI ID (updated)
   const businessName = "Infinitly%20Customizations";
   const upiLink = `upi://pay?pa=${testUpiId}&pn=${businessName}&am=${amount}&tr=${orderId}&tn=Order%20${orderId}`;
   return upiLink;

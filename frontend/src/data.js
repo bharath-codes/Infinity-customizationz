@@ -175,3 +175,12 @@ export const showcaseData = [
 
 // Categories array (kept for internal use if needed, empty is fine)
 export const categories = [];
+
+// Phone model options for Phone Cases (used on product page)
+export const phoneModelOptions = {
+  "Apple": ["iPhone 12", "iPhone 12 Pro", "iPhone 13", "iPhone 13 Pro", "iPhone 14", "iPhone 14 Pro"],
+  "Samsung": ["Galaxy S21", "Galaxy S22", "Galaxy S23", "Galaxy A52", "Galaxy Note 20"],
+  "OnePlus": ["OnePlus 9", "OnePlus 10", "OnePlus Nord"],
+  "Xiaomi": ["Redmi Note 10", "Mi 11", "Poco X3"],
+  "Google": ["Pixel 5", "Pixel 6", "Pixel 7"]
+};

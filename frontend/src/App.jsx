@@ -1,6 +1,6 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Link, useParams } from 'react-router-dom';
-import { storyCategories, showcaseData, products, categoryDetails } from './data';
+import { HashRouter as Router, Routes, Route, useNavigate, useLocation, Link, useParams } from 'react-router-dom';
+import { storyCategories, showcaseData, products, categoryDetails, phoneModelOptions } from './data';
 import { ShoppingCart, Menu, X, Search, User, Heart, ChevronRight, Phone, Mail, Instagram, Truck, ShieldCheck, Gift, Star, ArrowRight, MessageCircle, Filter, CheckCircle, AlertCircle, Info, ChevronDown, Trash2, ArrowLeft, LogOut } from 'lucide-react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { CartProvider, useCart } from './contexts/CartContext';
@@ -293,6 +293,8 @@ const ShowcaseCard = ({ product, activeIdx }) => {
   if (!product) return null;
   const productId = product._id || product.id;
   const images = product.images || [product.image];
+  const location = useLocation();
+  const hidePriceOnHome = location.pathname === '/';
   return (
     <SmartLink to={`/product/${productId}`} className="block group w-full">
       <div className="relative w-full aspect-[4/5] md:h-[400px] rounded-xl overflow-hidden shadow-sm border border-gray-100 bg-gray-100">
@@ -308,7 +310,7 @@ const ShowcaseCard = ({ product, activeIdx }) => {
         </div>
         <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-brand-blue/90 p-3 pt-10">
           <h4 className="text-white font-bold text-sm truncate">{product.name}</h4>
-          <p className="text-brand-gold font-bold text-xs">₹{product.price}</p>
+          {!hidePriceOnHome && <p className="text-brand-gold font-bold text-xs">₹{product.price}</p>}
         </div>
       </div>
     </SmartLink>
@@ -503,6 +505,10 @@ const ProductPage = ({ addToCart }) => {
   const [qty, setQty] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [mainImage, setMainImage] = useState("");
+  const [showTerms, setShowTerms] = useState(false);
+  const [phoneCompany, setPhoneCompany] = useState('');
+  const [phoneModel, setPhoneModel] = useState('');
+  const isPhoneCase = product && (product.id === 'case1' || (product.name || '').toLowerCase().includes('phone case'));
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -545,12 +551,27 @@ const ProductPage = ({ addToCart }) => {
   }, [product]);
 
   const handleAddToCart = () => {
-    const item = { ...product, id: product._id || product.id, price: Number(product.price || 0), quantity: qty };
+    if (isPhoneCase) {
+      if (!phoneCompany || !phoneModel) {
+        alert('Please select phone company and model');
+        return;
+      }
+    }
+    const customizationDetails = isPhoneCase ? `Phone: ${phoneCompany} / ${phoneModel}` : (product.customizationDetails || '');
+    const item = { ...product, id: product._id || product.id, price: Number(product.price || 0), quantity: qty, customizationDetails };
     addToCartContext(item);
+    alert('Added to cart');
   };
 
   const handleBuyNow = () => {
-    const item = { ...product, id: product._id || product.id, price: Number(product.price || 0), quantity: qty };
+    if (isPhoneCase) {
+      if (!phoneCompany || !phoneModel) {
+        alert('Please select phone company and model');
+        return;
+      }
+    }
+    const customizationDetails = isPhoneCase ? `Phone: ${phoneCompany} / ${phoneModel}` : (product.customizationDetails || '');
+    const item = { ...product, id: product._id || product.id, price: Number(product.price || 0), quantity: qty, customizationDetails };
     addToCartContext(item);
     navigate('/checkout');
   };
@@ -577,8 +598,55 @@ const ProductPage = ({ addToCart }) => {
              <div className="bg-blue-50 p-4 rounded-lg flex gap-3 text-sm text-blue-900 font-bold"><Info size={18}/> Photo Upload: Please send photos on WhatsApp after order.</div>
           </div>
           <div className="space-y-3">
+            {isPhoneCase && (
+              <div className="space-y-3">
+                <div>
+                  <label className="text-sm font-semibold text-gray-700">Phone Company</label>
+                  <select value={phoneCompany} onChange={(e) => { setPhoneCompany(e.target.value); setPhoneModel(''); }} className="w-full px-4 py-3 border rounded focus:outline-none">
+                    <option value="">Select Company</option>
+                    {Object.keys(phoneModelOptions).map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-sm font-semibold text-gray-700">Phone Model</label>
+                  <select value={phoneModel} onChange={(e) => setPhoneModel(e.target.value)} className="w-full px-4 py-3 border rounded focus:outline-none">
+                    <option value="">Select Model</option>
+                    {(phoneModelOptions[phoneCompany] || []).map(m => <option key={m} value={m}>{m}</option>)}
+                  </select>
+                </div>
+              </div>
+            )}
+
             <button onClick={handleBuyNow} className="w-full bg-brand-blue text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition">Buy Now</button>
             <button onClick={handleAddToCart} className="w-full bg-gray-200 text-brand-dark py-4 rounded-xl font-bold text-lg hover:bg-gray-300 transition">Add to Cart</button>
+
+            <button
+              onClick={() => window.open(`https://wa.me/918985993948?text=${encodeURIComponent(`Hi, I want to send photos for product ${product?.name || ''}.`)}`, '_blank')}
+              className="w-full bg-[#25D366] text-white py-3 rounded-xl font-bold hover:bg-[#20ba5c] transition flex items-center justify-center gap-3"
+            >
+              📸 Send Photos via WhatsApp
+            </button>
+
+            <button type="button" onClick={() => setShowTerms(s => !s)} className="w-full text-sm text-gray-600 hover:text-brand-blue underline">{showTerms ? 'Hide' : 'View'} Return & Refund Policy</button>
+
+            {showTerms && (
+              <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 text-sm text-gray-700">
+                <h4 className="font-bold mb-2">Return & Refund Policy</h4>
+                <p className="mb-2">Returns or replacements are accepted only if the product is completely damaged (100% damaged) at the time of delivery.</p>
+                <p className="mb-2">A clear unboxing video proof is mandatory to claim any return or replacement.</p>
+                <p className="mb-2">Without proper video proof, no refund or replacement will be provided.</p>
+                <p className="mb-2">Claims must be raised within 24 hours of delivery.</p>
+                <p className="mb-2">No returns or refunds for:</p>
+                <ul className="list-disc list-inside mb-2">
+                  <li>Minor defects</li>
+                  <li>Change of mind</li>
+                  <li>Wrong order placed</li>
+                  <li>Dissatisfaction with color, size, or design</li>
+                </ul>
+                <p className="mb-2">If approved, replacement will be provided. Refunds will be processed only if replacement is not possible.</p>
+                <p className="mb-0">By placing an order, you agree to this policy.</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -68,8 +68,11 @@ const AdminProducts = () => {
       if (!res.ok) throw new Error('Upload failed');
 
       const data = await res.json();
-      setFormData(prev => ({ ...prev, image: data.filePath }));
-      setPreviewImage(data.filePath);
+      // Make sure the image URL is absolute so the browser can load it in dev (Vite) and prod
+      const backendBase = API_BASE_URL.replace(/\/api$/, '');
+      const fileUrl = data.filePath && data.filePath.startsWith('http') ? data.filePath : `${backendBase}${data.filePath}`;
+      setFormData(prev => ({ ...prev, image: fileUrl }));
+      setPreviewImage(fileUrl);
     } catch (error) {
       console.error('Error uploading image:', error);
       alert('Failed to upload image');
