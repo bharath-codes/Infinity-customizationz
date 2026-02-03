@@ -572,6 +572,33 @@ const Checkout = () => {
 
   // ===== STEP 3: SUCCESS PAGE =====
   if (step === 'success') {
+    // --- Related Products logic ---
+    // Find the first purchased product from the cart/orderDetails
+    let relatedCategoryId = null;
+    let purchasedProductId = null;
+    if (orderDetails && orderDetails.items && orderDetails.items.length > 0) {
+      purchasedProductId = orderDetails.items[0].productId;
+    }
+    // Import products from data.js
+    let relatedProducts = [];
+    try {
+      // eslint-disable-next-line
+      // @ts-ignore
+      // products is available if imported at the top
+      if (purchasedProductId && typeof require !== 'undefined') {
+        const { products } = require('../data');
+        const purchased = products.find(p => (p.id === purchasedProductId || p._id === purchasedProductId));
+        if (purchased) {
+          relatedCategoryId = purchased.categoryId;
+          relatedProducts = products.filter(
+            p => p.categoryId === relatedCategoryId && (p._id || p.id) !== purchasedProductId
+          ).slice(0, 4);
+        }
+      }
+    } catch (e) {
+      // fallback: do nothing
+    }
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex flex-col items-center justify-center px-4 py-8">
         <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-8 border">
@@ -677,6 +704,28 @@ const Checkout = () => {
           <p className="text-xs text-gray-600 text-center mt-4">
             Keep this order ID safe. You'll need it for support.
           </p>
+
+          {/* Related Products Section */}
+          {relatedProducts && relatedProducts.length > 0 && (
+            <div className="mt-12">
+              <h3 className="text-xl font-bold mb-4 text-brand-dark font-serif">Related Products</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+                {relatedProducts.map(p => (
+                  <a
+                    href={`/product/${p._id || p.id}`}
+                    key={p._id || p.id}
+                    className="block group"
+                  >
+                    <div className="rounded-xl overflow-hidden aspect-[4/5] bg-gray-100">
+                      <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition" />
+                    </div>
+                    <h4 className="font-serif font-bold text-brand-dark text-sm mt-3 truncate">{p.name}</h4>
+                    <p className="text-brand-blue font-bold text-sm">₹{p.price}</p>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );

@@ -736,6 +736,31 @@ const ProductPage = ({ addToCart }) => {
           </div>
         </div>
       </div>
+      <RelatedProducts currentProduct={product} />
+    </div>
+  );
+};
+
+const RelatedProducts = ({ currentProduct }) => {
+  if (!currentProduct) return null;
+  const related = products.filter(
+    p => p.categoryId === currentProduct.categoryId && (p._id || p.id) !== (currentProduct._id || currentProduct.id)
+  ).slice(0, 4);
+  if (related.length === 0) return null;
+  return (
+    <div className="max-w-7xl mx-auto px-4 pb-12">
+      <h3 className="text-xl font-bold mb-4 mt-12 text-brand-dark font-serif">Related Products</h3>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+        {related.map(p => (
+          <SmartLink to={`/product/${p._id || p.id}`} key={p._id || p.id} className="block group">
+            <div className="rounded-xl overflow-hidden aspect-[4/5] bg-gray-100">
+              <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition" />
+            </div>
+            <h4 className="font-serif font-bold text-brand-dark text-sm mt-3 truncate">{p.name}</h4>
+            <p className="text-brand-blue font-bold text-sm">₹{p.price}</p>
+          </SmartLink>
+        ))}
+      </div>
     </div>
   );
 };
