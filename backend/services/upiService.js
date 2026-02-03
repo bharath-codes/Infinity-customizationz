@@ -9,8 +9,8 @@ const generateOrderId = () => {
 
 const generateUpiDeepLink = (orderId, amount) => {
   // Format: upi://pay?pa=upi-id&pn=business-name&am=amount&tr=transaction-ref
-  const testUpiId = "8985993948@ybl";  // Infinitly UPI ID (updated)
-  const businessName = "Infinitly%20Customizations";
+  const testUpiId = "8985993948@ybl";  // Infinity UPI ID (updated)
+  const businessName = "Infinity%20Customizations";
   const upiLink = `upi://pay?pa=${testUpiId}&pn=${businessName}&am=${amount}&tr=${orderId}&tn=Order%20${orderId}`;
   return upiLink;
 };

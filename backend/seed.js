@@ -630,14 +630,14 @@ const categories = [
   {
     _id: 'frames',
     title: 'Photo Frames',
-    desc: 'Premium wooden, wall, table, collage & customized frames to cherish your memories.',
+    desc: 'Premium wooden, wall & table frames (including customized frames) to cherish your memories.',
     emoji: '📸',
     showcaseProducts: ['f4', 'f6'],  // 8x12 Wall Mount & 12x18 Premium
     subCategories: [
       { name: 'Wooden photo frames', description: 'Classic wooden frames' },
       { name: 'Wall frames', description: 'For wall mounting' },
       { name: 'Table frames', description: 'For desk displays' },
-      { name: 'Collage frames', description: 'Multiple photos' }
+      { name: 'Customized frames', description: 'Personalized frames' }
     ]
   },
   {
@@ -760,6 +760,27 @@ const seedDB = async () => {
     await Product.deleteMany({});
     await Category.deleteMany({});
     console.log("🗑️ Old data cleared.");
+
+    // Add 2-3 fake reviews to each product (for demo)
+    const sampleReviews = [
+      { name: 'Riya', rating: 5, comment: 'Absolutely loved it — great quality and fast delivery!' },
+      { name: 'Amit', rating: 4, comment: 'Good product, packing could be better.' },
+      { name: 'Sneha', rating: 5, comment: 'Perfect gift! Very happy with the print.' },
+      { name: 'Karthik', rating: 4, comment: 'Nice finish, colors are vibrant.' },
+      { name: 'Priya', rating: 5, comment: 'Exceeded expectations — would buy again.' }
+    ];
+
+    products.forEach(p => {
+      if (!p.reviews) {
+        // pick 2-3 random reviews
+        const cnt = Math.floor(Math.random() * 2) + 2; // 2 or 3
+        p.reviews = [];
+        for (let i = 0; i < cnt; i++) {
+          const r = sampleReviews[Math.floor(Math.random() * sampleReviews.length)];
+          p.reviews.push({ name: r.name, rating: r.rating, comment: r.comment, createdAt: new Date() });
+        }
+      }
+    });
 
     // Insert products
     await Product.insertMany(products);

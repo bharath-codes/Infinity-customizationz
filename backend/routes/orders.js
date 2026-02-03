@@ -202,9 +202,25 @@ router.post('/create', authUser, async (req, res) => {
       subtotal += product.price * (item.quantity || 1);
     }
     
-    // Free shipping on orders above ₹999, otherwise ₹100
-    const shippingCost = subtotal > 999 ? 0 : 100;
-    const tax = Math.round(subtotal * 0.18); // 18% GST
+    // Compute per-item shipping based on product price:
+    // - price < 300 => ₹69
+    // - 300 <= price <= 500 => ₹99
+    // - price > 500 => ₹150 + (small surcharge capped at ₹30) => range ₹150-₹180
+    let shippingCost = 0;
+    for (const it of processedItems) {
+      const price = Number(it.price || 0);
+      let perItemShipping = 150; // default for >500
+      if (price < 300) perItemShipping = 69;
+      else if (price <= 500) perItemShipping = 99;
+      else {
+        const extra = Math.min(30, Math.floor((price - 500) / 100) * 10);
+        perItemShipping = 150 + extra; // between 150 and 180
+      }
+      shippingCost += perItemShipping * (it.quantity || 1);
+    }
+
+    // Taxes removed (set to zero)
+    const tax = 0;
     const totalAmount = subtotal + shippingCost + tax;
     
     // Generate order ID

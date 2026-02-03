@@ -95,6 +95,34 @@ app.get('/api/products/:id', async (req, res) => {
   }
 });
 
+// Product reviews - public endpoints
+app.get('/api/products/:id/reviews', async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) return res.status(404).json({ message: 'Product not found' });
+    res.json(product.reviews || []);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.post('/api/products/:id/reviews', async (req, res) => {
+  try {
+    const { name, rating, comment } = req.body;
+    if (!rating || !comment) return res.status(400).json({ message: 'Rating and comment are required' });
+    const product = await Product.findById(req.params.id);
+    if (!product) return res.status(404).json({ message: 'Product not found' });
+    const review = { name: name || 'Anonymous', rating: Number(rating), comment };
+
+    product.reviews = product.reviews || [];
+    product.reviews.unshift(review); // newest first
+    await product.save();
+    res.status(201).json({ message: 'Review added', review, reviews: product.reviews });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // FILE UPLOAD CONFIGURATION
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {

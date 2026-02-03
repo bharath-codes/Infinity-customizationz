@@ -9,6 +9,13 @@ const productSchema = new mongoose.Schema({
   images: [{ type: String }],
   description: { type: String, default: "" },
   inStock: { type: Boolean, default: true },
+  // Reviews: public user reviews with star rating and comments
+  reviews: [{
+    name: { type: String },
+    rating: { type: Number, min: 1, max: 5 },
+    comment: { type: String },
+    createdAt: { type: Date, default: Date.now }
+  }],
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 }, { timestamps: true, strict: true, castObjectIdStrings: false });

@@ -30,6 +30,47 @@ const AdminCategories = () => {
     loadInitialData();
   }, []);
 
+  // showcase images for hero (3 images)
+  const [showcaseImages, setShowcaseImagesState] = useState([null, null, null]);
+
+  useEffect(() => {
+    if (selectedCategory) {
+      setShowcaseImagesState(selectedCategory.showcaseImages || [null, null, null]);
+    }
+  }, [selectedCategory]);
+
+  const convertFileToBase64 = (file) => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (err) => reject(err);
+    reader.readAsDataURL(file);
+  });
+
+  const handleShowcaseImageChange = async (index, file) => {
+    try {
+      const base64 = await convertFileToBase64(file);
+      const arr = [...showcaseImages];
+      arr[index] = base64;
+      setShowcaseImagesState(arr);
+    } catch (err) {
+      console.error('Image conversion failed', err);
+      alert('Failed to read image');
+    }
+  };
+
+  const saveShowcaseImages = async () => {
+    if (!selectedCategory) return;
+    try {
+      await api.categories.updateShowcaseImages(selectedCategory._id, showcaseImages, adminToken);
+      setSuccess('Showcase images saved');
+      await refreshCategory(selectedCategory._id);
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError(err.message || 'Failed to save images');
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
   // Load only categories initially to avoid fetching all product payloads (images etc.)
   const loadInitialData = async () => {
     setLoading(true);
@@ -289,6 +330,23 @@ const AdminCategories = () => {
                       );
                     })
                   ))}
+                </div>
+
+                <div className="mt-8">
+                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2">🖼️ Showcase Images (Hero - 3 images)</h3>
+                  <p className="text-sm text-gray-500 mb-4">Upload up to 3 images that will be used in the homepage hero carousel for this category.</p>
+                  <div className="flex gap-3 mb-4">
+                    { [0,1,2].map(i => (
+                      <label key={i} className="w-32 h-20 border rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center cursor-pointer">
+                        {showcaseImages[i] ? <img src={showcaseImages[i]} className="w-full h-full object-cover" alt={`slide-${i+1}`} /> : <div className="text-xs text-gray-400">Upload {i+1}</div>}
+                        <input type="file" accept="image/*" className="hidden" onChange={(e) => handleShowcaseImageChange(i, e.target.files?.[0])} />
+                      </label>
+                    )) }
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={saveShowcaseImages} className="px-4 py-2 bg-blue-600 text-white rounded-lg">Save Showcase Images</button>
+                    <button onClick={() => { setShowcaseImagesState(selectedCategory.showcaseImages || [null, null, null]); }} className="px-4 py-2 bg-gray-100 rounded-lg">Reset</button>
+                  </div>
                 </div>
               </div>
             </div>

@@ -67,8 +67,23 @@ const Checkout = () => {
   }
 
   const subtotal = getTotalPrice();
-  const shipping = subtotal > 999 ? 0 : 100;
-  const tax = Math.round(subtotal * 0.18);
+  const calcShippingForItems = (items) => {
+    let s = 0;
+    items.forEach(item => {
+      const price = Number(item.price || 0);
+      let per = 150;
+      if (price < 300) per = 69;
+      else if (price <= 500) per = 99;
+      else {
+        const extra = Math.min(30, Math.max(0, Math.floor((price - 500) / 100) * 10));
+        per = 150 + extra;
+      }
+      s += per * (item.quantity || 1);
+    });
+    return s;
+  };
+  const shipping = calcShippingForItems(cart);
+  const tax = 0;
   const total = subtotal + shipping + tax;
 
   const handleInputChange = (e) => {
@@ -359,29 +374,27 @@ const Checkout = () => {
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Subtotal</span>
-                    <span>₹{subtotal}</span>
+                    <span>₹{subtotal.toLocaleString('en-IN')}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Shipping</span>
                     <span className={shipping === 0 ? 'text-green-600 font-semibold' : ''}>
-                      {shipping === 0 ? 'FREE' : `₹${shipping}`}
+                      {shipping === 0 ? 'FREE' : `₹${shipping.toLocaleString('en-IN')}`}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Tax (18%)</span>
-                    <span>₹{tax}</span>
+                    <span className="text-gray-600">Taxes</span>
+                    <span>₹0</span>
                   </div>
                   <div className="flex justify-between border-t pt-3 font-bold text-lg">
                     <span>Total</span>
-                    <span className="text-brand-blue">₹{total}</span>
+                    <span className="text-brand-blue">₹{total.toLocaleString('en-IN')}</span>
                   </div>
                 </div>
 
-                {subtotal < 1000 && (
-                  <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 text-xs p-3 rounded-lg">
-                    💡 Free shipping on orders above ₹999
-                  </div>
-                )}
+                <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 text-xs p-3 rounded-lg">
+                  💡 Shipping is calculated per item based on price.
+                </div>
               </div>
             </div>
           </div>
@@ -439,7 +452,7 @@ const Checkout = () => {
                   {typeof window !== 'undefined' && window.innerWidth > 768 && (
                     <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 p-6 rounded-xl">
                       <p className="text-sm font-semibold text-gray-600 mb-4">
-                        💜 Scan with PhonePe
+                         Scan with any UPI app
                       </p>
                       <div className="flex justify-center">
                         <div className="w-64 h-64 border-2 border-gray-300 rounded-lg p-2 bg-white flex items-center justify-center">
@@ -473,7 +486,7 @@ const Checkout = () => {
                     <li>2️⃣ Verify the amount: ₹{upiData?.amount}</li>
                     <li>3️⃣ Complete the payment</li>
                     <li>4️⃣ Click "I have paid" button below</li>
-                    <li>5️⃣ Admin will verify and confirm your payment</li>
+                    <li>5️⃣ We will verify and confirm your payment</li>
                   </ol>
                 </div>
 
@@ -486,7 +499,7 @@ const Checkout = () => {
                 </button>
 
                 <p className="text-xs text-gray-600 text-center mt-4">
-                  Admin will contact you shortly to verify the payment
+                  We will contact you shortly to verify the payment
                 </p>
               </div>
             </div>
@@ -513,19 +526,19 @@ const Checkout = () => {
                 <div className="space-y-2 mb-4">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Subtotal</span>
-                    <span>₹{subtotal}</span>
+                    <span>₹{subtotal.toLocaleString('en-IN')}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Shipping</span>
-                    <span>{shipping === 0 ? 'FREE' : `₹${shipping}`}</span>
+                    <span>{shipping === 0 ? 'FREE' : `₹${shipping.toLocaleString('en-IN')}`}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Tax (18%)</span>
-                    <span>₹{tax}</span>
+                    <span className="text-gray-600">Taxes</span>
+                    <span>₹0</span>
                   </div>
                   <div className="flex justify-between border-t pt-2 font-bold text-lg">
                     <span>Total</span>
-                    <span className="text-green-600">₹{total}</span>
+                    <span className="text-green-600">₹{total.toLocaleString('en-IN')}</span>
                   </div>
                 </div>
 
@@ -578,7 +591,7 @@ const Checkout = () => {
           <div className="bg-yellow-50 border-2 border-yellow-200 p-6 rounded-xl mb-8">
             <h3 className="text-lg font-bold text-yellow-900 mb-2">⏳ Payment Status</h3>
             <p className="text-yellow-800 mb-4">
-              Your payment is <strong>pending confirmation</strong>. Admin will verify the payment amount within 1-2 hours and contact you on WhatsApp.
+              Your payment is <strong>pending confirmation</strong>. We will verify the payment amount within 1-2 hours and contact you on WhatsApp.
             </p>
             <div className="bg-white p-3 rounded border border-yellow-200">
               <p className="text-sm text-gray-600 mb-1">Amount Paid:</p>

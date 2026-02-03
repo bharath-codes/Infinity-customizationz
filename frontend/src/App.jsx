@@ -30,7 +30,7 @@ const GlobalLoader = () => (
   <div className="fixed inset-0 z-[100] bg-white/95 backdrop-blur-md flex flex-col items-center justify-center">
     <div className="infinity-loader"></div>
     <p className="mt-6 text-brand-blue font-serif font-bold tracking-[0.3em] text-xs uppercase animate-pulse">
-      Infinitly<span className="text-brand-gold">Loading</span>
+      Infinity<span className="text-brand-gold">Loading</span>
     </p>
     <style>{`
       .infinity-loader { width: 60px; height: 30px; position: relative; }
@@ -73,7 +73,7 @@ const WhatsAppIcon = ({ size = 22, className = "" }) => (
 const AnnouncementBar = () => (
   <div className="bg-brand-blue text-white text-[10px] md:text-xs py-2 overflow-hidden relative z-50">
     <div className="animate-marquee font-bold tracking-widest uppercase flex gap-8">
-      <span>🎉 FREE SHIPPING on orders above ₹999</span> <span>• New Service: Custom ID Cards & NFC</span>
+      <span>💡 Shipping calculated per item</span> <span>• New Service: Custom ID Cards & NFC</span>
     </div>
   </div>
 );
@@ -97,7 +97,7 @@ const Navbar = ({ cartCount }) => {
           <button className="md:hidden text-gray-800" onClick={() => setIsOpen(!isOpen)}>{isOpen ? <X size={24} /> : <Menu size={24} />}</button>
           <SmartLink to="/" className="flex-shrink-0">
              <div className="h-10 w-28 md:h-12 md:w-36 overflow-hidden relative">
-               <img src="/images/logo.png" alt="Infinitly" className="w-full h-full object-cover object-center scale-110" />
+               <img src="/images/logo.png" alt="Infinity" className="w-full h-full object-cover object-center scale-110" />
              </div>
           </SmartLink>
         </div>
@@ -158,11 +158,11 @@ const Navbar = ({ cartCount }) => {
   );
 };
 
-const Footer = () => (
+const Footer = () => { const location = useLocation(); return (
   <footer className="bg-brand-blue text-white pt-16 pb-8 border-t border-brand-gold/20 mt-auto">
     <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
       <div>
-        <h2 className="text-2xl font-serif font-bold text-white mb-4">Infinitly<span className="text-brand-gold text-xs ml-1 font-sans tracking-widest">CUSTOMIZATIONS</span></h2>
+        <h2 className="text-2xl font-serif font-bold text-white mb-4">Infinity<span className="text-brand-gold text-xs ml-1 font-sans tracking-widest">CUSTOMIZATIONS</span></h2>
         <p className="text-blue-100 text-sm leading-relaxed mb-6">Premium custom printing & digital services delivered across India.</p>
         <div className="flex gap-4">
           <a href="https://instagram.com/infinitycustomizations" target="_blank" rel="noreferrer" aria-label="Instagram" className="cursor-pointer hover:text-brand-gold">
@@ -190,23 +190,27 @@ const Footer = () => (
           <p className="flex items-start gap-3"><Mail size={18} /><span>infinitycustomizations@gmail.com</span></p>
         </div>
       </div>
+      {/* Admin link is hidden on the Home page */}
       <div>
         <h3 className="text-lg font-bold text-brand-gold mb-6 font-serif">Admin</h3>
         <ul className="space-y-3">
-          <li>
-            <SmartLink to="/admin/login" className="inline-flex items-center gap-2 px-4 py-2 bg-brand-gold/20 hover:bg-brand-gold/30 rounded-lg text-sm font-semibold text-brand-gold border border-brand-gold/40 transition-all duration-200">
-              <User size={16} />
-              Admin Login
-            </SmartLink>
-          </li>
+          { (location.pathname !== '/') && (
+            <li>
+              <SmartLink to="/admin/login" className="inline-flex items-center gap-2 px-4 py-2 bg-brand-gold/20 hover:bg-brand-gold/30 rounded-lg text-sm font-semibold text-brand-gold border border-brand-gold/40 transition-all duration-200">
+                <User size={16} />
+                Admin Login
+              </SmartLink>
+            </li>
+          ) }
         </ul>
       </div>
     </div>
     <div className="max-w-7xl mx-auto px-4 pt-8 border-t border-white/10 text-center text-xs text-blue-200">
-      <p>© 2026 Infinitly Customizations. All rights reserved.</p>
+      <p>© 2026 Infinity Customizations. All rights reserved.</p>
     </div>
   </footer>
-);
+  );
+};
 
 // --- 4. HOME PAGE COMPONENTS ---
 
@@ -219,30 +223,29 @@ const HeroCarousel = () => {
   ]);
 
   useEffect(() => {
-    // Fetch showcase images from first category (frames)
+    // Fetch showcase images from admin-configured category: try 'hero' then fallback to 'frames'
     const fetchShowcaseImages = async () => {
-      try {
-        const res = await fetch(`${API_BASE_URL}/categories/frames/showcase-images`);
-        const data = await res.json();
-        
-        if (data.images && data.images.filter(img => img).length > 0) {
-          // Use fetched images as slides
-          const showcaseSlides = data.images
-            .filter(img => img) // Filter out null values
-            .map((img, idx) => ({
-              id: idx + 1,
-              image: img,
-              title: data.categoryTitle || "Featured Items",
-              link: `/shop/frames`
-            }));
-          
-          if (showcaseSlides.length > 0) {
-            setSlides(showcaseSlides);
-          }
+      const tryFetch = async (cat) => {
+        try {
+          const res = await fetch(`${API_BASE_URL}/categories/${cat}/showcase-images`);
+          if (!res.ok) return null;
+          const data = await res.json();
+          if (data.images && data.images.filter(img => img).length > 0) return data;
+        } catch (err) {
+          return null;
         }
-      } catch (err) {
+        return null;
+      };
+
+      const data = await tryFetch('hero') || await tryFetch('frames');
+
+      if (data) {
+        const showcaseSlides = data.images
+          .filter(img => img)
+          .map((img, idx) => ({ id: idx + 1, image: img, title: data.categoryTitle || 'Featured Items', link: `/shop/${data.categoryId || 'frames'}` }));
+        if (showcaseSlides.length > 0) setSlides(showcaseSlides);
+      } else {
         console.log('Using default slides - showcase images not available');
-        // Keep default slides if fetch fails
       }
     };
 
@@ -387,6 +390,64 @@ const CuratedCategorySection = ({ categoryId, categoryTitle }) => {
 
 // --- 5. PAGES ---
 
+const BestSellers = () => {
+  const [best, setBest] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadBest = async () => {
+      try {
+        // Try to fetch a special category 'best-sellers' that admin can create/manage
+        const res = await fetch(`${API_BASE_URL}/categories/best-sellers`);
+        if (res.ok) {
+          const cat = await res.json();
+          if (cat && cat.showcaseProducts && cat.showcaseProducts.length > 0) {
+            // fetch product details for each showcased product
+            const proms = cat.showcaseProducts.map(id => fetch(`${API_BASE_URL}/products/${id}`).then(r => r.ok ? r.json() : null));
+            const results = (await Promise.all(proms)).filter(Boolean);
+            if (results.length > 0) setBest(results);
+            else setBest(null);
+          } else {
+            setBest(null);
+          }
+        } else {
+          setBest(null);
+        }
+      } catch (err) {
+        console.log('Best sellers not set or failed to load', err);
+        setBest(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadBest();
+  }, []);
+
+  const list = best || products.slice(0,5);
+
+  return (
+    <div className="flex overflow-x-auto gap-3 px-4 pb-4 scrollbar-hide snap-x">
+      {list.map((p) => {
+        const productId = p._id || p.id;
+        return (
+          <SmartLink to={`/product/${productId}`} key={productId} className="min-w-[140px] md:min-w-[200px] snap-start bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden flex-shrink-0">
+            <div className="h-40 md:h-60 overflow-hidden relative bg-gray-50">
+              <picture>
+                <source type="image/webp" srcSet={`${p.image}?q=60&w=400 400w, ${p.image}?q=60&w=800 800w`} />
+                <img loading="lazy" decoding="async" src={p.image} srcSet={`${p.image}?q=60&w=400 400w, ${p.image}?q=60&w=800 800w`} sizes="(max-width: 768px) 50vw, 20vw" alt={p.name} className="w-full h-full object-cover" />
+              </picture>
+            </div>
+            <div className="p-2 md:p-3">
+              <h4 className="font-bold text-gray-900 text-xs md:text-sm truncate">{p.name}</h4>
+              {!hidePriceOnHome && <span className="text-sm font-bold text-brand-blue">₹{p.price}</span>}
+            </div>
+          </SmartLink>
+        );
+      })}
+    </div>
+  );
+};
+
 const Home = () => {
   const showcaseCategories = [
     { categoryId: "frames", categoryTitle: "Photo Frames" },
@@ -411,25 +472,7 @@ const Home = () => {
       <HeroCarousel />
       <section className="bg-white py-6 border-b border-gray-100">
         <div className="px-4 mb-3"><h3 className="text-lg md:text-2xl font-bold text-brand-dark font-serif">Best Sellers</h3></div>
-        <div className="flex overflow-x-auto gap-3 px-4 pb-4 scrollbar-hide snap-x">
-          {products.slice(0, 5).map((p) => {
-            const productId = p._id || p.id;
-            return (
-              <SmartLink to={`/product/${productId}`} key={productId} className="min-w-[140px] md:min-w-[200px] snap-start bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden flex-shrink-0">
-                <div className="h-40 md:h-60 overflow-hidden relative bg-gray-50">
-                  <picture>
-                    <source type="image/webp" srcSet={`${p.image}?q=60&w=400 400w, ${p.image}?q=60&w=800 800w`} />
-                    <img loading="lazy" decoding="async" src={p.image} srcSet={`${p.image}?q=60&w=400 400w, ${p.image}?q=60&w=800 800w`} sizes="(max-width: 768px) 50vw, 20vw" alt={p.name} className="w-full h-full object-cover" />
-                  </picture>
-                </div>
-                <div className="p-2 md:p-3">
-              <h4 className="font-bold text-gray-900 text-xs md:text-sm truncate">{p.name}</h4>
-              {!hidePriceOnHome && <span className="text-sm font-bold text-brand-blue">₹{p.price}</span>}
-            </div>
-              </SmartLink>
-            );
-          })}
-        </div>
+        <BestSellers />
       </section>
       <div className="space-y-2 pb-12">
         {showcaseCategories.map((cat) => (
@@ -514,6 +557,9 @@ const ProductPage = ({ addToCart }) => {
   const [showTerms, setShowTerms] = useState(false);
   const [phoneCompany, setPhoneCompany] = useState('');
   const [phoneModel, setPhoneModel] = useState('');
+  const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [reviewForm, setReviewForm] = useState({ name: '', rating: 5, comment: '' });
   const isPhoneCase = product && (product.id === 'case1' || (product.name || '').toLowerCase().includes('phone case'));
 
   useEffect(() => {
@@ -525,12 +571,16 @@ const ProductPage = ({ addToCart }) => {
           const data = await res.json();
           setProduct(data);
           setMainImage(data.image || data.images?.[0] || "");
+          // also fetch reviews for this product
+          fetchReviews(data._id || data.id);
         } else {
           // Fallback to local data
           const localProduct = products.find(item => item.id === id);
           setProduct(localProduct);
           if (localProduct) {
             setMainImage(localProduct.image);
+            // local data may have reviews in data.js
+            setReviews(localProduct.reviews || []);
           }
         }
       } catch (err) {
@@ -540,6 +590,7 @@ const ProductPage = ({ addToCart }) => {
         setProduct(localProduct);
         if (localProduct) {
           setMainImage(localProduct.image);
+          setReviews(localProduct.reviews || []);
         }
       } finally {
         setLoading(false);
@@ -547,6 +598,21 @@ const ProductPage = ({ addToCart }) => {
     };
 
     fetchProduct();
+
+    // helper: fetch reviews
+    async function fetchReviews(productId) {
+      try {
+        setReviewsLoading(true);
+        const r = await fetch(`${API_BASE_URL}/products/${productId}/reviews`);
+        if (!r.ok) throw new Error('Failed');
+        const d = await r.json();
+        setReviews(Array.isArray(d) ? d : []);
+      } catch (err) {
+        console.log('Could not load reviews:', err);
+      } finally {
+        setReviewsLoading(false);
+      }
+    }
   }, [id]);
 
   useEffect(() => { 
@@ -646,6 +712,73 @@ const ProductPage = ({ addToCart }) => {
                 <p className="mb-0">By placing an order, you agree to this policy.</p>
               </div>
             )}
+
+            {/* Reviews Section */}
+            <div className="bg-white rounded-2xl shadow-sm p-6">
+              <h3 className="text-xl font-bold mb-2">Customer Reviews</h3>
+              {reviewsLoading ? (
+                <div className="py-6 flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-600"></div></div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4">
+                    <div className="text-3xl font-bold text-yellow-600">{reviews.length ? (Math.round((reviews.reduce((a,b)=>a+b.rating,0)/reviews.length)*10)/10) : '—'}</div>
+                    <div>
+                      <div className="text-sm text-gray-600">Average Rating</div>
+                      <div className="text-xs text-gray-500">Based on {reviews.length} reviews</div>
+                    </div>
+                  </div>
+
+                  {reviews.length === 0 ? (
+                    <p className="text-sm text-gray-500">No reviews yet. Be the first to review this product!</p>
+                  ) : (
+                    <div className="space-y-3">{reviews.slice(0,5).map((r,idx)=> (
+                      <div key={idx} className="p-3 rounded-lg border bg-gray-50">
+                        <div className="flex items-center justify-between mb-1">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-brand-gold/20 flex items-center justify-center font-semibold text-sm">{(r.name||'U').charAt(0)}</div>
+                            <div>
+                              <p className="font-semibold text-sm">{r.name || 'Anonymous'}</p>
+                              <p className="text-xs text-gray-500">{new Date(r.createdAt).toLocaleDateString()}</p>
+                            </div>
+                          </div>
+                          <div className="text-sm text-yellow-600">{Array.from({length: Math.round(r.rating||0)}).map((_,i)=>(<span key={i}>★</span>))}{Array.from({length:5-Math.round(r.rating||0)}).map((_,i)=>(<span className="text-gray-300" key={i}>★</span>))}</div>
+                        </div>
+                        <p className="text-sm text-gray-700">{r.comment}</p>
+                      </div>
+                    ))}</div>
+                  )}
+
+                  {/* Add Review Form */}
+                  <div className="mt-4">
+                    <h4 className="font-semibold mb-2">Leave a Review</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+                      <input value={reviewForm.name} onChange={(e)=>setReviewForm({...reviewForm,name:e.target.value})} placeholder="Your name (optional)" className="p-3 border rounded" />
+                      <select value={reviewForm.rating} onChange={(e)=>setReviewForm({...reviewForm,rating:Number(e.target.value)})} className="p-3 border rounded">
+                        {[5,4,3,2,1].map(v=> <option key={v} value={v}>{v} stars</option>)}
+                      </select>
+                      <div />
+                    </div>
+                    <textarea value={reviewForm.comment} onChange={(e)=>setReviewForm({...reviewForm,comment:e.target.value})} rows={3} className="w-full p-3 border rounded mb-3" placeholder="Write your review"></textarea>
+                    <div className="flex gap-3">
+                      <button onClick={async ()=>{
+                        if(!reviewForm.comment) return alert('Please enter a comment');
+                        try{
+                          const res = await fetch(`${API_BASE_URL}/products/${product._id || product.id}/reviews`,{
+                            method:'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(reviewForm)
+                          });
+                          if(!res.ok) throw new Error('Failed');
+                          const d = await res.json();
+                          setReviews(prev=>[d.review, ...prev]);
+                          setReviewForm({ name:'', rating:5, comment:'' });
+                          alert('Thanks for your review!');
+                        }catch(err){console.error(err);alert('Failed to submit review')}
+                      }} className="px-4 py-2 bg-yellow-600 text-white rounded">Submit Review</button>
+                      <button onClick={()=>setReviewForm({ name:'', rating:5, comment:'' })} className="px-4 py-2 bg-gray-100 rounded">Clear</button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -659,7 +792,22 @@ const Cart = ({ items, updateQuantity, removeItem }) => {
   if (items.length === 0) return <div className="min-h-screen flex flex-col items-center justify-center"><h2 className="text-xl font-bold mb-4">Bag is Empty</h2><SmartLink to="/" className="bg-brand-blue text-white px-8 py-3 rounded-full">Shop Now</SmartLink></div>;
   
   const subtotal = items.reduce((acc, item) => acc + (Number(item.price) * item.quantity), 0);
-  const shipping = subtotal > 999 ? 0 : 100;
+  const calcShippingForItems = (items) => {
+    let s = 0;
+    items.forEach(item => {
+      const price = Number(item.price || 0);
+      let per = 150;
+      if (price < 300) per = 69;
+      else if (price <= 500) per = 99;
+      else {
+        const extra = Math.min(30, Math.max(0, Math.floor((price - 500) / 100) * 10));
+        per = 150 + extra;
+      }
+      s += per * (item.quantity || 1);
+    });
+    return s;
+  };
+  const shipping = calcShippingForItems(items);
   const total = subtotal + shipping;
 
   return (
@@ -673,13 +821,13 @@ const Cart = ({ items, updateQuantity, removeItem }) => {
               <div className="flex justify-between font-bold text-gray-800 text-sm"><h3>{item.name}</h3><button onClick={() => removeItem(item.id || item._id)} className="text-gray-400"><Trash2 size={18}/></button></div>
               <div className="flex justify-between items-center mt-4">
                 <div className="flex items-center border rounded-md"><button onClick={() => updateQuantity(item.id || item._id, Math.max(1, item.quantity - 1))} className="px-3 py-1">-</button><span className="px-2 font-bold">{item.quantity}</span><button onClick={() => updateQuantity(item.id || item._id, item.quantity + 1)} className="px-3 py-1">+</button></div>
-                <span className="font-bold text-brand-blue">₹{Number(item.price) * item.quantity}</span>
+                <span className="font-bold text-brand-blue">₹{(Number(item.price) * item.quantity).toLocaleString('en-IN')}</span>
               </div>
             </div>
           </div>
         ))}
       </div>
-      <div className="lg:col-span-4"><div className="bg-white p-6 rounded-xl border shadow-sm sticky top-24"><div className="flex justify-between font-bold text-lg mb-8"><span>Total Amount</span><span className="text-brand-blue">₹{total}</span></div><button onClick={() => navigate('/checkout')} className="w-full bg-brand-blue text-white py-4 rounded-xl font-bold hover:bg-blue-700 transition">Proceed to Checkout</button></div></div>
+      <div className="lg:col-span-4"><div className="bg-white p-6 rounded-xl border shadow-sm sticky top-24"><div className="flex justify-between font-bold text-lg mb-8"><span>Total Amount</span><span className="text-brand-blue">₹{total.toLocaleString('en-IN')}</span></div><button onClick={() => navigate('/checkout')} className="w-full bg-brand-blue text-white py-4 rounded-xl font-bold hover:bg-blue-700 transition">Proceed to Checkout</button></div></div>
     </div>
   );
 };

@@ -1,11 +1,10 @@
 // --- 1. TOP STORY CIRCLES (13+ Circles) ---
 export const storyCategories = [
   { id: "frames", name: "Frames", image: "/images/4 x 6 black frame 199.jpg" },
-  { id: "frames", name: "Collage Frames", image: "/images/collage frame 3999.jpg" },
   { id: "magazines", name: "Magazines", image: "/images/anniversary MAG.jpg" },
   { id: "magazines", name: "Photo Books", image: "/images/PB.jpg" },
+  { id: "magazines", name: "Albums", image: "/images/polaroids album 169.jpg" },
   { id: "memories", name: "Polaroids", image: "/images/polaroids.jpg" },
-  { id: "memories", name: "Albums", image: "/images/polaroids album 169.jpg" },
   { id: "flowers", name: "Flowers", image: "/images/real flower boq 249.jpg" },
   { id: "flowers", name: "Rose Bouquets", image: "/images/Boquet.jpg" },
   { id: "hampers", name: "Hampers", image: "/images/HAMPER.jpg" },
@@ -26,8 +25,8 @@ export const storyCategories = [
 export const categoryDetails = {
   "frames": { 
     title: "Photo Frames", 
-    desc: "Premium wooden, wall, table, collage & customized frames to cherish your memories.",
-    subCategories: ["Wooden photo frames", "Wall frames", "Table frames", "Collage frames", "Customized frames"]
+    desc: "Premium wooden, wall & table frames (including customized frames) to cherish your memories.",
+    subCategories: ["Wooden photo frames", "Wall frames", "Table frames", "Customized frames"]
   },
   "magazines": { 
     title: "Magazines", 

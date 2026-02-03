@@ -103,6 +103,13 @@ export const products = {
   delete: async (id, token) => {
     return apiCall(`/products/${id}`, 'DELETE', null, token);
   },
+  // Reviews
+  getReviews: async (productId) => {
+    return apiCall(`/products/${productId}/reviews`, 'GET');
+  },
+  addReview: async (productId, review) => {
+    return apiCall(`/products/${productId}/reviews`, 'POST', review);
+  },
 };
 
 // --- CATEGORIES API ---
@@ -133,6 +140,9 @@ export const categories = {
   },
   removeProduct: async (categoryId, productId, token) => {
     return apiCall(`/categories/${categoryId}/products/${productId}`, 'DELETE', null, token);
+  },
+  updateShowcaseImages: async (categoryId, images, token) => {
+    return apiCall(`/categories/${categoryId}/showcase-images`, 'PUT', { images }, token);
   },
 };
 
