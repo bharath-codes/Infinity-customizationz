@@ -496,44 +496,44 @@ const AdminProducts = () => {
               </div>
             ))
           )}
-        </div>
+        </div> {/* close products grid */}
 
-      {/* Reviews Modal */}
-      {reviewsModalOpen && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-xl p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-bold">Reviews — {reviewsProductName}</h3>
-              <button onClick={closeReviews} className="text-gray-400 hover:text-gray-600"><X /></button>
-            </div>
-
-            {reviewsLoading ? (
-              <div className="flex items-center justify-center p-8"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-600"></div></div>
-            ) : (reviewsList.length === 0 ? (
-              <p className="text-sm text-gray-500">No reviews yet for this product.</p>
-            ) : (
-              <div className="space-y-3 max-h-96 overflow-y-auto">
-                {reviewsList.map((r, idx) => (
-                  <div key={idx} className="p-3 rounded-lg border bg-gray-50">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-brand-gold/20 flex items-center justify-center font-semibold text-sm">{(r.name||'U').charAt(0)}</div>
-                        <div>
-                          <p className="font-semibold text-sm">{r.name || 'Anonymous'}</p>
-                          <p className="text-xs text-gray-500">{new Date(r.createdAt).toLocaleString()}</p>
-                        </div>
-                      </div>
-                      <div className="text-sm text-yellow-600 font-bold">{Array.from({length: Math.round(r.rating||0)}).map((_,i)=>(<span key={i}>★</span>))}{Array.from({length:5-Math.round(r.rating||0)}).map((_,i)=>(<span className="text-gray-300" key={i}>★</span>))}</div>
-                    </div>
-                    <p className="text-sm text-gray-700">{r.comment}</p>
-                  </div>
-                ))}
+        {/* Reviews Modal */}
+        {reviewsModalOpen && (
+          <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl w-full max-w-xl p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-bold">Reviews — {reviewsProductName}</h3>
+                <button onClick={closeReviews} className="text-gray-400 hover:text-gray-600"><X /></button>
               </div>
-            ))}
-          </div>
-        </div>
-      )}
 
+              {reviewsLoading ? (
+                <div className="flex items-center justify-center p-8"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-600"></div></div>
+              ) : (reviewsList.length === 0 ? (
+                <p className="text-sm text-gray-500">No reviews yet for this product.</p>
+              ) : (
+                <div className="space-y-3 max-h-96 overflow-y-auto">
+                  {reviewsList.map((r, idx) => (
+                    <div key={idx} className="p-3 rounded-lg border bg-gray-50">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-full bg-brand-gold/20 flex items-center justify-center font-semibold text-sm">{(r.name||'U').charAt(0)}</div>
+                          <div>
+                            <p className="font-semibold text-sm">{r.name || 'Anonymous'}</p>
+                            <p className="text-xs text-gray-500">{new Date(r.createdAt).toLocaleString()}</p>
+                          </div>
+                        </div>
+                        <div className="text-sm text-yellow-600 font-bold">{Array.from({length: Math.round(r.rating||0)}).map((_,i)=>(<span key={i}>★</span>))}{Array.from({length:5-Math.round(r.rating||0)}).map((_,i)=>(<span className="text-gray-300" key={i}>★</span>))}</div>
+                      </div>
+                      <p className="text-sm text-gray-700">{r.comment}</p>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div> {/* close main container */}
     </div>
   );
 };
