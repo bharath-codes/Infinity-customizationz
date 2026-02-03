@@ -23,7 +23,7 @@ const ScrollToTop = () => {
   const { pathname } = useLocation();
   useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
   return null;
-//
+};
 
 // --- 2. THE INFINITY LOADER (∞) ---
 const GlobalLoader = () => (
@@ -65,6 +65,18 @@ const SmartLink = ({ to, children, className, onClick }) => {
 };
 
 // --- 3. UI COMPONENTS ---
+
+const WhatsAppIcon = ({ size = 22, className = "" }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.1 1.29 4.74 1.29 5.46 0 9.91-4.45 9.91-9.91 0-5.46-4.45-9.91-9.91-9.91zm0 18.06c-1.47 0-2.93-.39-4.25-1.17l-.3-.18-3.15.83.84-3.07-.19-.3c-.88-1.39-1.35-2.98-1.35-4.63 0-4.7 3.82-8.52 8.52-8.52 4.7 0 8.52 3.82 8.52 8.52 0 4.7-3.82 8.52-8.52 8.52zm4.22-6.38c-.23-.11-1.36-.67-1.57-.75-.21-.08-.36-.11-.51.11-.15.23-.59.75-.72.9-.14.15-.27.17-.5.06-.23-.11-.97-.36-1.84-1.14-.68-.61-1.14-1.36-1.27-1.59-.14-.23-.02-.35.1-.46.1-.09.23-.23.35-.35.11-.11.15-.19.23-.31.08-.11.04-.21-.02-.33-.06-.11-.51-1.23-.7-1.68-.19-.45-.38-.38-.52-.39-.14-.01-.3-.01-.45-.01-.15 0-.41.06-.62.29-.21.23-.81.79-.81 1.93 0 1.14.83 2.24.95 2.39.11.15 1.63 2.49 3.95 3.49 1.55.67 2.15.54 2.94.46.88-.09 1.36-.67 1.55-1.32.19-.64.19-1.19.14-1.29-.05-.1-.19-.17-.42-.29z"/></svg>
+);
+
+const AnnouncementBar = () => (
+  <div className="bg-brand-blue text-white text-[10px] md:text-xs py-2 overflow-hidden relative z-50">
+    <div className="animate-marquee font-bold tracking-widest uppercase flex gap-8">
+      <span>💡 Shipping calculated per item</span> <span>• New Service: Custom ID Cards & NFC</span>
+    </div>
+  </div>
+);
 
 const Navbar = ({ cartCount }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -144,96 +156,6 @@ const Navbar = ({ cartCount }) => {
   );
 };
 
-const WhatsAppIcon = ({ size = 22, className = "" }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.1 1.29 4.74 1.29 5.46 0 9.91-4.45 9.91-9.91 0-5.46-4.45-9.91-9.91-9.91zm0 18.06c-1.47 0-2.93-.39-4.25-1.17l-.3-.18-3.15.83.84-3.07-.19-.3c-.88-1.39-1.35-2.98-1.35-4.63 0-4.7 3.82-8.52 8.52-8.52 4.7 0 8.52 3.82 8.52 8.52 0 4.7-3.82 8.52-8.52 8.52zm4.22-6.38c-.23-.11-1.36-.67-1.57-.75-.21-.08-.36-.11-.51.11-.15.23-.59.75-.72.9-.14.15-.27.17-.5.06-.23-.11-.97-.36-1.84-1.14-.68-.61-1.14-1.36-1.27-1.59-.14-.23-.02-.35.1-.46.1-.09.23-.23.35-.35.11-.11.15-.19.23-.31.08-.11.04-.21-.02-.33-.06-.11-.51-1.23-.7-1.68-.19-.45-.38-.38-.52-.39-.14-.01-.3-.01-.45-.01-.15 0-.41.06-.62.29-.21.23-.81.79-.81 1.93 0 1.14.83 2.24.95 2.39.11.15 1.63 2.49 3.95 3.49 1.55.67 2.15.54 2.94.46.88-.09 1.36-.67 1.55-1.32.19-.64.19-1.19.14-1.29-.05-.1-.19-.17-.42-.29z"/></svg>
-);
-
-const AnnouncementBar = () => (
-  <div className="bg-brand-blue text-white text-[10px] md:text-xs py-2 overflow-hidden relative z-50">
-    <div className="animate-marquee font-bold tracking-widest uppercase flex gap-8">
-      <span>💡 Shipping calculated per item</span> <span>• New Service: Custom ID Cards & NFC</span>
-    </div>
-  </div>
-);
-  const [isOpen, setIsOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const { isAuthenticated, user, logout } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-    setIsOpen(false);
-  };
-
-  return (
-    <nav className="bg-white text-brand-dark sticky top-0 z-50 shadow-sm border-b border-gray-100">
-      <div className="max-w-7xl mx-auto px-4 h-16 md:h-20 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <button className="md:hidden text-gray-800" onClick={() => setIsOpen(!isOpen)}>{isOpen ? <X size={24} /> : <Menu size={24} />}</button>
-          <SmartLink to="/" className="flex-shrink-0">
-             <div className="h-10 w-28 md:h-12 md:w-36 overflow-hidden relative">
-               <img src="/images/logo.png" alt="Infinity" className="w-full h-full object-cover object-center scale-110" />
-             </div>
-          </SmartLink>
-        </div>
-        <div className="hidden md:flex flex-1 max-w-md mx-auto bg-gray-50 border border-gray-200 rounded-full px-4 py-2.5 items-center text-gray-500 focus-within:bg-white transition-all">
-          <Search size={18} className="text-gray-400" />
-          <input type="text" placeholder="Search..." className="bg-transparent border-none outline-none text-sm ml-3 w-full text-brand-dark" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && searchTerm.trim()) navigate(`/search?q=${encodeURIComponent(searchTerm.trim())}`); }} />
-        </div>
-        <div className="flex items-center gap-4 md:gap-6 text-gray-700">
-          <a href="https://wa.me/918985993948" target="_blank" rel="noreferrer" className="text-gray-700 hover:text-green-600 transition hover:scale-110"><WhatsAppIcon size={22} /></a>
-          <button className="md:hidden text-gray-700" onClick={() => { const t = prompt('Search'); if (t && t.trim()) navigate(`/search?q=${encodeURIComponent(t.trim())}`); }}><Search size={22} /></button>
-          
-          {isAuthenticated ? (
-            <div className="relative group">
-              <button className="flex items-center gap-2 text-gray-700 hover:text-brand-blue transition">
-                <User size={24} />
-              </button>
-              <div className="absolute right-0 mt-0 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity">
-                <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg border-b">📋 My Profile</Link>
-                <Link to="/orders" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 border-b">📦 My Orders</Link>
-                <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-b-lg flex items-center gap-2">
-                  <LogOut size={16} />
-                  Logout
-                </button>
-              </div>
-            </div>
-          ) : (
-            <SmartLink to="/login" className="flex items-center gap-2 text-brand-blue hover:text-brand-blue/80 transition">
-              <User size={24} />
-            </SmartLink>
-          )}
-          
-          <SmartLink to="/cart" className="relative text-gray-700 hover:text-brand-blue transition hover:scale-110">
-            <ShoppingCart size={24} />
-            {cartCount > 0 && <span className="absolute -top-1.5 -right-1.5 bg-brand-blue text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-white shadow-sm">{cartCount}</span>}
-          </SmartLink>
-        </div>
-      </div>
-      {isOpen && (
-        <div className="md:hidden bg-white border-t border-gray-100 p-4 space-y-4 absolute w-full left-0 shadow-xl z-50">
-          <SmartLink to="/" className="block font-bold text-brand-blue" onClick={() => setIsOpen(false)}>Home</SmartLink>
-          <SmartLink to="/shop/frames" className="block text-gray-600" onClick={() => setIsOpen(false)}>Photo Frames</SmartLink>
-          <SmartLink to="/shop/apparel" className="block text-gray-600" onClick={() => setIsOpen(false)}>Apparel</SmartLink>
-          {isAuthenticated ? (
-            <>
-              <SmartLink to="/profile" className="block text-gray-600" onClick={() => setIsOpen(false)}>👤 My Profile</SmartLink>
-              <SmartLink to="/orders" className="block text-gray-600" onClick={() => setIsOpen(false)}>📦 My Orders</SmartLink>
-              <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg flex items-center gap-2">
-                <LogOut size={16} />
-                Logout
-              </button>
-            </>
-          ) : (
-            <SmartLink to="/login" className="block text-brand-blue font-semibold" onClick={() => setIsOpen(false)}>Login</SmartLink>
-          )}
-        </div>
-      )}
-    </nav>
-  );
-};
-
 const Footer = () => (
   <footer className="bg-brand-blue text-white pt-16 pb-8 border-t border-brand-gold/20 mt-auto">
     <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
@@ -277,7 +199,6 @@ const HeroCarousel = () => {
   ]);
 
   useEffect(() => {
-    // Fetch showcase images from admin-configured category: try 'hero' then fallback to 'frames'
     const fetchShowcaseImages = async () => {
       const tryFetch = async (cat) => {
         try {
@@ -292,17 +213,13 @@ const HeroCarousel = () => {
       };
 
       const data = await tryFetch('hero') || await tryFetch('frames');
-
       if (data) {
         const showcaseSlides = data.images
           .filter(img => img)
           .map((img, idx) => ({ id: idx + 1, image: img, title: data.categoryTitle || 'Featured Items', link: `/shop/${data.categoryId || 'frames'}` }));
         if (showcaseSlides.length > 0) setSlides(showcaseSlides);
-      } else {
-        console.log('Using default slides - showcase images not available');
       }
     };
-
     fetchShowcaseImages();
   }, []);
 
@@ -377,43 +294,32 @@ const CuratedCategorySection = ({ categoryId, categoryTitle, hidePriceOnHome }) 
   const [showcaseProducts, setShowcaseProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch showcase products for this category from database
   useEffect(() => {
     const fetchShowcaseProducts = async () => {
       try {
-        // Get category data
         const res = await fetch(`${API_BASE_URL}/categories/${categoryId}`);
         const data = await res.json();
-        
-        console.log(`Category ${categoryId}:`, data.showcaseProducts);
-        
         if (data.showcaseProducts && data.showcaseProducts.length > 0) {
           try {
-            // Fetch all showcase products by their IDs from the API
             const productPromises = data.showcaseProducts.map(productId =>
               fetch(`${API_BASE_URL}/products/${productId}`)
                 .then(r => r.ok ? r.json() : null)
             );
             const prods = await Promise.all(productPromises);
             const validProds = prods.filter(p => p !== null);
-            console.log(`Category ${categoryId} showcase products loaded:`, validProds.length);
             setShowcaseProducts(validProds.length > 0 ? validProds : []);
           } catch (fetchErr) {
-            console.log('Could not fetch showcase products:', fetchErr);
             setShowcaseProducts([]);
           }
         } else {
-          console.log(`Category ${categoryId} has no showcase products`);
           setShowcaseProducts([]);
         }
       } catch (err) {
-        console.log('Error fetching category:', err);
         setShowcaseProducts([]);
       } finally {
         setLoading(false);
       }
     };
-
     fetchShowcaseProducts();
   }, [categoryId]);
 
@@ -440,8 +346,6 @@ const CuratedCategorySection = ({ categoryId, categoryTitle, hidePriceOnHome }) 
   );
 };
 
-// --- 5. PAGES ---
-
 const BestSellers = ({ hidePriceOnHome }) => {
   const [best, setBest] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -449,12 +353,10 @@ const BestSellers = ({ hidePriceOnHome }) => {
   useEffect(() => {
     const loadBest = async () => {
       try {
-        // Try to fetch a special category 'best-sellers' that admin can create/manage
         const res = await fetch(`${API_BASE_URL}/categories/best-sellers`);
         if (res.ok) {
           const cat = await res.json();
           if (cat && cat.showcaseProducts && cat.showcaseProducts.length > 0) {
-            // fetch product details for each showcased product
             const proms = cat.showcaseProducts.map(id => fetch(`${API_BASE_URL}/products/${id}`).then(r => r.ok ? r.json() : null));
             const results = (await Promise.all(proms)).filter(Boolean);
             if (results.length > 0) setBest(results);
@@ -466,7 +368,6 @@ const BestSellers = ({ hidePriceOnHome }) => {
           setBest(null);
         }
       } catch (err) {
-        console.log('Best sellers not set or failed to load', err);
         setBest(null);
       } finally {
         setLoading(false);
@@ -475,7 +376,7 @@ const BestSellers = ({ hidePriceOnHome }) => {
     loadBest();
   }, []);
 
-  const list = best || products.slice(0,5);
+  const list = best || products.slice(0, 5);
 
   return (
     <div className="flex overflow-x-auto gap-3 px-4 pb-4 scrollbar-hide snap-x">
@@ -553,15 +454,12 @@ const CategoryPage = () => {
         const data = await res.json();
         setCatProducts(Array.isArray(data) ? data : []);
       } catch (err) {
-        console.log('Error fetching products:', err);
-        // Fallback to local data
         const fallbackProducts = products.filter(p => p.categoryId === id);
         setCatProducts(fallbackProducts);
       } finally {
         setLoading(false);
       }
     };
-
     fetchProducts();
   }, [id]);
 
@@ -618,27 +516,21 @@ const ProductPage = ({ addToCart }) => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        // Try to fetch from API first
         const res = await fetch(`${API_BASE_URL}/products/${id}`);
         if (res.ok) {
           const data = await res.json();
           setProduct(data);
           setMainImage(data.image || data.images?.[0] || "");
-          // also fetch reviews for this product
           fetchReviews(data._id || data.id);
         } else {
-          // Fallback to local data
           const localProduct = products.find(item => item.id === id);
           setProduct(localProduct);
           if (localProduct) {
             setMainImage(localProduct.image);
-            // local data may have reviews in data.js
             setReviews(localProduct.reviews || []);
           }
         }
       } catch (err) {
-        console.log('Error fetching product:', err);
-        // Fallback to local data
         const localProduct = products.find(item => item.id === id);
         setProduct(localProduct);
         if (localProduct) {
@@ -650,10 +542,7 @@ const ProductPage = ({ addToCart }) => {
       }
     };
 
-    fetchProduct();
-
-    // helper: fetch reviews
-    async function fetchReviews(productId) {
+    const fetchReviews = async (productId) => {
       try {
         setReviewsLoading(true);
         const r = await fetch(`${API_BASE_URL}/products/${productId}/reviews`);
@@ -665,7 +554,9 @@ const ProductPage = ({ addToCart }) => {
       } finally {
         setReviewsLoading(false);
       }
-    }
+    };
+
+    fetchProduct();
   }, [id]);
 
   useEffect(() => { 
@@ -778,7 +669,6 @@ const ProductPage = ({ addToCart }) => {
               </div>
             )}
 
-            {/* Reviews Section */}
             <div className="bg-white rounded-2xl shadow-sm p-6">
               <h3 className="text-xl font-bold mb-2">Customer Reviews</h3>
               {reviewsLoading ? (
@@ -813,7 +703,6 @@ const ProductPage = ({ addToCart }) => {
                     ))}</div>
                   )}
 
-                  {/* Add Review Form */}
                   <div className="mt-4">
                     <h4 className="font-semibold mb-2">Leave a Review</h4>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
@@ -897,7 +786,7 @@ const Cart = ({ items, updateQuantity, removeItem }) => {
   );
 };
 
-// --- 6. MAIN APP WRAPPER ---
+// --- 5. MAIN APP WRAPPER ---
 
 const AppContent = () => {
   const { cart, addToCart, updateQuantity, removeFromCart } = useCart();
@@ -927,6 +816,8 @@ const AppContent = () => {
     </div>
   );
 };
+
+// --- 6. APP ENTRYPOINT ---
 
 export default function App() {
   const [loading, setLoading] = useState(false);
