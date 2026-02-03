@@ -280,19 +280,32 @@ const Checkout = () => {
                         <div className="text-sm">I agree to the <button type="button" onClick={() => setShowPolicy(s => !s)} className="text-brand-blue underline">Return & Refund Policy</button></div>
                         {showPolicy && (
                           <div className="mt-2 text-sm text-gray-700 bg-gray-50 p-3 rounded border">
-                            <p className="mb-2">Returns or replacements are accepted only if the product is completely damaged (100% damaged) at the time of delivery.</p>
-                            <p className="mb-2">A clear unboxing video proof is mandatory to claim any return or replacement.</p>
-                            <p className="mb-2">Without proper video proof, no refund or replacement will be provided.</p>
-                            <p className="mb-2">Claims must be raised within 24 hours of delivery.</p>
-                            <p className="mb-2">No returns or refunds for:</p>
+                            <h4 className="font-bold mb-2">Return & Refund Terms & Conditions</h4>
                             <ul className="list-disc list-inside mb-2">
-                              <li>Minor defects</li>
-                              <li>Change of mind</li>
-                              <li>Wrong order placed</li>
-                              <li>Dissatisfaction with color, size, or design</li>
+                              <li>All products are customized and made to order. Hence, returns or refunds are not accepted except in cases mentioned below.</li>
+                              <li>Returns or replacements are accepted only if the product is 100% damaged at the time of delivery or if a wrong item is received.</li>
+                              <li>A clear unboxing video is mandatory to claim any return, replacement, or refund.</li>
+                              <li>The unboxing video must clearly show the package being opened and the damaged/wrong product.</li>
+                              <li>No claim will be accepted without an unboxing video.</li>
+                              <li>All claims must be raised within 24 hours of delivery.</li>
+                              <li>If the claim is approved, a replacement will be provided first.</li>
+                              <li>Refunds will be processed only if a replacement is not possible.</li>
                             </ul>
-                            <p className="mb-2">If approved, replacement will be provided. Refunds will be processed only if replacement is not possible.</p>
-                            <p className="mb-0">By placing an order, you agree to this policy.</p>
+                            <h4 className="font-bold mb-2 mt-4">No Return / No Refund Policy</h4>
+                            <p className="mb-2">No returns or refunds will be provided in the following cases:</p>
+                            <ul className="list-disc list-inside mb-2">
+                              <li>Minor defects or slight imperfections</li>
+                              <li>Change of mind after placing the order</li>
+                              <li>Wrong product ordered by the customer</li>
+                              <li>Dissatisfaction with color, size, or design</li>
+                              <li>Any reason other than complete damage or wrong item received</li>
+                            </ul>
+                            <h4 className="font-bold mb-2 mt-4">Color Disclaimer</h4>
+                            <ul className="list-disc list-inside mb-2">
+                              <li>Product colors may vary slightly due to lighting, photography, or screen settings.</li>
+                              <li>A 5%–10% color variation from the website images is normal and not considered a defect.</li>
+                              <li>By placing an order on our website, the customer agrees to all the above Terms & Conditions.</li>
+                            </ul>
                           </div>
                         )}
                       </div>

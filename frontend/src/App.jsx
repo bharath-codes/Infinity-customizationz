@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
-import { HashRouter as Router, Routes, Route, useNavigate, useLocation, Link, useParams } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Link, useParams } from 'react-router-dom';
 import { storyCategories, showcaseData, products, categoryDetails, phoneModelOptions } from './data';
 import { ShoppingCart, Menu, X, Search, User, Heart, ChevronRight, Phone, Mail, Instagram, Truck, ShieldCheck, Gift, Star, ArrowRight, MessageCircle, Filter, CheckCircle, AlertCircle, Info, ChevronDown, Trash2, ArrowLeft, LogOut } from 'lucide-react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -30,7 +30,7 @@ const GlobalLoader = () => (
   <div className="fixed inset-0 z-[100] bg-white/95 backdrop-blur-md flex flex-col items-center justify-center">
     <div className="infinity-loader"></div>
     <p className="mt-6 text-brand-blue font-serif font-bold tracking-[0.3em] text-xs uppercase animate-pulse">
-      Infinity<span className="text-brand-gold">Loading</span>
+      Infinity<span className="text-brand-gold"> Customizations</span>
     </p>
     <style>{`
       .infinity-loader { width: 60px; height: 30px; position: relative; }
@@ -158,9 +158,9 @@ const Navbar = ({ cartCount }) => {
   );
 };
 
-const Footer = () => { const location = useLocation(); return (
+const Footer = () => (
   <footer className="bg-brand-blue text-white pt-16 pb-8 border-t border-brand-gold/20 mt-auto">
-    <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+    <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
       <div>
         <h2 className="text-2xl font-serif font-bold text-white mb-4">Infinity<span className="text-brand-gold text-xs ml-1 font-sans tracking-widest">CUSTOMIZATIONS</span></h2>
         <p className="text-blue-100 text-sm leading-relaxed mb-6">Premium custom printing & digital services delivered across India.</p>
@@ -177,39 +177,18 @@ const Footer = () => { const location = useLocation(); return (
         </div>
       </div>
       <div>
-        <h3 className="text-lg font-bold text-brand-gold mb-6 font-serif">Quick Links</h3>
-        <ul className="space-y-3 text-sm text-blue-100">
-          <li><SmartLink to="/shop/frames" className="hover:text-white">Photo Frames</SmartLink></li>
-          <li><SmartLink to="/shop/apparel" className="hover:text-white">Apparel & IDs</SmartLink></li>
-        </ul>
-      </div>
-      <div>
         <h3 className="text-lg font-bold text-brand-gold mb-6 font-serif">Contact</h3>
         <div className="space-y-4 text-sm text-blue-100">
           <p className="flex items-start gap-3"><Phone size={18} /><span>+91 89859 93948</span></p>
           <p className="flex items-start gap-3"><Mail size={18} /><span>infinitycustomizations@gmail.com</span></p>
         </div>
       </div>
-      {/* Admin link is hidden on the Home page */}
-      <div>
-        <h3 className="text-lg font-bold text-brand-gold mb-6 font-serif">Admin</h3>
-        <ul className="space-y-3">
-          { (location.pathname !== '/') && (
-            <li>
-              <SmartLink to="/admin/login" className="inline-flex items-center gap-2 px-4 py-2 bg-brand-gold/20 hover:bg-brand-gold/30 rounded-lg text-sm font-semibold text-brand-gold border border-brand-gold/40 transition-all duration-200">
-                <User size={16} />
-                Admin Login
-              </SmartLink>
-            </li>
-          ) }
-        </ul>
-      </div>
     </div>
     <div className="max-w-7xl mx-auto px-4 pt-8 border-t border-white/10 text-center text-xs text-blue-200">
       <p>© 2026 Infinity Customizations. All rights reserved.</p>
     </div>
   </footer>
-  );
+);
 };
 
 // --- 4. HOME PAGE COMPONENTS ---
@@ -695,20 +674,32 @@ const ProductPage = ({ addToCart }) => {
 
             {showTerms && (
               <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 text-sm text-gray-700">
-                <h4 className="font-bold mb-2">Return & Refund Policy</h4>
-                <p className="mb-2">Returns or replacements are accepted only if the product is completely damaged (100% damaged) at the time of delivery.</p>
-                <p className="mb-2">A clear unboxing video proof is mandatory to claim any return or replacement.</p>
-                <p className="mb-2">Without proper video proof, no refund or replacement will be provided.</p>
-                <p className="mb-2">Claims must be raised within 24 hours of delivery.</p>
-                <p className="mb-2">No returns or refunds for:</p>
+                <h4 className="font-bold mb-2">Return & Refund Terms & Conditions</h4>
                 <ul className="list-disc list-inside mb-2">
-                  <li>Minor defects</li>
-                  <li>Change of mind</li>
-                  <li>Wrong order placed</li>
-                  <li>Dissatisfaction with color, size, or design</li>
+                  <li>All products are customized and made to order. Hence, returns or refunds are not accepted except in cases mentioned below.</li>
+                  <li>Returns or replacements are accepted only if the product is 100% damaged at the time of delivery or if a wrong item is received.</li>
+                  <li>A clear unboxing video is mandatory to claim any return, replacement, or refund.</li>
+                  <li>The unboxing video must clearly show the package being opened and the damaged/wrong product.</li>
+                  <li>No claim will be accepted without an unboxing video.</li>
+                  <li>All claims must be raised within 24 hours of delivery.</li>
+                  <li>If the claim is approved, a replacement will be provided first.</li>
+                  <li>Refunds will be processed only if a replacement is not possible.</li>
                 </ul>
-                <p className="mb-2">If approved, replacement will be provided. Refunds will be processed only if replacement is not possible.</p>
-                <p className="mb-0">By placing an order, you agree to this policy.</p>
+                <h4 className="font-bold mb-2 mt-4">No Return / No Refund Policy</h4>
+                <p className="mb-2">No returns or refunds will be provided in the following cases:</p>
+                <ul className="list-disc list-inside mb-2">
+                  <li>Minor defects or slight imperfections</li>
+                  <li>Change of mind after placing the order</li>
+                  <li>Wrong product ordered by the customer</li>
+                  <li>Dissatisfaction with color, size, or design</li>
+                  <li>Any reason other than complete damage or wrong item received</li>
+                </ul>
+                <h4 className="font-bold mb-2 mt-4">Color Disclaimer</h4>
+                <ul className="list-disc list-inside mb-2">
+                  <li>Product colors may vary slightly due to lighting, photography, or screen settings.</li>
+                  <li>A 5%–10% color variation from the website images is normal and not considered a defect.</li>
+                  <li>By placing an order on our website, the customer agrees to all the above Terms & Conditions.</li>
+                </ul>
               </div>
             )}
 
