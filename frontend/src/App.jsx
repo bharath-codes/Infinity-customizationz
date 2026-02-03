@@ -292,12 +292,10 @@ const StoryCircles = () => (
   </div>
 );
 
-const ShowcaseCard = ({ product, activeIdx }) => {
+const ShowcaseCard = ({ product, activeIdx, hidePriceOnHome }) => {
   if (!product) return null;
   const productId = product._id || product.id;
   const images = product.images || [product.image];
-  const location = useLocation();
-  const hidePriceOnHome = location.pathname === '/';
   return (
     <SmartLink to={`/product/${productId}`} className="block group w-full">
       <div className="relative w-full aspect-[4/5] md:h-[400px] rounded-xl overflow-hidden shadow-sm border border-gray-100 bg-gray-100">
@@ -320,7 +318,7 @@ const ShowcaseCard = ({ product, activeIdx }) => {
   );
 };
 
-const CuratedCategorySection = ({ categoryId, categoryTitle }) => {
+const CuratedCategorySection = ({ categoryId, categoryTitle, hidePriceOnHome }) => {
   const [activeIdx, setActiveIdx] = useState(0);
   const [showcaseProducts, setShowcaseProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -381,7 +379,7 @@ const CuratedCategorySection = ({ categoryId, categoryTitle }) => {
           <SmartLink to={`/shop/${categoryId}`} className="text-brand-blue font-bold text-xs">View All <ArrowRight size={14} className="inline"/></SmartLink>
         </div>
         <div className="grid grid-cols-2 gap-3 md:gap-8">
-          {showcaseProducts.map(p => <ShowcaseCard key={p._id} product={p} activeIdx={activeIdx} />)}
+          {showcaseProducts.map(p => <ShowcaseCard key={p._id} product={p} activeIdx={activeIdx} hidePriceOnHome={hidePriceOnHome} />)}
         </div>
       </div>
     </section>
@@ -390,7 +388,7 @@ const CuratedCategorySection = ({ categoryId, categoryTitle }) => {
 
 // --- 5. PAGES ---
 
-const BestSellers = () => {
+const BestSellers = ({ hidePriceOnHome }) => {
   const [best, setBest] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -472,7 +470,7 @@ const Home = () => {
       <HeroCarousel />
       <section className="bg-white py-6 border-b border-gray-100">
         <div className="px-4 mb-3"><h3 className="text-lg md:text-2xl font-bold text-brand-dark font-serif">Best Sellers</h3></div>
-        <BestSellers />
+        <BestSellers hidePriceOnHome={hidePriceOnHome} />
       </section>
       <div className="space-y-2 pb-12">
         {showcaseCategories.map((cat) => (
@@ -480,6 +478,7 @@ const Home = () => {
             key={cat.categoryId} 
             categoryId={cat.categoryId} 
             categoryTitle={cat.categoryTitle} 
+            hidePriceOnHome={hidePriceOnHome}
           />
         ))}
       </div>
