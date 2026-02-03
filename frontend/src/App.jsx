@@ -66,6 +66,84 @@ const SmartLink = ({ to, children, className, onClick }) => {
 
 // --- 3. UI COMPONENTS ---
 
+const Navbar = ({ cartCount }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const { isAuthenticated, user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+    setIsOpen(false);
+  };
+
+  return (
+    <nav className="bg-white text-brand-dark sticky top-0 z-50 shadow-sm border-b border-gray-100">
+      <div className="max-w-7xl mx-auto px-4 h-16 md:h-20 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <button className="md:hidden text-gray-800" onClick={() => setIsOpen(!isOpen)}>{isOpen ? <X size={24} /> : <Menu size={24} />}</button>
+          <SmartLink to="/" className="flex-shrink-0">
+             <div className="h-10 w-28 md:h-12 md:w-36 overflow-hidden relative">
+               <img src="/images/logo.png" alt="Infinity" className="w-full h-full object-cover object-center scale-110" />
+             </div>
+          </SmartLink>
+        </div>
+        <div className="hidden md:flex flex-1 max-w-md mx-auto bg-gray-50 border border-gray-200 rounded-full px-4 py-2.5 items-center text-gray-500 focus-within:bg-white transition-all">
+          <Search size={18} className="text-gray-400" />
+          <input type="text" placeholder="Search..." className="bg-transparent border-none outline-none text-sm ml-3 w-full text-brand-dark" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && searchTerm.trim()) navigate(`/search?q=${encodeURIComponent(searchTerm.trim())}`); }} />
+        </div>
+        <div className="flex items-center gap-4 md:gap-6 text-gray-700">
+          <a href="https://wa.me/918985993948" target="_blank" rel="noreferrer" className="text-gray-700 hover:text-green-600 transition hover:scale-110"><WhatsAppIcon size={22} /></a>
+          <button className="md:hidden text-gray-700" onClick={() => { const t = prompt('Search'); if (t && t.trim()) navigate(`/search?q=${encodeURIComponent(t.trim())}`); }}><Search size={22} /></button>
+          {isAuthenticated ? (
+            <div className="relative group">
+              <button className="flex items-center gap-2 text-gray-700 hover:text-brand-blue transition">
+                <User size={24} />
+              </button>
+              <div className="absolute right-0 mt-0 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity">
+                <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg border-b">📋 My Profile</Link>
+                <Link to="/orders" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 border-b">📦 My Orders</Link>
+                <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg flex items-center gap-2">
+                  <LogOut size={16} />
+                  Logout
+                </button>
+              </div>
+            </div>
+          ) : (
+            <SmartLink to="/login" className="flex items-center gap-2 text-brand-blue hover:text-brand-blue/80 transition">
+              <User size={24} />
+            </SmartLink>
+          )}
+          <SmartLink to="/cart" className="relative text-gray-700 hover:text-brand-blue transition hover:scale-110">
+            <ShoppingCart size={24} />
+            {cartCount > 0 && <span className="absolute -top-1.5 -right-1.5 bg-brand-blue text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-white shadow-sm">{cartCount}</span>}
+          </SmartLink>
+        </div>
+      </div>
+      {isOpen && (
+        <div className="md:hidden bg-white border-t border-gray-100 p-4 space-y-4 absolute w-full left-0 shadow-xl z-50">
+          <SmartLink to="/" className="block font-bold text-brand-blue" onClick={() => setIsOpen(false)}>Home</SmartLink>
+          <SmartLink to="/shop/frames" className="block text-gray-600" onClick={() => setIsOpen(false)}>Photo Frames</SmartLink>
+          <SmartLink to="/shop/apparel" className="block text-gray-600" onClick={() => setIsOpen(false)}>Apparel</SmartLink>
+          {isAuthenticated ? (
+            <>
+              <SmartLink to="/profile" className="block text-gray-600" onClick={() => setIsOpen(false)}>👤 My Profile</SmartLink>
+              <SmartLink to="/orders" className="block text-gray-600" onClick={() => setIsOpen(false)}>📦 My Orders</SmartLink>
+              <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg flex items-center gap-2">
+                <LogOut size={16} />
+                Logout
+              </button>
+            </>
+          ) : (
+            <SmartLink to="/login" className="block text-brand-blue font-semibold" onClick={() => setIsOpen(false)}>Login</SmartLink>
+          )}
+        </div>
+      )}
+    </nav>
+  );
+};
+
 const WhatsAppIcon = ({ size = 22, className = "" }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.1 1.29 4.74 1.29 5.46 0 9.91-4.45 9.91-9.91 0-5.46-4.45-9.91-9.91-9.91zm0 18.06c-1.47 0-2.93-.39-4.25-1.17l-.3-.18-3.15.83.84-3.07-.19-.3c-.88-1.39-1.35-2.98-1.35-4.63 0-4.7 3.82-8.52 8.52-8.52 4.7 0 8.52 3.82 8.52 8.52 0 4.7-3.82 8.52-8.52 8.52zm4.22-6.38c-.23-.11-1.36-.67-1.57-.75-.21-.08-.36-.11-.51.11-.15.23-.59.75-.72.9-.14.15-.27.17-.5.06-.23-.11-.97-.36-1.84-1.14-.68-.61-1.14-1.36-1.27-1.59-.14-.23-.02-.35.1-.46.1-.09.23-.23.35-.35.11-.11.15-.19.23-.31.08-.11.04-.21-.02-.33-.06-.11-.51-1.23-.7-1.68-.19-.45-.38-.38-.52-.39-.14-.01-.3-.01-.45-.01-.15 0-.41.06-.62.29-.21.23-.81.79-.81 1.93 0 1.14.83 2.24.95 2.39.11.15 1.63 2.49 3.95 3.49 1.55.67 2.15.54 2.94.46.88-.09 1.36-.67 1.55-1.32.19-.64.19-1.19.14-1.29-.05-.1-.19-.17-.42-.29z"/></svg>
 );
@@ -77,8 +155,6 @@ const AnnouncementBar = () => (
     </div>
   </div>
 );
-
-const Navbar = ({ cartCount }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const { isAuthenticated, user, logout } = useAuth();
@@ -189,7 +265,6 @@ const Footer = () => (
     </div>
   </footer>
 );
-};
 
 // --- 4. HOME PAGE COMPONENTS ---
 
