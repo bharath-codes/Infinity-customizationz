@@ -241,8 +241,8 @@ const HeroCarousel = () => {
         {slides.map(s => (
           <div key={s.id} className="min-w-full h-full relative">
             <picture>
-              <source type="image/webp" srcSet={`${s.image}?q=60&w=400 400w, ${s.image}?q=60&w=800 800w, ${s.image}?q=60&w=1200 1200w`} />
-              <img loading="lazy" decoding="async" src={s.image} srcSet={`${s.image}?q=60&w=400 400w, ${s.image}?q=60&w=800 800w, ${s.image}?q=60&w=1200 1200w`} sizes="100vw" className="w-full h-full object-cover" alt="" />
+              <source type="image/webp" srcSet={`${encodeURI(s.image)}?q=60&w=400 400w, ${encodeURI(s.image)}?q=60&w=800 800w, ${encodeURI(s.image)}?q=60&w=1200 1200w`} />
+              <img loading="lazy" decoding="async" src={encodeURI(s.image)} srcSet={`${encodeURI(s.image)}?q=60&w=400 400w, ${encodeURI(s.image)}?q=60&w=800 800w, ${encodeURI(s.image)}?q=60&w=1200 1200w`} sizes="100vw" className="w-full h-full object-cover" alt="" />
             </picture>
             <div className="absolute inset-0 bg-black/30 flex items-center px-10"><h2 className="text-3xl md:text-5xl font-serif font-bold text-white">{s.title}</h2></div>
           </div>
@@ -281,8 +281,8 @@ const ShowcaseCard = ({ product, activeIdx, hidePriceOnHome }) => {
           {images.map((img, i) => (
             <div key={i} className="min-w-full h-full relative">
               <picture>
-                <source type="image/webp" srcSet={`${img}?q=60&w=400 400w, ${img}?q=60&w=800 800w, ${img}?q=60&w=1200 1200w`} />
-                <img loading="lazy" decoding="async" src={img} srcSet={`${img}?q=60&w=400 400w, ${img}?q=60&w=800 800w, ${img}?q=60&w=1200 1200w`} sizes="100vw" className="w-full h-full object-cover" alt="" />
+                <source type="image/webp" srcSet={`${encodeURI(img)}?q=60&w=400 400w, ${encodeURI(img)}?q=60&w=800 800w, ${encodeURI(img)}?q=60&w=1200 1200w`} />
+                <img loading="lazy" decoding="async" src={encodeURI(img)} srcSet={`${encodeURI(img)}?q=60&w=400 400w, ${encodeURI(img)}?q=60&w=800 800w, ${encodeURI(img)}?q=60&w=1200 1200w`} sizes="100vw" className="w-full h-full object-cover" alt="" />
               </picture>
             </div>
           ))}
@@ -393,8 +393,8 @@ const BestSellers = ({ hidePriceOnHome }) => {
           <SmartLink to={`/product/${productId}`} key={productId} className="min-w-[140px] md:min-w-[200px] snap-start bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden flex-shrink-0">
             <div className="h-40 md:h-60 overflow-hidden relative bg-gray-50">
               <picture>
-                <source type="image/webp" srcSet={`${p.image}?q=60&w=400 400w, ${p.image}?q=60&w=800 800w`} />
-                <img loading="lazy" decoding="async" src={p.image} srcSet={`${p.image}?q=60&w=400 400w, ${p.image}?q=60&w=800 800w`} sizes="(max-width: 768px) 50vw, 20vw" alt={p.name} className="w-full h-full object-cover" />
+                <source type="image/webp" srcSet={`${encodeURI(p.image)}?q=60&w=400 400w, ${encodeURI(p.image)}?q=60&w=800 800w`} />
+                <img loading="lazy" decoding="async" src={encodeURI(p.image)} srcSet={`${encodeURI(p.image)}?q=60&w=400 400w, ${encodeURI(p.image)}?q=60&w=800 800w`} sizes="(max-width: 768px) 50vw, 20vw" alt={p.name} className="w-full h-full object-cover" />
               </picture>
             </div>
             <div className="p-2 md:p-3">
@@ -486,8 +486,8 @@ const CategoryPage = () => {
               <SmartLink to={`/product/${productId}`} key={productId} className="block group">
                 <div className="rounded-xl overflow-hidden aspect-[4/5] bg-gray-100">
                   <picture>
-                    <source type="image/webp" srcSet={`${p.image}?q=60&w=400 400w, ${p.image}?q=60&w=800 800w`} />
-                    <img loading="lazy" decoding="async" src={p.image} srcSet={`${p.image}?q=60&w=400 400w, ${p.image}?q=60&w=800 800w`} sizes="(max-width: 768px) 50vw, 25vw" className="w-full h-full object-cover group-hover:scale-105 transition" alt="" />
+                    <source type="image/webp" srcSet={`${encodeURI(p.image)}?q=60&w=400 400w, ${encodeURI(p.image)}?q=60&w=800 800w`} />
+                    <img loading="lazy" decoding="async" src={encodeURI(p.image)} srcSet={`${encodeURI(p.image)}?q=60&w=400 400w, ${encodeURI(p.image)}?q=60&w=800 800w`} sizes="(max-width: 768px) 50vw, 25vw" className="w-full h-full object-cover group-hover:scale-105 transition" alt="" />
                   </picture>
                 </div>
                 <h3 className="font-serif font-bold text-brand-dark text-sm mt-3 truncate">{p.name}</h3>
@@ -507,6 +507,7 @@ const ProductPage = ({ addToCart }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart: addToCartContext } = useCart();
+  const { isAuthenticated, user } = useAuth();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [qty, setQty] = useState(1);
@@ -630,8 +631,8 @@ const ProductPage = ({ addToCart }) => {
         <div>
           <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-sm border border-gray-100">
             <picture>
-              <source type="image/webp" srcSet={`${mainImage}?q=60&w=400 400w, ${mainImage}?q=60&w=800 800w, ${mainImage}?q=60&w=1200 1200w`} />
-              <img loading="lazy" decoding="async" src={mainImage} srcSet={`${mainImage}?q=60&w=400 400w, ${mainImage}?q=60&w=800 800w, ${mainImage}?q=60&w=1200 1200w`} sizes="(max-width: 768px) 80vw, 40vw" className="w-full h-full object-cover" alt="" />
+              <source type="image/webp" srcSet={`${encodeURI(mainImage)}?q=60&w=400 400w, ${encodeURI(mainImage)}?q=60&w=800 800w, ${encodeURI(mainImage)}?q=60&w=1200 1200w`} />
+              <img loading="lazy" decoding="async" src={encodeURI(mainImage)} srcSet={`${encodeURI(mainImage)}?q=60&w=400 400w, ${encodeURI(mainImage)}?q=60&w=800 800w, ${encodeURI(mainImage)}?q=60&w=1200 1200w`} sizes="(max-width: 768px) 80vw, 40vw" className="w-full h-full object-cover" alt="" />
             </picture>
           </div>
 
@@ -640,7 +641,7 @@ const ProductPage = ({ addToCart }) => {
             <div className="mt-3 flex gap-3">
               {images.map((img, idx) => (
                 <button key={idx} onClick={() => setMainImage(img)} className={`w-16 h-16 rounded overflow-hidden border ${img === mainImage ? 'ring-2 ring-brand-blue' : ''}`}>
-                  <img src={img} alt={`thumb-${idx}`} className="w-full h-full object-cover" />
+                  <img src={encodeURI(img)} alt={`thumb-${idx}`} className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>

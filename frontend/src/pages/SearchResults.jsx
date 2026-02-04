@@ -59,8 +59,8 @@ export default function SearchResults() {
               <Link to={`/product/${p._id || p.id}`} key={p._id || p.id} className="block bg-white rounded-lg border p-3">
                 <div className="h-40 overflow-hidden bg-gray-50 mb-2">
                   <picture>
-                    <source type="image/webp" srcSet={`${p.image}?q=60&w=400 400w, ${p.image}?q=60&w=800 800w`} />
-                    <img loading="lazy" decoding="async" src={p.image} srcSet={`${p.image}?q=60&w=400 400w, ${p.image}?q=60&w=800 800w`} sizes="(max-width: 768px) 50vw, 25vw" alt={p.name} className="w-full h-full object-cover" />
+                    <source type="image/webp" srcSet={`${encodeURI(p.image)}?q=60&w=400 400w, ${encodeURI(p.image)}?q=60&w=800 800w`} />
+                    <img loading="lazy" decoding="async" src={encodeURI(p.image)} srcSet={`${encodeURI(p.image)}?q=60&w=400 400w, ${encodeURI(p.image)}?q=60&w=800 800w`} sizes="(max-width: 768px) 50vw, 25vw" alt={p.name} className="w-full h-full object-cover" />
                   </picture>
                 </div>
                 <h3 className="font-semibold text-sm truncate">{p.name}</h3>
