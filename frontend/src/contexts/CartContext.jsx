@@ -61,7 +61,10 @@ export const CartProvider = ({ children }) => {
   };
 
   const getTotalPrice = () => {
-    return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return cart.reduce((total, item) => {
+      const addOn = item.addOn && item.addOn.price ? Number(item.addOn.price) : 0;
+      return total + ((Number(item.price || 0) + addOn) * item.quantity);
+    }, 0);
   };
 
   const getTotalItems = () => {

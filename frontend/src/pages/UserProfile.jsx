@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { User, Phone, Mail, MapPin, LogOut, Edit2, Save, X, Loader, AlertCircle, CheckCircle } from 'lucide-react';
+import BackButton from '../components/BackButton';
 import { useAuth } from '../contexts/AuthContext';
 
 const UserProfile = () => {
@@ -77,12 +78,10 @@ const UserProfile = () => {
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
+          <div className="mb-2"><BackButton to="/" /></div>
           <h1 className="text-4xl font-serif font-bold text-brand-blue">
             My Profile
           </h1>
-          <Link to="/" className="text-brand-blue hover:underline font-semibold">
-            ← Back to Home
-          </Link>
         </div>
 
         {/* Main Card */}

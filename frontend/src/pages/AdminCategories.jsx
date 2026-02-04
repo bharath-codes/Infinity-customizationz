@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { AlertCircle, Plus, Trash2, Edit2, X, Save, ChevronRight, Check } from 'lucide-react';
 // ✅ Import the centralized API service
-import api from '../services/api'; 
+import api from '../services/api';
+import BackButton from '../components/BackButton'; 
 
 const AdminCategories = () => {
   const { adminToken } = useAuth();
@@ -235,7 +236,9 @@ const AdminCategories = () => {
   return (
     <div className="p-6 max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3"><BackButton /></div>
+          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
           📂 Category Management
         </h1>
         <button 
@@ -244,6 +247,7 @@ const AdminCategories = () => {
         >
           <Plus size={20} /> Add New Category
         </button>
+      </div>
       </div>
 
       {/* Alerts */}

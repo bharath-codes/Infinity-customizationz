@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ChevronDown, ChevronUp, Package, AlertCircle, Loader } from 'lucide-react';
+import BackButton from '../components/BackButton';
 import { useAuth } from '../contexts/AuthContext';
 import { API_BASE_URL, orders as ordersApi } from '../services/api';
 
@@ -93,12 +94,10 @@ const UserOrders = () => {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
+            <div className="mb-2"><BackButton to="/profile" /></div>
             <h1 className="text-4xl font-bold text-gray-900">📦 My Orders</h1>
             <p className="text-gray-600 mt-2">Track your purchases and deliveries</p>
           </div>
-          <Link to="/profile" className="text-blue-600 hover:text-blue-800 font-semibold">
-            ← Back to Profile
-          </Link>
         </div>
 
         {/* Error Alert */}

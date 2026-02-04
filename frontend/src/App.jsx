@@ -15,6 +15,7 @@ import AdminProducts from './pages/AdminProducts';
 import AdminCategories from './pages/AdminCategories';
 import Checkout from './pages/Checkout';
 import SearchResults from './pages/SearchResults';
+import BackButton from './components/BackButton';
 
 // --- 1. GLOBAL CONTEXT & UTILITIES ---
 const LoaderContext = createContext();
@@ -103,7 +104,10 @@ const Navbar = ({ cartCount }) => {
         </div>
         <div className="hidden md:flex flex-1 max-w-md mx-auto bg-gray-50 border border-gray-200 rounded-full px-4 py-2.5 items-center text-gray-500 focus-within:bg-white transition-all">
           <Search size={18} className="text-gray-400" />
-          <input type="text" placeholder="Search..." className="bg-transparent border-none outline-none text-sm ml-3 w-full text-brand-dark" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && searchTerm.trim()) navigate(`/search?q=${encodeURIComponent(searchTerm.trim())}`); }} />
+          <input id="global-search-input" type="text" placeholder="Search..." className="bg-transparent border-none outline-none text-sm ml-3 w-full text-brand-dark" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && searchTerm.trim()) navigate(`/search?q=${encodeURIComponent(searchTerm.trim())}`); }} />
+          <button type="button" aria-label="Search" className="ml-3 bg-brand-blue text-white px-3 py-1 rounded-full text-sm hover:opacity-90" onClick={() => { if (searchTerm.trim()) navigate(`/search?q=${encodeURIComponent(searchTerm.trim())}`); else document.getElementById('global-search-input')?.focus(); }}>
+            Search
+          </button>
         </div>
         <div className="flex items-center gap-4 md:gap-6 text-gray-700">
           <a href="https://wa.me/918985993948" target="_blank" rel="noreferrer" className="text-gray-700 hover:text-green-600 transition hover:scale-110"><WhatsAppIcon size={22} /></a>
@@ -165,6 +169,9 @@ const Footer = () => (
         <div className="flex gap-4">
           <a href="https://instagram.com/infinitycustomizations" target="_blank" rel="noreferrer" aria-label="Instagram" className="cursor-pointer hover:text-brand-gold">
             <Instagram />
+          </a>
+          <a href="https://www.facebook.com/share/1FzoghaLcu/?mibextid=wwXIfr" target="_blank" rel="noreferrer" aria-label="Facebook" className="cursor-pointer hover:text-[#4267B2]">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" className="inline-block"><path d="M22 12.072C22 6.477 17.523 2 11.928 2S2 6.477 2 12.072C2 17.09 5.657 21.128 10.438 21.924v-6.93H7.898v-2.922h2.54V9.845c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.242 0-1.63.77-1.63 1.56v1.874h2.773l-.443 2.922h-2.33v6.93C18.343 21.128 22 17.09 22 12.072z"/></svg>
           </a>
           <a href="https://wa.me/918985993948" target="_blank" rel="noreferrer" aria-label="WhatsApp" className="cursor-pointer hover:text-green-400">
             <WhatsAppIcon />
@@ -510,7 +517,9 @@ const ProductPage = ({ addToCart }) => {
   const [phoneModel, setPhoneModel] = useState('');
   const [reviews, setReviews] = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(false);
-  const [reviewForm, setReviewForm] = useState({ name: '', rating: 5, comment: '' });
+  const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '' });
+  const [wrapType, setWrapType] = useState('none');
+  const [wrapPrice, setWrapPrice] = useState(0);
   const isPhoneCase = product && (product.id === 'case1' || (product.name || '').toLowerCase().includes('phone case'));
 
   useEffect(() => {
@@ -566,6 +575,24 @@ const ProductPage = ({ addToCart }) => {
     } 
   }, [product]);
 
+  // Add-on wrap price calculation
+  const computeWrapPrice = (price, type) => {
+    if (!type || type === 'none') return 0;
+    if (type === 'normal') return 39;
+    if (type === 'premium') {
+      const p = Number(price || 0);
+      if (p >= 199 && p <= 299) return 79;
+      if (p >= 499 && p <= 599) return 99;
+      if (p >= 999) return 139;
+      return 119; // default premium price for other ranges
+    }
+    return 0;
+  };
+
+  useEffect(() => {
+    setWrapPrice(computeWrapPrice(product?.price, wrapType));
+  }, [product, wrapType]);
+
   const handleAddToCart = () => {
     if (isPhoneCase) {
       if (!phoneCompany || !phoneModel) {
@@ -574,7 +601,7 @@ const ProductPage = ({ addToCart }) => {
       }
     }
     const customizationDetails = isPhoneCase ? `Phone: ${phoneCompany} / ${phoneModel}` : (product.customizationDetails || '');
-    const item = { ...product, id: product._id || product.id, price: Number(product.price || 0), quantity: qty, customizationDetails };
+    const item = { ...product, id: product._id || product.id, price: Number(product.price || 0), quantity: qty, customizationDetails, addOn: { type: wrapType, price: wrapPrice } };
     addToCartContext(item);
     alert('Added to cart');
   };
@@ -587,7 +614,7 @@ const ProductPage = ({ addToCart }) => {
       }
     }
     const customizationDetails = isPhoneCase ? `Phone: ${phoneCompany} / ${phoneModel}` : (product.customizationDetails || '');
-    const item = { ...product, id: product._id || product.id, price: Number(product.price || 0), quantity: qty, customizationDetails };
+    const item = { ...product, id: product._id || product.id, price: Number(product.price || 0), quantity: qty, customizationDetails, addOn: { type: wrapType, price: wrapPrice } };
     addToCartContext(item);
     navigate('/checkout');
   };
@@ -600,13 +627,27 @@ const ProductPage = ({ addToCart }) => {
   return (
     <div className="min-h-screen bg-white pb-24 md:pb-12">
       <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-2 gap-12">
-        <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-sm border border-gray-100">
-          <picture>
-            <source type="image/webp" srcSet={`${mainImage}?q=60&w=400 400w, ${mainImage}?q=60&w=800 800w, ${mainImage}?q=60&w=1200 1200w`} />
-            <img loading="lazy" decoding="async" src={mainImage} srcSet={`${mainImage}?q=60&w=400 400w, ${mainImage}?q=60&w=800 800w, ${mainImage}?q=60&w=1200 1200w`} sizes="(max-width: 768px) 80vw, 40vw" className="w-full h-full object-cover" alt="" />
-          </picture>
+        <div>
+          <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+            <picture>
+              <source type="image/webp" srcSet={`${mainImage}?q=60&w=400 400w, ${mainImage}?q=60&w=800 800w, ${mainImage}?q=60&w=1200 1200w`} />
+              <img loading="lazy" decoding="async" src={mainImage} srcSet={`${mainImage}?q=60&w=400 400w, ${mainImage}?q=60&w=800 800w, ${mainImage}?q=60&w=1200 1200w`} sizes="(max-width: 768px) 80vw, 40vw" className="w-full h-full object-cover" alt="" />
+            </picture>
+          </div>
+
+          {/* Thumbnails */}
+          {images && images.length > 1 && (
+            <div className="mt-3 flex gap-3">
+              {images.map((img, idx) => (
+                <button key={idx} onClick={() => setMainImage(img)} className={`w-16 h-16 rounded overflow-hidden border ${img === mainImage ? 'ring-2 ring-brand-blue' : ''}`}>
+                  <img src={img} alt={`thumb-${idx}`} className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
         <div className="space-y-6">
+          <div className="mb-2"><BackButton /></div>
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-brand-dark">{product.name}</h1>
           <p className="text-3xl font-bold text-brand-blue">₹{product.price * qty}</p>
           <div className="bg-gray-50 p-6 rounded-xl border space-y-6">
@@ -632,6 +673,24 @@ const ProductPage = ({ addToCart }) => {
                 </div>
               </div>
             )}
+
+            <div className="bg-gray-50 p-4 rounded-xl border space-y-3">
+              <label className="block text-sm font-semibold text-gray-700">Gift Wrap (optional)</label>
+              <div className="flex flex-col gap-2 mt-2">
+                <label className="flex items-center gap-3">
+                  <input type="radio" name="wrap" value="none" checked={wrapType === 'none'} onChange={() => setWrapType('none')} className="w-4 h-4" />
+                  <span className="text-sm">None</span>
+                </label>
+                <label className="flex items-center gap-3">
+                  <input type="radio" name="wrap" value="normal" checked={wrapType === 'normal'} onChange={() => setWrapType('normal')} className="w-4 h-4" />
+                  <span className="text-sm">Normal Wrap — ₹39</span>
+                </label>
+                <label className="flex items-center gap-3">
+                  <input type="radio" name="wrap" value="premium" checked={wrapType === 'premium'} onChange={() => setWrapType('premium')} className="w-4 h-4" />
+                  <span className="text-sm">Premium Wrap — ₹{wrapPrice}</span>
+                </label>
+              </div>
+            </div>
 
             <button onClick={handleBuyNow} className="w-full bg-brand-blue text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition">Buy Now</button>
             <button onClick={handleAddToCart} className="w-full bg-gray-200 text-brand-dark py-4 rounded-xl font-bold text-lg hover:bg-gray-300 transition">Add to Cart</button>
@@ -706,7 +765,7 @@ const ProductPage = ({ addToCart }) => {
                   <div className="mt-4">
                     <h4 className="font-semibold mb-2">Leave a Review</h4>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
-                      <input value={reviewForm.name} onChange={(e)=>setReviewForm({...reviewForm,name:e.target.value})} placeholder="Your name (optional)" className="p-3 border rounded" />
+                          <div className="p-3 border rounded text-sm text-gray-600">Posting as: <span className="font-semibold">{user?.name || 'Anonymous'}</span>{!isAuthenticated ? ' — please login to post' : ''}</div>
                       <select value={reviewForm.rating} onChange={(e)=>setReviewForm({...reviewForm,rating:Number(e.target.value)})} className="p-3 border rounded">
                         {[5,4,3,2,1].map(v=> <option key={v} value={v}>{v} stars</option>)}
                       </select>
@@ -716,14 +775,16 @@ const ProductPage = ({ addToCart }) => {
                     <div className="flex gap-3">
                       <button onClick={async ()=>{
                         if(!reviewForm.comment) return alert('Please enter a comment');
+                        if(!isAuthenticated) { alert('Please login to post a review'); navigate('/login'); return; }
                         try{
+                          const payload = { name: user?.name || 'Anonymous', rating: reviewForm.rating, comment: reviewForm.comment };
                           const res = await fetch(`${API_BASE_URL}/products/${product._id || product.id}/reviews`,{
-                            method:'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(reviewForm)
+                            method:'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
                           });
                           if(!res.ok) throw new Error('Failed');
                           const d = await res.json();
                           setReviews(prev=>[d.review, ...prev]);
-                          setReviewForm({ name:'', rating:5, comment:'' });
+                          setReviewForm({ rating:5, comment:'' });
                           alert('Thanks for your review!');
                         }catch(err){console.error(err);alert('Failed to submit review')}
                       }} className="px-4 py-2 bg-yellow-600 text-white rounded">Submit Review</button>
@@ -770,7 +831,10 @@ const Cart = ({ items, updateQuantity, removeItem }) => {
 
   if (items.length === 0) return <div className="min-h-screen flex flex-col items-center justify-center"><h2 className="text-xl font-bold mb-4">Bag is Empty</h2><SmartLink to="/" className="bg-brand-blue text-white px-8 py-3 rounded-full">Shop Now</SmartLink></div>;
   
-  const subtotal = items.reduce((acc, item) => acc + (Number(item.price) * item.quantity), 0);
+  const subtotal = items.reduce((acc, item) => {
+    const addOnTotal = item.addOn && item.addOn.price ? Number(item.addOn.price) * item.quantity : 0;
+    return acc + (Number(item.price || 0) * item.quantity) + addOnTotal;
+  }, 0);
   const calcShippingForItems = (items) => {
     let s = 0;
     items.forEach(item => {
@@ -802,6 +866,7 @@ const Cart = ({ items, updateQuantity, removeItem }) => {
                 <div className="flex items-center border rounded-md"><button onClick={() => updateQuantity(item.id || item._id, Math.max(1, item.quantity - 1))} className="px-3 py-1">-</button><span className="px-2 font-bold">{item.quantity}</span><button onClick={() => updateQuantity(item.id || item._id, item.quantity + 1)} className="px-3 py-1">+</button></div>
                 <span className="font-bold text-brand-blue">₹{(Number(item.price) * item.quantity).toLocaleString('en-IN')}</span>
               </div>
+              {item.addOn && item.addOn.price ? <div className="text-xs text-gray-500 mt-2">Add-on ({item.addOn.type}) ₹{item.addOn.price} x {item.quantity} = ₹{(item.addOn.price * item.quantity).toLocaleString('en-IN')}</div> : null}
             </div>
           </div>
         ))}

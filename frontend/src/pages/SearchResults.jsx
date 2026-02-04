@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { API_BASE_URL } from '../services/api';
+import BackButton from '../components/BackButton';
 import { products as localProducts } from '../data';
 
 const useQuery = () => new URLSearchParams(useLocation().search);
@@ -46,6 +47,7 @@ export default function SearchResults() {
   return (
     <div className="min-h-screen bg-brand-light py-8 px-4">
       <div className="max-w-6xl mx-auto">
+        <div className="mb-4"><BackButton /></div>
         <h1 className="text-2xl font-bold mb-4">Search results for “{q}”</h1>
         {loading ? (
           <p>Searching...</p>

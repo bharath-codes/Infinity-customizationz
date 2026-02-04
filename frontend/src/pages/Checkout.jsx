@@ -4,6 +4,7 @@ import { ArrowLeft, Loader, AlertCircle, CheckCircle, Copy, Truck, MapPin, Phone
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../services/api';
+import BackButton from '../components/BackButton';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -168,6 +169,7 @@ const Checkout = () => {
             {/* Form */}
             <div className="lg:col-span-2">
               <div className="bg-white rounded-2xl shadow-md p-8 border">
+                <div className="mb-4"><BackButton /></div>
                 <h1 className="text-3xl font-bold text-brand-dark mb-8">Delivery Details</h1>
 
                 {error && (
@@ -327,20 +329,10 @@ const Checkout = () => {
                         />
                         <div>
                           <span className="font-semibold text-brand-dark">UPI Payment</span>
-                          <p className="text-xs text-gray-600">PhonePe, Google Pay, Paytm, or any UPI app</p>
+                          <p className="text-xs text-gray-600">Google Pay, Paytm, or any UPI app</p>
                         </div>
                       </label>
-                      <label className="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-brand-blue transition-colors">
-                        <input
-                          type="radio"
-                          name="paymentMethod"
-                          value="cod"
-                          checked={orderData.paymentMethod === 'cod'}
-                          onChange={handleInputChange}
-                          className="w-4 h-4 accent-brand-blue"
-                        />
-                        <span className="font-semibold text-brand-dark">Cash on Delivery</span>
-                      </label>
+
                     </div>
                   </div>
 
@@ -374,11 +366,14 @@ const Checkout = () => {
                 {/* Items */}
                 <div className="space-y-4 mb-6 pb-6 border-b">
                   {cart.map((item) => (
-                    <div key={item.id} className="flex justify-between text-sm">
-                      <span className="text-gray-600">
-                        {item.name} x {item.quantity}
-                      </span>
-                      <span className="font-semibold text-gray-800">₹{item.price * item.quantity}</span>
+                    <div key={item.id} className="text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">{item.name} x {item.quantity}</span>
+                        <span className="font-semibold text-gray-800">₹{item.price * item.quantity}</span>
+                      </div>
+                      {item.addOn && item.addOn.price ? (
+                        <div className="text-xs text-gray-500">Add-on ({item.addOn.type}) ₹{item.addOn.price} x {item.quantity} = ₹{item.addOn.price * item.quantity}</div>
+                      ) : null}
                     </div>
                   ))}
                 </div>
@@ -425,6 +420,7 @@ const Checkout = () => {
             {/* Payment Section */}
             <div className="lg:col-span-2">
               <div className="bg-white rounded-2xl shadow-md p-8 border">
+                <div className="mb-4"><BackButton /></div>
                 <h1 className="text-3xl font-bold text-brand-dark mb-8">🔐 UPI Payment</h1>
 
                 {/* Order ID */}
@@ -468,12 +464,12 @@ const Checkout = () => {
                          Scan with any UPI app
                       </p>
                       <div className="flex justify-center">
-                        <div className="w-64 h-64 border-2 border-gray-300 rounded-lg p-2 bg-white flex items-center justify-center">
-                          <img loading="lazy" src="/images/phonepe-qr.png" alt="PhonePe QR" className="w-full h-full object-contain" />
+                        <div className="w-72 h-72 border-2 border-gray-300 rounded-lg p-2 bg-white flex items-center justify-center overflow-hidden">
+                          <img loading="lazy" src="/images/phonepe-qr.png" alt="UPI QR" className="w-full h-full object-cover" />
                         </div>
                       </div>
                       <p className="text-xs text-gray-600 text-center mt-4">
-                        Scan this QR with PhonePe app to complete payment
+                        Scan this QR with any UPI app to complete payment
                       </p>
                     </div>
                   )}
@@ -495,7 +491,7 @@ const Checkout = () => {
                 <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded mb-8">
                   <h4 className="font-bold text-yellow-900 mb-2">📋 Instructions</h4>
                   <ol className="text-sm text-yellow-800 space-y-2">
-                    <li>1️⃣ Open PhonePe app and scan the QR code above</li>
+                    <li>1️⃣ Open any UPI app and scan the QR code above</li>
                     <li>2️⃣ Verify the amount: ₹{upiData?.amount}</li>
                     <li>3️⃣ Complete the payment</li>
                     <li>4️⃣ Click "I have paid" button below</li>
@@ -531,6 +527,9 @@ const Checkout = () => {
                         <span className="font-semibold">₹{item.price * item.quantity}</span>
                       </div>
                       <span className="text-xs text-gray-500">x {item.quantity}</span>
+                      {item.addOn && item.addOn.price ? (
+                        <div className="text-xs text-gray-500">Add-on ({item.addOn.type}) ₹{item.addOn.price} x {item.quantity} = ₹{item.addOn.price * item.quantity}</div>
+                      ) : null}
                     </div>
                   ))}
                 </div>

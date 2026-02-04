@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus, Edit2, Trash2, Search, X, Upload } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import api from '../services/api';
 import { API_BASE_URL } from '../services/api';
 
 const AdminProducts = () => {
@@ -20,14 +21,15 @@ const AdminProducts = () => {
     categoryId: '',
     weight: '',
     dimensions: '',
-    image: '', // Stores the image URL/path
-    images: ['', '', ''], // 3 product images
+    image: '', // Stores the image URL/path (primary)
+    images: [], // dynamic list of product images
     inStock: true
   };
 
   const [formData, setFormData] = useState(initialFormState);
   const [uploading, setUploading] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
+  const [categories, setCategories] = useState([]);
   const [reviewsModalOpen, setReviewsModalOpen] = useState(false);
   const [reviewsList, setReviewsList] = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(false);
@@ -39,6 +41,16 @@ const AdminProducts = () => {
       return;
     }
     fetchProducts();
+
+    // Load categories for the category select so admin can change product category reliably
+    (async () => {
+      try {
+        const cats = await api.categories.getAll();
+        setCategories(cats || []);
+      } catch (err) {
+        console.error('Failed to load categories:', err);
+      }
+    })();
   }, [admin, navigate]);
 
   const fetchProducts = async () => {
@@ -132,7 +144,7 @@ const AdminProducts = () => {
       weight: product.weight || '',
       dimensions: product.dimensions || '',
       image: product.image || '',
-      images: product.images || ['', '', ''],
+      images: product.images || [],
       inStock: product.inStock
     });
     setPreviewImage(product.image || '');
@@ -209,7 +221,7 @@ const AdminProducts = () => {
       const data = await res.json();
       const backendBase = API_BASE_URL.replace(/\/api$/, '');
       const fileUrl = data.filePath && data.filePath.startsWith('http') ? data.filePath : `${backendBase}${data.filePath}`;
-      const imgs = [...(formData.images || ['', '', ''])];
+      const imgs = [...(formData.images || [])];
       imgs[index] = fileUrl;
       setFormData(prev => ({ ...prev, images: imgs }));
     } catch (err) {
@@ -321,16 +333,9 @@ const AdminProducts = () => {
                 className="px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-brand-blue"
               >
                 <option value="">Select Category</option>
-                <option value="frames">📸 Photo Frames</option>
-                <option value="magazines">📖 Magazines</option>
-                <option value="memories">🎞️ Polaroids & Photo Books</option>
-                <option value="flowers">🌹 Flowers & Bouquets</option>
-                <option value="hampers">🎁 Hampers & Gift Combos</option>
-                <option value="apparel">👕 T-Shirts & Accessories</option>
-                <option value="essentials">📱 Phone Cases & Cups</option>
-                <option value="vintage">✨ Vintage Collection</option>
-                <option value="addons">📅 Calendars & Magnets</option>
-                <option value="smart-digital">🤖 Smart & Digital Services</option>
+                {categories.map(c => (
+                  <option key={c._id} value={c._id}>{c.emoji ? c.emoji + ' ' : ''}{c.title} ({c._id})</option>
+                ))}
               </select>
               <input
                 type="text"
@@ -346,36 +351,45 @@ const AdminProducts = () => {
                 onChange={(e) => setFormData({ ...formData, dimensions: e.target.value })}
                 className="px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-brand-blue"
               />              
-              {/* Product Images */}
+              {/* Product Images - dynamic list */}
               <div className="md:col-span-2 border-2 border-gray-200 rounded-lg p-4">
-                <label className="text-gray-700 font-bold mb-3 block">📸 Product Images (Up to 3)</label>
+                <label className="text-gray-700 font-bold mb-3 block">📸 Product Images (add as many images as needed)</label>
                 <div className="space-y-3">
-                  {/* File uploads for 3 product images */}
                   <div className="grid grid-cols-3 gap-3">
-                    {[0,1,2].map((i) => (
-                      <div key={i} className="flex flex-col items-center gap-2">
-                        <div className="w-24 h-24 bg-gray-100 rounded overflow-hidden border flex items-center justify-center">
-                          {formData.images?.[i] ? (
-                            <img loading="lazy" src={formData.images[i]} alt={`img-${i+1}`} className="w-full h-full object-cover" />
-                          ) : (
-                            <div className="text-xs text-gray-400">No Image</div>
-                          )}
+                    {(formData.images && formData.images.length > 0) ? (
+                      formData.images.map((img, i) => (
+                        <div key={i} className="flex flex-col items-center gap-2">
+                          <div className="w-24 h-24 bg-gray-100 rounded overflow-hidden border flex items-center justify-center">
+                            {img ? (
+                              <img loading="lazy" src={img} alt={`img-${i+1}`} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="text-xs text-gray-400">No Image</div>
+                            )}
+                          </div>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleMultiImageUpload(i, e.target.files[0])}
+                            className="text-xs text-gray-500"
+                          />
+                          <div className="flex gap-2">
+                            <button type="button" onClick={() => {
+                              const imgs = [...(formData.images || [])];
+                              imgs.splice(i, 1);
+                              setFormData({ ...formData, images: imgs });
+                            }} className="text-xs text-red-500 underline">Remove</button>
+                          </div>
                         </div>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => handleMultiImageUpload(i, e.target.files[0])}
-                          className="text-xs text-gray-500"
-                        />
-                        {formData.images?.[i] && (
-                          <button type="button" onClick={() => {
-                            const imgs = [...(formData.images || ['', '', ''])];
-                            imgs[i] = '';
-                            setFormData({ ...formData, images: imgs });
-                          }} className="text-xs text-red-500 underline">Remove</button>
-                        )}
-                      </div>
-                    ))}
+                      ))
+                    ) : (
+                      <div className="col-span-full text-center text-gray-500">No images yet. Add images using the button below.</div>
+                    )}
+
+                    {/* Add Image Slot */}
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="w-24 h-24 bg-gray-50 rounded border-dashed border-2 border-gray-200 flex items-center justify-center text-sm text-gray-400">Add</div>
+                      <button type="button" onClick={() => setFormData(prev => ({ ...prev, images: [...(prev.images || []), ''] }))} className="text-xs text-brand-blue underline">Add Image</button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -454,11 +468,18 @@ const AdminProducts = () => {
           ) : (
             filteredProducts.map((product) => (
               <div key={product._id} className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow relative group">
-                {product.image ? (
-                  <img loading="lazy" src={product.image} alt={product.name} className="w-full h-56 object-cover" />
+                {(product.images?.[0] || product.image) ? (
+                  <img loading="lazy" src={product.images?.[0] || product.image} alt={product.name} className="w-full h-56 object-cover" />
                 ) : (
                   <div className="w-full h-56 bg-gray-100 flex items-center justify-center text-gray-400">
                     No Image
+                  </div>
+                )}
+                {product.images && product.images.length > 1 && (
+                  <div className="p-4 border-t mt-2 flex gap-2">
+                    {product.images.slice(0,4).map((img, idx) => (
+                      <img key={idx} src={img} alt={`thumb-${idx}`} className="w-10 h-10 object-cover rounded" />
+                    ))}
                   </div>
                 )}
                 <div className="p-6">
