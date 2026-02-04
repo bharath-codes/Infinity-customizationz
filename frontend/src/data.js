@@ -2,8 +2,7 @@
 export const storyCategories = [
   { id: "frames", name: "Frames", image: "/images/4 x 6 black frame 199.jpg" },
   { id: "magazines", name: "Magazines", image: "/images/anniversary MAG.jpg" },
-  { id: "magazines", name: "Photo Books", image: "/images/PB.jpg" },
-  { id: "magazines", name: "Albums", image: "/images/polaroids album 169.jpg" },
+  { id: "magazines", name: "Photo Books & Albums", image: "/images/PB.jpg" },
   { id: "memories", name: "Polaroids", image: "/images/polaroids.jpg" },
   { id: "flowers", name: "Flowers", image: "/images/real flower boq 249.jpg" },
   { id: "flowers", name: "Rose Bouquets", image: "/images/Boquet.jpg" },

@@ -329,7 +329,7 @@ const Checkout = () => {
                         />
                         <div>
                           <span className="font-semibold text-brand-dark">UPI Payment</span>
-                          <p className="text-xs text-gray-600">Google Pay, Paytm, or any UPI app</p>
+                          <p className="text-xs text-gray-600">UPI payment</p>
                         </div>
                       </label>
 
@@ -421,7 +421,7 @@ const Checkout = () => {
             <div className="lg:col-span-2">
               <div className="bg-white rounded-2xl shadow-md p-8 border">
                 <div className="mb-4"><BackButton /></div>
-                <h1 className="text-3xl font-bold text-brand-dark mb-8">🔐 UPI Payment</h1>
+                <h1 className="text-3xl font-bold text-brand-dark mb-8">UPI Payment</h1>
 
                 {/* Order ID */}
                 <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg mb-8">
@@ -453,24 +453,20 @@ const Checkout = () => {
                       href={upiData.upiLink}
                       className="block w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-4 rounded-xl font-bold text-lg text-center transition-all duration-300 transform hover:scale-105 shadow-md active:scale-95"
                     >
-                      📱 Open UPI App
+                      Pay via UPI
                     </a>
                   )}
 
                   {/* Desktop PhonePe QR Screenshot */}
                   {typeof window !== 'undefined' && window.innerWidth > 768 && (
                     <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 p-6 rounded-xl">
-                      <p className="text-sm font-semibold text-gray-600 mb-4">
-                         Scan with any UPI app
-                      </p>
+                      <p className="text-sm font-semibold text-gray-600 mb-4">UPI Payment</p>
                       <div className="flex justify-center">
                         <div className="w-72 h-72 border-2 border-gray-300 rounded-lg p-2 bg-white flex items-center justify-center overflow-hidden">
                           <img loading="lazy" src="/images/phonepe-qr.png" alt="UPI QR" className="w-full h-full object-cover" />
                         </div>
                       </div>
-                      <p className="text-xs text-gray-600 text-center mt-4">
-                        Scan this QR with any UPI app to complete payment
-                      </p>
+                      <p className="text-xs text-gray-600 text-center mt-4">Scan the QR code with your UPI app to complete payment.</p>
                     </div>
                   )}
 

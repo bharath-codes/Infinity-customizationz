@@ -579,13 +579,14 @@ const ProductPage = ({ addToCart }) => {
   // Add-on wrap price calculation
   const computeWrapPrice = (price, type) => {
     if (!type || type === 'none') return 0;
-    if (type === 'normal') return 39;
+    const p = Number(price || 0);
+    if (type === 'normal') {
+      // Normal wrap: ₹39 for products below ₹300, ₹69 for ₹300 and above
+      return p < 300 ? 39 : 69;
+    }
     if (type === 'premium') {
-      const p = Number(price || 0);
-      if (p >= 199 && p <= 299) return 79;
-      if (p >= 499 && p <= 599) return 99;
-      if (p >= 999) return 139;
-      return 119; // default premium price for other ranges
+      // Premium wrap: ₹79 for products below ₹300, ₹99 for ₹300 and above
+      return p < 300 ? 79 : 99;
     }
     return 0;
   };
@@ -684,11 +685,11 @@ const ProductPage = ({ addToCart }) => {
                 </label>
                 <label className="flex items-center gap-3">
                   <input type="radio" name="wrap" value="normal" checked={wrapType === 'normal'} onChange={() => setWrapType('normal')} className="w-4 h-4" />
-                  <span className="text-sm">Normal Wrap — ₹39</span>
+                  <span className="text-sm">Normal Wrap — ₹{computeWrapPrice(product?.price, 'normal')}</span>
                 </label>
                 <label className="flex items-center gap-3">
                   <input type="radio" name="wrap" value="premium" checked={wrapType === 'premium'} onChange={() => setWrapType('premium')} className="w-4 h-4" />
-                  <span className="text-sm">Premium Wrap — ₹{wrapPrice}</span>
+                  <span className="text-sm">Premium Wrap — ₹{computeWrapPrice(product?.price, 'premium')}</span>
                 </label>
               </div>
             </div>
