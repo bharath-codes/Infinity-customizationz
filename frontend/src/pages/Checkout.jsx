@@ -449,12 +449,25 @@ const Checkout = () => {
 
                   {/* Mobile Payment Button */}
                   {typeof window !== 'undefined' && window.innerWidth <= 768 && upiData?.upiLink && (
-                    <a
-                      href={upiData.upiLink}
-                      className="block w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-4 rounded-xl font-bold text-lg text-center transition-all duration-300 transform hover:scale-105 shadow-md active:scale-95"
+                    <button
+                      type="button"
+                      onClick={() => {
+                        try {
+                          const link = upiData.upiLink;
+                          const isiOS = /iP(hone|od|ad)/.test(navigator.platform) || (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
+                          // Prefer same-window navigation on iOS to reliably open UPI apps
+                          if (/^upi:/i.test(link)) {
+                            if (isiOS) window.location.href = link; else window.open(link, '_self');
+                          } else {
+                            // Fallback to opening in new tab for https links
+                            window.open(link, '_blank', 'noopener');
+                          }
+                        } catch (err) { console.error('Failed to open UPI link', err); window.location.href = upiData.upiLink; }
+                      }}
+                      className="block w-full border border-blue-600 text-blue-600 bg-white py-3 rounded-xl font-semibold text-lg text-center transition-all duration-200 hover:bg-blue-50"
                     >
                       Pay via UPI
-                    </a>
+                    </button>
                   )}
 
                   {/* Desktop PhonePe QR Screenshot */}
@@ -472,26 +485,25 @@ const Checkout = () => {
 
                   {/* Manual Payment Link for Desktop */}
                   {typeof window !== 'undefined' && window.innerWidth > 768 && upiData?.upiLink && (
-                    <a
-                      href={upiData.upiLink}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="block w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-4 rounded-xl font-bold text-lg text-center transition-all duration-300 transform hover:scale-105 shadow-md active:scale-95"
+                    <button
+                      type="button"
+                      onClick={() => { try { window.open(upiData.upiLink, '_blank', 'noopener'); } catch (err) { window.location.href = upiData.upiLink; } }}
+                      className="block w-full border border-blue-600 text-blue-600 bg-white py-3 rounded-xl font-semibold text-lg text-center hover:bg-blue-50 transition-all duration-200"
                     >
-                      💳 Open with UPI App
-                    </a>
+                      Open payment link
+                    </button>
                   )}
                 </div>
 
                 {/* Instructions */}
                 <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded mb-8">
-                  <h4 className="font-bold text-yellow-900 mb-2">📋 Instructions</h4>
+                  <h4 className="font-bold text-yellow-900 mb-2">Instructions</h4>
                   <ol className="text-sm text-yellow-800 space-y-2">
-                    <li>1️⃣ Open any UPI app and scan the QR code above</li>
-                    <li>2️⃣ Verify the amount: ₹{upiData?.amount}</li>
-                    <li>3️⃣ Complete the payment</li>
-                    <li>4️⃣ Click "I have paid" button below</li>
-                    <li>5️⃣ We will verify and confirm your payment</li>
+                    <li>Open your UPI app and scan the QR code above.</li>
+                    <li>Verify the amount: ₹{upiData?.amount}.</li>
+                    <li>Complete the payment and note the transaction details.</li>
+                    <li>Click the "I have paid" button below once payment is done.</li>
+                    <li>We will verify and confirm your payment.</li>
                   </ol>
                 </div>
 
@@ -500,7 +512,7 @@ const Checkout = () => {
                   onClick={handlePaymentConfirmed}
                   className="w-full bg-green-600 hover:bg-green-700 text-white py-4 rounded-xl font-bold text-lg transition-colors"
                 >
-                  ✅ I have paid - Confirm Payment
+                  I have paid — Confirm Payment
                 </button>
 
                 <p className="text-xs text-gray-600 text-center mt-4">
