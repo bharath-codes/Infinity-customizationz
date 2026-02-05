@@ -71,6 +71,10 @@ const AdminProducts = () => {
     const file = e.target.files[0];
     if (!file) return;
 
+    // show a local preview immediately so admin gets instant feedback
+    const tempUrl = URL.createObjectURL(file);
+    setPreviewImage(tempUrl);
+
     const formData = new FormData();
     formData.append('image', file);
 
@@ -89,6 +93,8 @@ const AdminProducts = () => {
       const fileUrl = data.filePath && data.filePath.startsWith('http') ? data.filePath : `${backendBase}${data.filePath}`;
       setFormData(prev => ({ ...prev, image: fileUrl }));
       setPreviewImage(fileUrl);
+      // revoke temporary object URL now that we have the final server URL
+      try { URL.revokeObjectURL(tempUrl); } catch (e) {}
     } catch (error) {
       console.error('Error uploading image:', error);
       alert('Failed to upload image');
@@ -228,6 +234,12 @@ const AdminProducts = () => {
   const handleMultiImageUpload = async (index, file) => {
     if (!file) return;
 
+    // show a local preview immediately for the specific slot
+    const tempUrl = URL.createObjectURL(file);
+    const currentImgs = [...(formData.images || [])];
+    currentImgs[index] = tempUrl;
+    setFormData(prev => ({ ...prev, images: currentImgs }));
+
     const fd = new FormData();
     fd.append('image', file);
 
@@ -244,8 +256,10 @@ const AdminProducts = () => {
       const backendBase = API_BASE_URL.replace(/\/api$/, '');
       const fileUrl = data.filePath && data.filePath.startsWith('http') ? data.filePath : `${backendBase}${data.filePath}`;
       const imgs = [...(formData.images || [])];
+      // replace temporary preview with final server URL
       imgs[index] = fileUrl;
       setFormData(prev => ({ ...prev, images: imgs }));
+      try { URL.revokeObjectURL(tempUrl); } catch (e) {}
     } catch (err) {
       console.error('Image upload failed:', err);
       alert('Image upload failed');
