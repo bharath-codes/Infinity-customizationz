@@ -151,6 +151,29 @@ const Checkout = () => {
     setStep('success');
   };
 
+  const generateInvoice = () => {
+    const od = orderDetails || {};
+    const id = od.orderId || upiData?.orderId || 'order';
+    const createdAt = od.createdAt ? new Date(od.createdAt).toLocaleString() : new Date().toLocaleString();
+    const items = (od.items || []).map(i => ({ name: i.productName || i.name || 'Item', qty: i.quantity || 1, price: i.price || 0 }));
+    const subtotalLocal = od.subtotal || subtotal;
+    const shippingLocal = od.shippingCost || shipping;
+    const taxLocal = od.tax || tax;
+    const totalLocal = od.totalAmount || total;
+
+    const html = `<!doctype html><html><head><meta charset="utf-8"><title>Invoice ${id}</title><style>body{font-family:Arial,Helvetica,sans-serif;padding:20px;color:#111}h1{color:#0b63a7}table{width:100%;border-collapse:collapse;margin-top:16px}th,td{padding:8px;border:1px solid #ddd;text-align:left}tfoot td{font-weight:bold}</style></head><body><h1>Infinity Customizations — Invoice</h1><p>Order ID: <strong>${id}</strong></p><p>Date: ${createdAt}</p><h3>Billing / Shipping</h3><p>${orderData.customerName}<br/>${orderData.address}<br/>${orderData.city}, ${orderData.state} ${orderData.pincode}<br/>Phone: ${orderData.phoneNumber}<br/>Email: ${orderData.email}</p><h3>Items</h3><table><thead><tr><th>Item</th><th>Qty</th><th>Price (₹)</th><th>Line Total (₹)</th></tr></thead><tbody>${items.map(it=>`<tr><td>${it.name}</td><td>${it.qty}</td><td>${it.price.toLocaleString('en-IN')}</td><td>${(it.price*it.qty).toLocaleString('en-IN')}</td></tr>`).join('')}</tbody><tfoot><tr><td colspan="3">Subtotal</td><td>₹${Number(subtotalLocal).toLocaleString('en-IN')}</td></tr><tr><td colspan="3">Shipping</td><td>₹${Number(shippingLocal).toLocaleString('en-IN')}</td></tr><tr><td colspan="3">Taxes</td><td>₹${Number(taxLocal).toLocaleString('en-IN')}</td></tr><tr><td colspan="3">Total</td><td>₹${Number(totalLocal).toLocaleString('en-IN')}</td></tr></tfoot></table><p style="margin-top:18px;font-size:12px;color:#555">Thank you for your order. For support, contact infinitycustomizations@gmail.com or WhatsApp +91 89859 93948.</p></body></html>`;
+
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `invoice-${id}.html`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
   // ===== STEP 1: DELIVERY DETAILS =====
   if (step === 'details') {
     return (
@@ -699,6 +722,13 @@ const Checkout = () => {
             >
               📸 Send Photos via WhatsApp
             </a>
+
+            <button
+              onClick={generateInvoice}
+              className="bg-gray-800 text-white py-3 rounded-lg font-bold hover:bg-gray-900 transition-colors"
+            >
+              ⬇️ Download Invoice
+            </button>
 
             <button
               onClick={() => navigate('/')}
