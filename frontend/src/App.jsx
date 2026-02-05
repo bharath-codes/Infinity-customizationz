@@ -81,6 +81,7 @@ const AnnouncementBar = () => (
 );
 
 const Navbar = ({ cartCount }) => {
+  const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const { isAuthenticated, user, logout } = useAuth();
@@ -112,7 +113,7 @@ const Navbar = ({ cartCount }) => {
         </div>
         <div className="flex items-center gap-4 md:gap-6 text-gray-700">
           <a href="https://wa.me/918985993948" target="_blank" rel="noreferrer" className="text-gray-700 hover:text-green-600 transition hover:scale-110"><WhatsAppIcon size={22} /></a>
-          <button className="md:hidden text-gray-700" onClick={() => { const t = prompt('Search'); if (t && t.trim()) navigate(`/search?q=${encodeURIComponent(t.trim())}`); }}><Search size={22} /></button>
+          <button className="md:hidden text-gray-700" onClick={() => setShowMobileSearch(true)}><Search size={22} /></button>
           {isAuthenticated ? (
             <div className="relative group">
               <button className="flex items-center gap-2 text-gray-700 hover:text-brand-blue transition">
@@ -155,6 +156,19 @@ const Navbar = ({ cartCount }) => {
           ) : (
             <SmartLink to="/login" className="block text-brand-blue font-semibold" onClick={() => setIsOpen(false)}>Login</SmartLink>
           )}
+        </div>
+      )}
+      {showMobileSearch && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center p-4">
+          <div className="bg-white rounded-xl w-full max-w-md p-4">
+            <div className="flex items-center gap-2">
+              <input autoFocus type="text" placeholder="Search..." id="mobile-search-input" className="flex-1 px-4 py-2 border rounded" onKeyDown={(e) => {
+                const v = e.target.value;
+                if (e.key === 'Enter' && v && v.trim()) { setShowMobileSearch(false); navigate(`/search?q=${encodeURIComponent(v.trim())}`); }
+              }} />
+              <button onClick={() => setShowMobileSearch(false)} className="px-3 py-2 text-sm text-gray-600">Close</button>
+            </div>
+          </div>
         </div>
       )}
     </nav>
@@ -517,6 +531,7 @@ const ProductPage = ({ addToCart }) => {
   const [showTerms, setShowTerms] = useState(false);
   const [phoneCompany, setPhoneCompany] = useState('');
   const [phoneModel, setPhoneModel] = useState('');
+  // phoneCompanies expected as an object mapping company -> [models]
   const [phoneCompanies, setPhoneCompanies] = useState({});
   const [reviews, setReviews] = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(false);
@@ -559,7 +574,18 @@ const ProductPage = ({ addToCart }) => {
         const res = await fetch(`${API_BASE_URL}/phone-models`);
         if (res.ok) {
           const data = await res.json();
-          setPhoneCompanies(data);
+          // backend returns an object { Company: [models] } but guard against other shapes
+          if (!data) return setPhoneCompanies({});
+          if (Array.isArray(data)) {
+            // convert array of {company, models} to object
+            const obj = {};
+            data.forEach(d => { if (d && d.company) obj[d.company] = d.models || []; });
+            setPhoneCompanies(obj);
+          } else if (typeof data === 'object') {
+            setPhoneCompanies(data);
+          } else {
+            setPhoneCompanies({});
+          }
         }
       } catch (err) {
         console.log('Could not load phone models:', err);
@@ -788,13 +814,13 @@ const ProductPage = ({ addToCart }) => {
                       </select>
                       <div />
                     </div>
-                    <textarea value={reviewForm.comment} onChange={(e)=>setReviewForm({...reviewForm,comment:e.target.value})} rows={3} className="w-full p-3 border rounded mb-3" placeholder="Write your review"></textarea>
+                    <textarea value={reviewForm.comment} onChange={(e)=>setReviewForm({...reviewForm,comment:e.target.value})} rows={3} className="w-full p-3 border rounded mb-3" placeholder="Write your review (optional)"></textarea>
                     <div className="flex gap-3">
                       <button onClick={async ()=>{
-                        if(!reviewForm.comment) return alert('Please enter a comment');
+                        // comment is optional; rating is required (default 5)
                         if(!isAuthenticated) { alert('Please login to post a review'); navigate('/login'); return; }
                         try{
-                          const payload = { name: user?.name || 'Anonymous', rating: reviewForm.rating, comment: reviewForm.comment };
+                          const payload = { name: user?.name || 'Anonymous', rating: reviewForm.rating, comment: reviewForm.comment || '' };
                           const res = await fetch(`${API_BASE_URL}/products/${product._id || product.id}/reviews`,{
                             method:'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
                           });
