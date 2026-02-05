@@ -118,6 +118,7 @@ const AdminDashboard = () => {
     { label: 'Orders', icon: <ShoppingCart size={24} />, link: '/admin/orders', desc: 'Manage orders & delivery', emoji: '📦' },
     { label: 'Products', icon: <Package size={24} />, link: '/admin/products', desc: 'Add & manage products', emoji: '🛍️' },
     { label: 'Categories', icon: <BarChart3 size={24} />, link: '/admin/categories', desc: 'Manage categories & showcase', emoji: '📂' },
+    { label: 'Phone Models', icon: <Settings size={24} />, link: '/admin/phone-models', desc: 'Manage phone companies & models', emoji: '📱' },
     { label: 'Settings', icon: <Settings size={24} />, link: '/admin/settings', desc: 'Admin settings', emoji: '⚙️' },
   ];
 

@@ -49,11 +49,13 @@ mongoose.connect(process.env.MONGO_URI)
 // MODELS
 const Product = require('./models/product');
 const Category = require('./models/category');
+const PhoneModel = require('./models/phoneModel');
 
 // ROUTES
 const userAuthRoutes = require('./routes/userAuth');
 const adminAuthRoutes = require('./routes/adminAuth');
 const orderRoutes = require('./routes/orders');
+const phoneModelsRoutes = require('./routes/phoneModels');
 
 // --- API ENDPOINTS ---
 
@@ -63,6 +65,9 @@ app.use('/api/auth/admin', adminAuthRoutes);
 
 // Order Routes
 app.use('/api/orders', orderRoutes);
+
+// Phone Models Routes
+app.use('/api/phone-models', phoneModelsRoutes);
 
 // Product Routes (Public)
 app.get('/api/products', async (req, res) => {
@@ -118,6 +123,25 @@ app.post('/api/products/:id/reviews', async (req, res) => {
     product.reviews.unshift(review); // newest first
     await product.save();
     res.status(201).json({ message: 'Review added', review, reviews: product.reviews });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Delete review (Admin only)
+app.delete('/api/products/:id/reviews/:reviewIndex', authAdmin, authorize(['manage_products']), async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) return res.status(404).json({ message: 'Product not found' });
+    
+    const reviewIndex = parseInt(req.params.reviewIndex);
+    if (isNaN(reviewIndex) || reviewIndex < 0 || reviewIndex >= (product.reviews || []).length) {
+      return res.status(400).json({ message: 'Invalid review index' });
+    }
+
+    product.reviews.splice(reviewIndex, 1);
+    await product.save();
+    res.json({ message: 'Review deleted', reviews: product.reviews });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -186,13 +210,14 @@ app.put('/api/products/:id', authAdmin, authorize(['manage_products']), async (r
       return res.status(404).json({ message: 'Product not found' });
     }
 
-    if (req.body.name) product.name = req.body.name;
-    if (req.body.categoryId) product.categoryId = req.body.categoryId;
-    if (req.body.price) product.price = req.body.price;
-    if (req.body.image) product.image = req.body.image;
-    if (req.body.images) product.images = req.body.images;
-    if (req.body.description) product.description = req.body.description;
-    if (req.body.inStock !== undefined) product.inStock = req.body.inStock;
+    // Update all fields if they exist in request body (even if falsy)
+    if ('name' in req.body) product.name = req.body.name;
+    if ('categoryId' in req.body) product.categoryId = req.body.categoryId;
+    if ('price' in req.body) product.price = req.body.price;
+    if ('image' in req.body) product.image = req.body.image;
+    if ('images' in req.body) product.images = req.body.images;
+    if ('description' in req.body) product.description = req.body.description;
+    if ('inStock' in req.body) product.inStock = req.body.inStock;
 
     const updatedProduct = await product.save();
     res.json(updatedProduct);

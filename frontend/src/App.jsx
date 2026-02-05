@@ -13,6 +13,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminOrders from './pages/AdminOrders';
 import AdminProducts from './pages/AdminProducts';
 import AdminCategories from './pages/AdminCategories';
+import AdminPhoneModels from './pages/AdminPhoneModels';
 import Checkout from './pages/Checkout';
 import SearchResults from './pages/SearchResults';
 import BackButton from './components/BackButton';
@@ -516,6 +517,7 @@ const ProductPage = ({ addToCart }) => {
   const [showTerms, setShowTerms] = useState(false);
   const [phoneCompany, setPhoneCompany] = useState('');
   const [phoneModel, setPhoneModel] = useState('');
+  const [phoneCompanies, setPhoneCompanies] = useState({});
   const [reviews, setReviews] = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(false);
   const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '' });
@@ -552,6 +554,18 @@ const ProductPage = ({ addToCart }) => {
       }
     };
 
+    const fetchPhoneModels = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/phone-models`);
+        if (res.ok) {
+          const data = await res.json();
+          setPhoneCompanies(data);
+        }
+      } catch (err) {
+        console.log('Could not load phone models:', err);
+      }
+    };
+
     const fetchReviews = async (productId) => {
       try {
         setReviewsLoading(true);
@@ -567,6 +581,7 @@ const ProductPage = ({ addToCart }) => {
     };
 
     fetchProduct();
+    fetchPhoneModels();
   }, [id]);
 
   useEffect(() => { 
@@ -663,14 +678,14 @@ const ProductPage = ({ addToCart }) => {
                   <label className="text-sm font-semibold text-gray-700">Phone Company</label>
                   <select value={phoneCompany} onChange={(e) => { setPhoneCompany(e.target.value); setPhoneModel(''); }} className="w-full px-4 py-3 border rounded focus:outline-none">
                     <option value="">Select Company</option>
-                    {Object.keys(phoneModelOptions).map(c => <option key={c} value={c}>{c}</option>)}
+                    {Object.keys(phoneCompanies).map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="text-sm font-semibold text-gray-700">Phone Model</label>
                   <select value={phoneModel} onChange={(e) => setPhoneModel(e.target.value)} className="w-full px-4 py-3 border rounded focus:outline-none">
                     <option value="">Select Model</option>
-                    {(phoneModelOptions[phoneCompany] || []).map(m => <option key={m} value={m}>{m}</option>)}
+                    {(phoneCompanies[phoneCompany] || []).map(m => <option key={m} value={m}>{m}</option>)}
                   </select>
                 </div>
               </div>
@@ -790,7 +805,6 @@ const ProductPage = ({ addToCart }) => {
                           alert('Thanks for your review!');
                         }catch(err){console.error(err);alert('Failed to submit review')}
                       }} className="px-4 py-2 bg-yellow-600 text-white rounded">Submit Review</button>
-                      <button onClick={()=>setReviewForm({ name:'', rating:5, comment:'' })} className="px-4 py-2 bg-gray-100 rounded">Clear</button>
                     </div>
                   </div>
                 </div>
@@ -868,7 +882,7 @@ const Cart = ({ items, updateQuantity, removeItem }) => {
                 <div className="flex items-center border rounded-md"><button onClick={() => updateQuantity(item.id || item._id, Math.max(1, item.quantity - 1))} className="px-3 py-1">-</button><span className="px-2 font-bold">{item.quantity}</span><button onClick={() => updateQuantity(item.id || item._id, item.quantity + 1)} className="px-3 py-1">+</button></div>
                 <span className="font-bold text-brand-blue">₹{(Number(item.price) * item.quantity).toLocaleString('en-IN')}</span>
               </div>
-              {item.addOn && item.addOn.price ? <div className="text-xs text-gray-500 mt-2">Add-on ({item.addOn.type}) ₹{item.addOn.price} x {item.quantity} = ₹{(item.addOn.price * item.quantity).toLocaleString('en-IN')}</div> : null}
+              {item.addOn && item.addOn.price ? <div className="text-base font-semibold text-gray-700 mt-2">({item.addOn.type === 'normal' ? 'Normal Wrap' : 'Premium Wrap'}) ₹{item.addOn.price} x {item.quantity} = ₹{(item.addOn.price * item.quantity).toLocaleString('en-IN')}</div> : null}
             </div>
           </div>
         ))}
@@ -903,6 +917,7 @@ const AppContent = () => {
         <Route path="/admin/orders" element={<AdminOrders />} />
         <Route path="/admin/products" element={<AdminProducts />} />
         <Route path="/admin/categories" element={<AdminCategories />} />
+        <Route path="/admin/phone-models" element={<AdminPhoneModels />} />
       </Routes>
       <Footer />
     </div>

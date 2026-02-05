@@ -202,6 +202,28 @@ const AdminProducts = () => {
     setReviewsProductName('');
   };
 
+  const handleDeleteReview = async (reviewIndex) => {
+    if (!window.confirm('Delete this review?')) return;
+    try {
+      const productId = products.find(p => p.name === reviewsProductName)?._id;
+      if (!productId) throw new Error('Product not found');
+      
+      const res = await fetch(`${API_BASE_URL}/products/${productId}/reviews/${reviewIndex}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${adminToken}`
+        }
+      });
+
+      if (!res.ok) throw new Error('Delete failed');
+      const data = await res.json();
+      setReviewsList(data.reviews);
+    } catch (error) {
+      console.error('Error deleting review:', error);
+      alert('Failed to delete review');
+    }
+  };
+
 
   const handleMultiImageUpload = async (index, file) => {
     if (!file) return;
@@ -544,7 +566,16 @@ const AdminProducts = () => {
                             <p className="text-xs text-gray-500">{new Date(r.createdAt).toLocaleString()}</p>
                           </div>
                         </div>
-                        <div className="text-sm text-yellow-600 font-bold">{Array.from({length: Math.round(r.rating||0)}).map((_,i)=>(<span key={i}>★</span>))}{Array.from({length:5-Math.round(r.rating||0)}).map((_,i)=>(<span className="text-gray-300" key={i}>★</span>))}</div>
+                        <div className="flex items-center gap-2">
+                          <div className="text-sm text-yellow-600 font-bold">{Array.from({length: Math.round(r.rating||0)}).map((_,i)=>(<span key={i}>★</span>))}{Array.from({length:5-Math.round(r.rating||0)}).map((_,i)=>(<span className="text-gray-300" key={i}>★</span>))}</div>
+                          <button 
+                            onClick={() => handleDeleteReview(idx)}
+                            className="text-red-500 hover:text-red-700 ml-2"
+                            title="Delete review"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
                       </div>
                       <p className="text-sm text-gray-700">{r.comment}</p>
                     </div>

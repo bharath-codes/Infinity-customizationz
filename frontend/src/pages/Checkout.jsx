@@ -372,7 +372,7 @@ const Checkout = () => {
                         <span className="font-semibold text-gray-800">₹{item.price * item.quantity}</span>
                       </div>
                       {item.addOn && item.addOn.price ? (
-                        <div className="text-xs text-gray-500">Add-on ({item.addOn.type}) ₹{item.addOn.price} x {item.quantity} = ₹{item.addOn.price * item.quantity}</div>
+                        <div className="text-base font-semibold text-gray-700 mt-1">({item.addOn.type === 'normal' ? 'Normal Wrap' : 'Premium Wrap'}) ₹{item.addOn.price} x {item.quantity} = ₹{item.addOn.price * item.quantity}</div>
                       ) : null}
                     </div>
                   ))}
@@ -476,7 +476,7 @@ const Checkout = () => {
                       <p className="text-sm font-semibold text-gray-600 mb-4">UPI Payment</p>
                       <div className="flex justify-center">
                         <div className="w-72 h-72 border-2 border-gray-300 rounded-lg p-2 bg-white flex items-center justify-center overflow-hidden">
-                          <img loading="lazy" src="/images/phonepe-qr.png" alt="UPI QR" className="w-full h-full object-cover" />
+                          <img loading="lazy" src="/images/Payment-qr.png" alt="UPI QR" className="w-full h-full object-cover" />
                         </div>
                       </div>
                       <p className="text-xs text-gray-600 text-center mt-4">Scan the QR code with your UPI app to complete payment.</p>
