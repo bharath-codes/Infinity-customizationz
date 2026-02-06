@@ -27,8 +27,10 @@ const AdminPhoneModels = () => {
   const fetchPhoneModels = async () => {
     try {
       setLoading(true);
+      const token = adminToken || localStorage.getItem('adminToken');
+      if (!token) { navigate('/admin/login'); return; }
       const res = await fetch(`${API_BASE_URL}/phone-models/admin/all`, {
-        headers: { 'Authorization': `Bearer ${adminToken}` }
+        headers: { 'Authorization': `Bearer ${token}` }
       });
       if (!res.ok) throw new Error('Failed to fetch');
       const data = await res.json();
@@ -42,10 +44,8 @@ const AdminPhoneModels = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!adminToken) {
-      alert('Not authenticated');
-      return;
-    }
+    const token = adminToken || localStorage.getItem('adminToken');
+    if (!token) { alert('Not authenticated'); navigate('/admin/login'); return; }
 
     try {
       const url = editingId ? `${API_BASE_URL}/phone-models/${editingId}` : `${API_BASE_URL}/phone-models`;
@@ -55,7 +55,7 @@ const AdminPhoneModels = () => {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${adminToken}`
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(formData)
       });
@@ -84,9 +84,11 @@ const AdminPhoneModels = () => {
     if (!window.confirm('Are you sure you want to delete this company?')) return;
 
     try {
+      const token = adminToken || localStorage.getItem('adminToken');
+      if (!token) { alert('Not authenticated'); navigate('/admin/login'); return; }
       const res = await fetch(`${API_BASE_URL}/phone-models/${id}`, {
         method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${adminToken}` }
+        headers: { 'Authorization': `Bearer ${token}` }
       });
 
       if (!res.ok) throw new Error('Delete failed');
@@ -101,11 +103,13 @@ const AdminPhoneModels = () => {
     if (!newModel.trim()) return;
 
     try {
+      const token = adminToken || localStorage.getItem('adminToken');
+      if (!token) { alert('Not authenticated'); navigate('/admin/login'); return; }
       const res = await fetch(`${API_BASE_URL}/phone-models/${companyId}/models`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${adminToken}`
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ model: newModel })
       });
@@ -123,9 +127,11 @@ const AdminPhoneModels = () => {
     if (!window.confirm(`Remove "${model}"?`)) return;
 
     try {
+      const token = adminToken || localStorage.getItem('adminToken');
+      if (!token) { alert('Not authenticated'); navigate('/admin/login'); return; }
       const res = await fetch(`${API_BASE_URL}/phone-models/${companyId}/models/${encodeURIComponent(model)}`, {
         method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${adminToken}` }
+        headers: { 'Authorization': `Bearer ${token}` }
       });
 
       if (!res.ok) throw new Error('Failed');

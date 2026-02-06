@@ -114,10 +114,11 @@ app.get('/api/products/:id/reviews', async (req, res) => {
 app.post('/api/products/:id/reviews', async (req, res) => {
   try {
     const { name, rating, comment } = req.body;
-    if (!rating || !comment) return res.status(400).json({ message: 'Rating and comment are required' });
+    // Make comment optional; rating is required
+    if (rating === undefined || rating === null) return res.status(400).json({ message: 'Rating is required' });
     const product = await Product.findById(req.params.id);
     if (!product) return res.status(404).json({ message: 'Product not found' });
-    const review = { name: name || 'Anonymous', rating: Number(rating), comment };
+    const review = { name: name || 'Anonymous', rating: Number(rating), comment: comment || '' };
 
     product.reviews = product.reviews || [];
     product.reviews.unshift(review); // newest first

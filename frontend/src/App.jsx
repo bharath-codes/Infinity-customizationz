@@ -107,9 +107,6 @@ const Navbar = ({ cartCount }) => {
         <div className="hidden md:flex flex-1 max-w-md mx-auto bg-gray-50 border border-gray-200 rounded-full px-4 py-2.5 items-center text-gray-500 focus-within:bg-white transition-all">
           <Search size={18} className="text-gray-400" />
           <input id="global-search-input" type="text" placeholder="Search..." className="bg-transparent border-none outline-none text-sm ml-3 w-full text-brand-dark" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && searchTerm.trim()) navigate(`/search?q=${encodeURIComponent(searchTerm.trim())}`); }} />
-          <button type="button" aria-label="Search" className="ml-3 bg-brand-blue text-white px-3 py-1 rounded-full text-sm hover:opacity-90" onClick={() => { if (searchTerm.trim()) navigate(`/search?q=${encodeURIComponent(searchTerm.trim())}`); else document.getElementById('global-search-input')?.focus(); }}>
-            Search
-          </button>
         </div>
         <div className="flex items-center gap-4 md:gap-6 text-gray-700">
           <a href="https://wa.me/918985993948" target="_blank" rel="noreferrer" className="text-gray-700 hover:text-green-600 transition hover:scale-110"><WhatsAppIcon size={22} /></a>
