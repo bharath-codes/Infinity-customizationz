@@ -1,4 +1,5 @@
 const { verifyToken, verifyAdminToken } = require('../services/tokenService');
+const Admin = require('../models/admin');
 
 // User Authentication Middleware
 const authUser = (req, res, next) => {
@@ -48,7 +49,6 @@ const authAdmin = (req, res, next) => {
 const authorize = (requiredPermissions) => {
   return async (req, res, next) => {
     try {
-      const Admin = require('../models/admin');
       const admin = await Admin.findById(req.adminId);
       
       if (!admin) {
@@ -63,7 +63,8 @@ const authorize = (requiredPermissions) => {
       
       next();
     } catch (err) {
-      res.status(500).json({ message: 'Authorization check failed' });
+      console.error('Authorization error:', err);
+      res.status(500).json({ message: 'Authorization check failed: ' + err.message });
     }
   };
 };

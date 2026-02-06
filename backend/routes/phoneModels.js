@@ -70,9 +70,10 @@ router.put('/:id', authAdmin, authorize(['manage_products']), async (req, res) =
     if (Array.isArray(models)) phoneModel.models = models.filter(m => m);
 
     const updated = await phoneModel.save();
-    res.json(updated);
+    return res.json(updated);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    console.error('Phone model PUT error:', err);
+    return res.status(500).json({ message: err.message || 'Failed to update company' });
   }
 });
 
