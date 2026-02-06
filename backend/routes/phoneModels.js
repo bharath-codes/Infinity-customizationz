@@ -49,9 +49,10 @@ router.post('/', authAdmin, authorize(['manage_products']), async (req, res) => 
     });
 
     const saved = await phoneModel.save();
-    res.status(201).json(saved);
+    return res.status(201).json(saved);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    console.error('Phone model POST error:', err);
+    return res.status(500).json({ message: err.message || 'Failed to create company' });
   }
 });
 

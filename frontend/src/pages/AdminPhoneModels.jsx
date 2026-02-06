@@ -51,6 +51,8 @@ const AdminPhoneModels = () => {
       const url = editingId ? `${API_BASE_URL}/phone-models/${editingId}` : `${API_BASE_URL}/phone-models`;
       const method = editingId ? 'PUT' : 'POST';
 
+      console.log('Sending request:', { url, method, token: !!token, formData });
+
       const res = await fetch(url, {
         method,
         headers: {
@@ -60,16 +62,27 @@ const AdminPhoneModels = () => {
         body: JSON.stringify(formData)
       });
 
+      console.log('Response status:', res.status);
+      const responseText = await res.text();
+      console.log('Response text:', responseText);
+
+      let errData;
+      try {
+        errData = JSON.parse(responseText);
+      } catch (e) {
+        errData = { message: 'Server error: Invalid response' };
+      }
+
       if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.message || 'Operation failed');
+        throw new Error(errData.message || `Request failed with status ${res.status}`);
       }
 
       await fetchPhoneModels();
       resetForm();
+      alert('Company saved successfully!');
     } catch (error) {
       console.error('Error saving phone company:', error);
-      alert(error.message);
+      alert(`Error: ${error.message}`);
     }
   };
 
