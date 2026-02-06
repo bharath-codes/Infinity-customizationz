@@ -57,6 +57,9 @@ const adminAuthRoutes = require('./routes/adminAuth');
 const orderRoutes = require('./routes/orders');
 const phoneModelsRoutes = require('./routes/phoneModels');
 
+// MIDDLEWARE
+const { authAdmin, authorize } = require('./middleware/auth');
+
 // --- API ENDPOINTS ---
 
 // Authentication Routes
@@ -183,8 +186,6 @@ app.post('/api/upload', upload.single('image'), (req, res) => {
 });
 
 // Admin Product Management
-const { authAdmin, authorize } = require('./middleware/auth');
-
 app.post('/api/products', authAdmin, authorize(['manage_products']), async (req, res) => {
   const product = new Product({
     name: req.body.name,
