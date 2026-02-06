@@ -537,8 +537,30 @@ const ProductPage = ({ addToCart }) => {
   const [wrapPrice, setWrapPrice] = useState(0);
   const [hamperItems, setHamperItems] = useState([]);
   const [hamperItemTotal, setHamperItemTotal] = useState(0);
+  // T-Shirt configuration states
+  const [tshirtMaterial, setTshirtMaterial] = useState('poly-cotton');
+  const [tshirtNeck, setTshirtNeck] = useState('round');
+  const [tshirtSize, setTshirtSize] = useState('M');
+  const [tshirtBasePrice, setTshirtBasePrice] = useState(499);
+
   const isPhoneCase = product && (product.id === 'case1' || (product.name || '').toLowerCase().includes('phone case'));
   const isHamper = product && (product.categoryId === 'hampers' || (product.name || '').toLowerCase().includes('hamper'));
+  const isTShirt = product && (product.categoryId === 'apparel' && ((product.name || '').toLowerCase().includes('t-shirt') || (product.name || '').toLowerCase().includes('tshirt')));
+
+  // Calculate T-shirt price based on quantity
+  const calculateTShirtPrice = (quantity) => {
+    if (quantity <= 4) return 499;
+    if (quantity === 5 || quantity <= 9) return 479;
+    if (quantity >= 10 && quantity <= 19) return 459;
+    if (quantity >= 20) return 419;
+    return 499;
+  };
+
+  useEffect(() => {
+    if (isTShirt) {
+      setTshirtBasePrice(calculateTShirtPrice(qty));
+    }
+  }, [qty, isTShirt]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -643,8 +665,19 @@ const ProductPage = ({ addToCart }) => {
         return;
       }
     }
-    const customizationDetails = isPhoneCase ? `Phone: ${phoneCompany} / ${phoneModel}` : (isHamper ? JSON.stringify(hamperItems) : (product.customizationDetails || ''));
-    const item = { ...product, id: product._id || product.id, price: Number(product.price || 0), quantity: qty, customizationDetails, addOn: { type: wrapType, price: wrapPrice }, hamperItems, hamperItemTotal };
+    let customizationDetails = '';
+    if (isTShirt) {
+      customizationDetails = `Material: ${tshirtMaterial}, Neck: ${tshirtNeck}, Size: ${tshirtSize}, Qty: ${qty} pcs`;
+    } else if (isPhoneCase) {
+      customizationDetails = `Phone: ${phoneCompany} / ${phoneModel}`;
+    } else if (isHamper) {
+      customizationDetails = JSON.stringify(hamperItems);
+    } else {
+      customizationDetails = product.customizationDetails || '';
+    }
+    
+    const itemPrice = isTShirt ? tshirtBasePrice : Number(product.price || 0);
+    const item = { ...product, id: product._id || product.id, price: itemPrice, quantity: qty, customizationDetails, addOn: { type: wrapType, price: wrapPrice }, hamperItems, hamperItemTotal };
     addToCartContext(item);
     alert('Added to cart');
   };
@@ -656,8 +689,19 @@ const ProductPage = ({ addToCart }) => {
         return;
       }
     }
-    const customizationDetails = isPhoneCase ? `Phone: ${phoneCompany} / ${phoneModel}` : (isHamper ? JSON.stringify(hamperItems) : (product.customizationDetails || ''));
-    const item = { ...product, id: product._id || product.id, price: Number(product.price || 0), quantity: qty, customizationDetails, addOn: { type: wrapType, price: wrapPrice }, hamperItems, hamperItemTotal };
+    let customizationDetails = '';
+    if (isTShirt) {
+      customizationDetails = `Material: ${tshirtMaterial}, Neck: ${tshirtNeck}, Size: ${tshirtSize}, Qty: ${qty} pcs`;
+    } else if (isPhoneCase) {
+      customizationDetails = `Phone: ${phoneCompany} / ${phoneModel}`;
+    } else if (isHamper) {
+      customizationDetails = JSON.stringify(hamperItems);
+    } else {
+      customizationDetails = product.customizationDetails || '';
+    }
+    
+    const itemPrice = isTShirt ? tshirtBasePrice : Number(product.price || 0);
+    const item = { ...product, id: product._id || product.id, price: itemPrice, quantity: qty, customizationDetails, addOn: { type: wrapType, price: wrapPrice }, hamperItems, hamperItemTotal };
     addToCartContext(item);
     navigate('/checkout');
   };
@@ -692,11 +736,69 @@ const ProductPage = ({ addToCart }) => {
         <div className="space-y-6">
           <div className="mb-2"><BackButton /></div>
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-brand-dark">{product.name}</h1>
-          <p className="text-3xl font-bold text-brand-blue">₹{product.price * qty}</p>
+          <p className="text-3xl font-bold text-brand-blue">₹{isTShirt ? (tshirtBasePrice * qty) : (product.price * qty)}</p>
           <div className="bg-gray-50 p-6 rounded-xl border space-y-6">
              <div><span className="block text-sm font-bold text-gray-500 mb-3">QUANTITY</span><div className="flex items-center gap-6"><button onClick={() => setQty(Math.max(1, qty-1))} className="w-10 h-10 border rounded-full font-bold bg-white">-</button><span className="text-xl font-bold">{qty}</span><button onClick={() => setQty(qty+1)} className="w-10 h-10 border rounded-full font-bold bg-white">+</button></div></div>
              <div className="bg-blue-50 p-4 rounded-lg flex gap-3 text-sm text-blue-900 font-bold"><Info size={18}/> Photo Upload: Please send photos on WhatsApp after order.</div>
           </div>
+
+          {isTShirt && (
+            <div className="bg-indigo-50 p-6 rounded-xl border border-indigo-200 space-y-4">
+              <h3 className="text-lg font-bold text-indigo-900">👕 T-Shirt Configuration</h3>
+              
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Material Type</label>
+                <select value={tshirtMaterial} onChange={(e) => setTshirtMaterial(e.target.value)} className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                  <option value="poly-cotton">Poly Cotton (Standard)</option>
+                  <option value="pure-cotton">Pure Cotton (Premium)</option>
+                  <option value="polyester">Polyester (Quality)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Neck Type</label>
+                <select value={tshirtNeck} onChange={(e) => setTshirtNeck(e.target.value)} className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                  <option value="round">Round Neck (Crew Neck)</option>
+                  <option value="collar">Collar Neck (Polo)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Size</label>
+                <div className="grid grid-cols-4 gap-2">
+                  {['M', 'L', 'XL', 'XXL'].map(size => (
+                    <button
+                      key={size}
+                      onClick={() => setTshirtSize(size)}
+                      className={`py-3 px-2 rounded-lg border-2 font-bold transition ${
+                        tshirtSize === size
+                          ? 'border-indigo-600 bg-indigo-600 text-white'
+                          : 'border-gray-300 bg-white text-gray-800 hover:border-indigo-300'
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-white p-4 rounded-lg border-2 border-indigo-300">
+                <p className="text-sm text-gray-600 mb-2">💰 <strong>Quantity-Based Pricing:</strong></p>
+                <div className="grid grid-cols-2 gap-2 text-sm text-gray-700">
+                  <div>1-4 pcs: <span className="font-bold">₹499</span></div>
+                  <div>5-9 pcs: <span className="font-bold">₹479</span></div>
+                  <div>10-19 pcs: <span className="font-bold">₹459</span></div>
+                  <div>20+ pcs: <span className="font-bold">₹419</span></div>
+                </div>
+                <div className="mt-3 pt-3 border-t border-gray-200">
+                  <p className="font-bold text-indigo-700">
+                    Your Price: ₹{tshirtBasePrice}/pc × {qty} = <span className="text-xl">₹{tshirtBasePrice * qty}</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="space-y-3">
             {isHamper && (
               <div className="bg-blue-50 p-5 rounded-xl border border-blue-200 space-y-4">
