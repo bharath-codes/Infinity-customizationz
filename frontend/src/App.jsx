@@ -16,7 +16,7 @@ import AdminCategories from './pages/AdminCategories';
 import AdminPhoneModels from './pages/AdminPhoneModels';
 import Checkout from './pages/Checkout';
 import SearchResults from './pages/SearchResults';
-import TShirts from './pages/TShirts';
+
 import BackButton from './components/BackButton';
 
 // --- 1. GLOBAL CONTEXT & UTILITIES ---
@@ -104,7 +104,6 @@ const Navbar = ({ cartCount }) => {
                <img src="/images/logo.png" alt="Infinity" className="w-full h-full object-cover object-center scale-110" />
              </div>
           </SmartLink>
-          <SmartLink to="/tshirts" className="hidden md:inline-block ml-4 text-sm font-semibold text-gray-700 hover:text-blue-600">T-Shirts</SmartLink>
         </div>
         <div className="hidden md:flex flex-1 max-w-md mx-auto bg-gray-50 border border-gray-200 rounded-full px-4 py-2.5 items-center text-gray-500 focus-within:bg-white transition-all">
           <Search size={18} className="text-gray-400" />
@@ -863,16 +862,20 @@ const ProductPage = ({ addToCart }) => {
                     <button onClick={async ()=>{
                       if(!isAuthenticated) { alert('Please login to post a review'); navigate('/login'); return; }
                       try{
+                        const productId = product._id || product.id;
+                        if(!productId) throw new Error('Product ID not found');
                         const payload = { name: user?.name || 'Anonymous', rating: reviewForm.rating, comment: reviewForm.comment || '' };
-                        const res = await fetch(`${API_BASE_URL}/products/${product._id || product.id}/reviews`,{
+                        console.log('Submitting review:', { productId, payload });
+                        const res = await fetch(`${API_BASE_URL}/products/${productId}/reviews`,{
                           method:'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
                         });
-                        if(!res.ok) throw new Error('Failed');
                         const d = await res.json();
-                        setReviews(prev=>[d.review, ...prev]);
+                        console.log('Review response:', d, 'Status:', res.status);
+                        if(!res.ok) throw new Error(d?.message || 'Failed to submit review');
+                        setReviews(prev=>[d.review || { ...payload, _id: Date.now().toString() }, ...prev]);
                         setReviewForm({ rating:5, comment:'' });
                         alert('Thanks for your review!');
-                      }catch(err){console.error(err);alert('Failed to submit review')}
+                      }catch(err){console.error('Review error:', err);alert(`Failed to submit review: ${err.message}`)}
                     }} className="w-full px-4 py-2 bg-yellow-600 text-white rounded font-semibold hover:bg-yellow-700">Submit Review</button>
                   </div>
                 </div>
@@ -978,7 +981,6 @@ const AppContent = () => {
         <Route path="/cart" element={<Cart items={cart} updateQuantity={updateQuantity} removeItem={removeFromCart} />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/search" element={<SearchResults />} />
-        <Route path="/tshirts" element={<TShirts />} />
         
         {/* Admin Routes */}
         <Route path="/admin/login" element={<AdminLogin />} />
