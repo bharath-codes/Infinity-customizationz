@@ -16,6 +16,7 @@ import AdminCategories from './pages/AdminCategories';
 import AdminPhoneModels from './pages/AdminPhoneModels';
 import Checkout from './pages/Checkout';
 import SearchResults from './pages/SearchResults';
+import TShirts from './pages/TShirts';
 import BackButton from './components/BackButton';
 
 // --- 1. GLOBAL CONTEXT & UTILITIES ---
@@ -103,6 +104,7 @@ const Navbar = ({ cartCount }) => {
                <img src="/images/logo.png" alt="Infinity" className="w-full h-full object-cover object-center scale-110" />
              </div>
           </SmartLink>
+          <SmartLink to="/tshirts" className="hidden md:inline-block ml-4 text-sm font-semibold text-gray-700 hover:text-blue-600">T-Shirts</SmartLink>
         </div>
         <div className="hidden md:flex flex-1 max-w-md mx-auto bg-gray-50 border border-gray-200 rounded-full px-4 py-2.5 items-center text-gray-500 focus-within:bg-white transition-all">
           <Search size={18} className="text-gray-400" />
@@ -699,16 +701,27 @@ const ProductPage = ({ addToCart }) => {
           <div className="space-y-3">
             {isHamper && (
               <div className="bg-blue-50 p-5 rounded-xl border border-blue-200 space-y-4">
-                <label className="block text-sm font-semibold text-gray-700">🎁 Hamper Items (Optional)</label>
-                <p className="text-xs text-gray-600">Add Amazon/Flipkart gift items to customize your hamper. Prices get added to the total.</p>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700">🎁 Hamper Items (Optional)</label>
+                  <p className="text-xs text-gray-600 mt-1">Add Amazon/Flipkart gift items to customize your hamper. Prices get added to the total.</p>
+                  <div className="bg-white p-3 rounded-lg mt-2 border border-blue-100 text-xs text-gray-700">
+                    <p className="font-semibold mb-1">Hamper includes by default:</p>
+                    <ul className="list-disc list-inside space-y-0.5">
+                      <li>Polaroids</li>
+                      <li>Collage photos</li>
+                      <li>Lights</li>
+                      <li>Frames 4x6</li>
+                    </ul>
+                  </div>
+                </div>
                 
                 {hamperItems.map((item, idx) => (
                   <div key={idx} className="bg-white p-3 rounded-lg border border-blue-100 space-y-2">
                     <div className="flex items-center justify-between gap-2">
-                      <input type="text" placeholder="Paste Amazon/Flipkart link..." value={item.link} onChange={(e) => { const newItems = [...hamperItems]; newItems[idx].link = e.target.value; setHamperItems(newItems); }} className="flex-1 text-xs px-3 py-2 border rounded focus:outline-none" />
+                      <input type="text" placeholder="Product Name/Title" value={item.link} onChange={(e) => { const newItems = [...hamperItems]; newItems[idx].link = e.target.value; setHamperItems(newItems); }} className="flex-1 text-xs px-3 py-2 border rounded focus:outline-none" />
                       <button onClick={() => { const newItems = hamperItems.filter((_, i) => i !== idx); setHamperItems(newItems); setHamperItemTotal(newItems.reduce((sum, it) => sum + (Number(it.price) || 0), 0)); }} className="text-red-500 hover:text-red-700 font-bold text-sm">Remove</button>
                     </div>
-                    <input type="number" placeholder="Price (₹)" value={item.price} onChange={(e) => { const newItems = [...hamperItems]; newItems[idx].price = e.target.value; setHamperItems(newItems); setHamperItemTotal(newItems.reduce((sum, it) => sum + (Number(it.price) || 0), 0)); }} className="w-full text-xs px-3 py-2 border rounded focus:outline-none" min="0" />
+                    <input type="number" placeholder="enter the amount of the hamper" value={item.price} onChange={(e) => { const newItems = [...hamperItems]; newItems[idx].price = e.target.value; setHamperItems(newItems); setHamperItemTotal(newItems.reduce((sum, it) => sum + (Number(it.price) || 0), 0)); }} className="w-full text-xs px-3 py-2 border rounded focus:outline-none" min="0" />
                   </div>
                 ))}
                 
@@ -718,7 +731,7 @@ const ProductPage = ({ addToCart }) => {
                 
                 {hamperItemTotal > 0 && (
                   <div className="bg-green-50 p-2 rounded text-sm font-semibold text-green-700 text-center\">
-                    Items Total: ₹{hamperItemTotal}
+                    Added Link Product Price: ₹{hamperItemTotal}
                   </div>
                 )}
               </div>
@@ -965,6 +978,7 @@ const AppContent = () => {
         <Route path="/cart" element={<Cart items={cart} updateQuantity={updateQuantity} removeItem={removeFromCart} />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/search" element={<SearchResults />} />
+        <Route path="/tshirts" element={<TShirts />} />
         
         {/* Admin Routes */}
         <Route path="/admin/login" element={<AdminLogin />} />

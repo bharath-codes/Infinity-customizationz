@@ -399,6 +399,18 @@ const Checkout = () => {
                       {item.addOn && item.addOn.price ? (
                         <div className="text-base font-semibold text-gray-700 mt-1">({item.addOn.type === 'normal' ? 'Normal Wrap' : 'Premium Wrap'}) ₹{item.addOn.price} x {item.quantity} = ₹{item.addOn.price * item.quantity}</div>
                       ) : null}
+                      {item.hamperItems && item.hamperItems.length > 0 ? (
+                        <div className="mt-2 pl-2 border-l-2 border-blue-300 space-y-1 text-xs">
+                          <p className="font-semibold text-blue-700">Added Link Products:</p>
+                          {item.hamperItems.map((hamper, idx) => (
+                            <div key={idx} className="flex justify-between text-gray-600">
+                              <span>{hamper.link || 'Item'}</span>
+                              <span className="font-semibold">₹{hamper.price}</span>
+                            </div>
+                          ))}
+                          {item.hamperItemTotal > 0 && <p className="font-semibold text-green-700 pt-1">Added Link Product Price: ₹{item.hamperItemTotal}</p>}
+                        </div>
+                      ) : null}
                     </div>
                   ))}
                 </div>
@@ -586,13 +598,25 @@ const Checkout = () => {
                 <div className="space-y-3 mb-6 pb-6 border-b">
                   {cart.map((item) => (
                     <div key={item.id || item._id} className="text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">{item.name}</span>
-                        <span className="font-semibold">₹{item.price * item.quantity}</span>
+                      <div className="flex justify-between mb-1">
+                        <span className="font-semibold text-gray-700">{item.name}</span>
+                        <span className="font-bold">₹{item.price * item.quantity}</span>
                       </div>
                       <span className="text-xs text-gray-500">x {item.quantity}</span>
                       {item.addOn && item.addOn.price ? (
                         <div className="text-xs text-gray-500">Add-on ({item.addOn.type}) ₹{item.addOn.price} x {item.quantity} = ₹{item.addOn.price * item.quantity}</div>
+                      ) : null}
+                      {item.hamperItems && item.hamperItems.length > 0 ? (
+                        <div className="mt-1 pl-2 border-l-2 border-blue-300 space-y-1 text-xs">
+                          <p className="font-semibold text-blue-700">Added Link Products:</p>
+                          {item.hamperItems.map((hamper, idx) => (
+                            <div key={idx} className="flex justify-between text-gray-600">
+                              <span>{hamper.link || 'Item'}</span>
+                              <span className="font-semibold">₹{hamper.price}</span>
+                            </div>
+                          ))}
+                          {item.hamperItemTotal > 0 && <p className="font-semibold text-green-700 pt-1">Added Link Product Price: ₹{item.hamperItemTotal}</p>}
+                        </div>
                       ) : null}
                     </div>
                   ))}
