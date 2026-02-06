@@ -162,16 +162,11 @@ const Navbar = ({ cartCount }) => {
         <div className="fixed inset-0 bg-black/50 z-40 flex items-center justify-center p-4 pt-20">
           <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl">
             <h2 className="text-lg font-bold text-brand-dark mb-4">Search Products</h2>
-            <div className="flex flex-col gap-3">
-              <input autoFocus type="text" placeholder="Search for products, categories..." id="mobile-search-input" className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-brand-blue" onKeyDown={(e) => {
-                const v = e.target.value;
-                if (e.key === 'Enter' && v && v.trim()) { setShowMobileSearch(false); navigate(`/search?q=${encodeURIComponent(v.trim())}`); }
-              }} />
-              <div className="flex gap-2">
-                <button onClick={() => setShowMobileSearch(false)} className="flex-1 px-4 py-2 text-sm font-semibold text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50">Cancel</button>
-                <button onClick={() => { const input = document.getElementById('mobile-search-input'); if (input && input.value.trim()) { setShowMobileSearch(false); navigate(`/search?q=${encodeURIComponent(input.value.trim())}`); } }} className="flex-1 px-4 py-2 text-sm font-semibold text-white bg-brand-blue rounded-lg hover:bg-blue-700">Search</button>
-              </div>
-            </div>
+            <input autoFocus type="text" placeholder="Search for products, categories..." id="mobile-search-input" className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-brand-blue" onKeyDown={(e) => {
+              const v = e.target.value;
+              if (e.key === 'Enter' && v && v.trim()) { setShowMobileSearch(false); navigate(`/search?q=${encodeURIComponent(v.trim())}`); }
+            }} />
+            <button onClick={() => setShowMobileSearch(false)} className="w-full mt-3 px-4 py-2 text-sm font-semibold text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50">Close</button>
           </div>
         </div>
       )}
@@ -840,32 +835,35 @@ const ProductPage = ({ addToCart }) => {
                   )}
 
                   <div className="mt-4">
-                    <h4 className="font-semibold mb-2">Leave a Review</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
-                          <div className="p-3 border rounded text-sm text-gray-600">Posting as: <span className="font-semibold">{user?.name || 'Anonymous'}</span>{!isAuthenticated ? ' — please login to post' : ''}</div>
-                      <select value={reviewForm.rating} onChange={(e)=>setReviewForm({...reviewForm,rating:Number(e.target.value)})} className="p-3 border rounded">
-                        {[5,4,3,2,1].map(v=> <option key={v} value={v}>{v} stars</option>)}
-                      </select>
-                      <div />
+                    <h4 className="font-semibold mb-3">Leave a Review</h4>
+                    <div className="p-3 border rounded text-sm text-gray-600 mb-3">Posting as: <span className="font-semibold">{user?.name || 'Anonymous'}</span>{!isAuthenticated ? ' — please login to post' : ''}</div>
+                    <div className="mb-4">
+                      <p className="text-sm text-gray-600 mb-2">Rating (click to select)</p>
+                      <div className="flex gap-2">
+                        {[1,2,3,4,5].map(star => (
+                          <button key={star} onClick={() => setReviewForm({...reviewForm, rating: star})} className="text-3xl transition"
+                            style={{ color: star <= reviewForm.rating ? '#F59E0B' : '#D1D5DB' }}
+                          >
+                            ★
+                          </button>
+                        ))}
+                      </div>
                     </div>
                     <textarea value={reviewForm.comment} onChange={(e)=>setReviewForm({...reviewForm,comment:e.target.value})} rows={3} className="w-full p-3 border rounded mb-3" placeholder="Write your review (optional)"></textarea>
-                    <div className="flex gap-3">
-                      <button onClick={async ()=>{
-                        // comment is optional; rating is required (default 5)
-                        if(!isAuthenticated) { alert('Please login to post a review'); navigate('/login'); return; }
-                        try{
-                          const payload = { name: user?.name || 'Anonymous', rating: reviewForm.rating, comment: reviewForm.comment || '' };
-                          const res = await fetch(`${API_BASE_URL}/products/${product._id || product.id}/reviews`,{
-                            method:'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
-                          });
-                          if(!res.ok) throw new Error('Failed');
-                          const d = await res.json();
-                          setReviews(prev=>[d.review, ...prev]);
-                          setReviewForm({ rating:5, comment:'' });
-                          alert('Thanks for your review!');
-                        }catch(err){console.error(err);alert('Failed to submit review')}
-                      }} className="px-4 py-2 bg-yellow-600 text-white rounded">Submit Review</button>
-                    </div>
+                    <button onClick={async ()=>{
+                      if(!isAuthenticated) { alert('Please login to post a review'); navigate('/login'); return; }
+                      try{
+                        const payload = { name: user?.name || 'Anonymous', rating: reviewForm.rating, comment: reviewForm.comment || '' };
+                        const res = await fetch(`${API_BASE_URL}/products/${product._id || product.id}/reviews`,{
+                          method:'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
+                        });
+                        if(!res.ok) throw new Error('Failed');
+                        const d = await res.json();
+                        setReviews(prev=>[d.review, ...prev]);
+                        setReviewForm({ rating:5, comment:'' });
+                        alert('Thanks for your review!');
+                      }catch(err){console.error(err);alert('Failed to submit review')}
+                    }} className="w-full px-4 py-2 bg-yellow-600 text-white rounded font-semibold hover:bg-yellow-700">Submit Review</button>
                   </div>
                 </div>
               )}

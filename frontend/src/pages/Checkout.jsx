@@ -68,6 +68,8 @@ const Checkout = () => {
   }
 
   const subtotal = getTotalPrice();
+  const hamperItemsTotal = cart.reduce((sum, item) => sum + (Number(item.hamperItemTotal) || 0), 0);
+  const subtotalWithHamper = subtotal + hamperItemsTotal;
   const calcShippingForItems = (items) => {
     let s = 0;
     items.forEach(item => {
@@ -85,7 +87,7 @@ const Checkout = () => {
   };
   const shipping = calcShippingForItems(cart);
   const tax = 0;
-  const total = subtotal + shipping + tax;
+  const total = subtotalWithHamper + shipping + tax;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -156,7 +158,7 @@ const Checkout = () => {
     const id = od.orderId || upiData?.orderId || 'order';
     const createdAt = od.createdAt ? new Date(od.createdAt).toLocaleString() : new Date().toLocaleString();
     const items = (od.items || []).map(i => ({ name: i.productName || i.name || 'Item', qty: i.quantity || 1, price: i.price || 0 }));
-    const subtotalLocal = od.subtotal || subtotal;
+    const subtotalLocal = od.subtotal || subtotalWithHamper;
     const shippingLocal = od.shippingCost || shipping;
     const taxLocal = od.tax || tax;
     const totalLocal = od.totalAmount || total;
@@ -405,7 +407,7 @@ const Checkout = () => {
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Subtotal</span>
-                    <span>₹{subtotal.toLocaleString('en-IN')}</span>
+                    <span>₹{subtotalWithHamper.toLocaleString('en-IN')}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Shipping</span>
@@ -600,7 +602,7 @@ const Checkout = () => {
                 <div className="space-y-2 mb-4">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Subtotal</span>
-                    <span>₹{subtotal.toLocaleString('en-IN')}</span>
+                    <span>₹{subtotalWithHamper.toLocaleString('en-IN')}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Shipping</span>
