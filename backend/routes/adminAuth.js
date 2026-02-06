@@ -39,6 +39,8 @@ router.post('/login', async (req, res) => {
     
     const token = generateAdminToken(admin._id, admin.email);
     
+    console.log('✅ Token generated for admin:', admin.email);
+
     res.json({
       success: true,
       message: 'Login successful',

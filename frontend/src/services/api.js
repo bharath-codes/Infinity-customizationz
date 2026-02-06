@@ -22,7 +22,24 @@ const apiCall = async (endpoint, method = 'GET', data = null, token = null) => {
 
   try {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
-    const result = await response.json();
+    const responseText = await response.text();
+    
+    let result;
+    try {
+      result = JSON.parse(responseText);
+    } catch (e) {
+      console.error('JSON Parse Error - Response is not valid JSON:', {
+        endpoint,
+        status: response.status,
+        responseText: responseText.substring(0, 200),
+        error: e.message
+      });
+      throw {
+        status: response.status,
+        message: `Server error: ${response.statusText || 'Unknown error'}`,
+        data: { error: 'Invalid JSON response' }
+      };
+    }
 
     if (!response.ok) {
       throw {
