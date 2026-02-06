@@ -755,13 +755,6 @@ const Checkout = () => {
             </a>
 
             <button
-              onClick={generateInvoice}
-              className="bg-gray-800 text-white py-3 rounded-lg font-bold hover:bg-gray-900 transition-colors"
-            >
-              ⬇️ Download Invoice
-            </button>
-
-            <button
               onClick={() => navigate('/')}
               className="md:col-span-2 bg-brand-blue text-white py-3 rounded-lg font-bold hover:bg-brand-dark transition-colors"
             >

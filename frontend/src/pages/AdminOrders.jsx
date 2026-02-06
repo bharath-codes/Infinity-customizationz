@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { AlertCircle, ChevronDown, Save, Eye, Phone, MapPin, Mail, Package } from 'lucide-react';
+import { AlertCircle, ChevronDown, Save, Eye, Phone, MapPin, Mail, Package, Download } from 'lucide-react';
 import { orders as ordersApi } from '../services/api';
 
 const AdminOrders = () => {
@@ -77,6 +77,20 @@ const AdminOrders = () => {
       setError(err.message || 'Failed to update order');
       setTimeout(() => setError(''), 3000);
     }
+  };
+
+  const generateInvoice = (order) => {
+    const html = `<!doctype html><html><head><meta charset="utf-8"><title>Invoice ${order.orderId}</title><style>body{font-family:Arial,Helvetica,sans-serif;padding:20px;color:#111}h1{color:#0b63a7}h3{margin-top:20px}table{width:100%;border-collapse:collapse;margin-top:16px}th,td{padding:8px;border:1px solid #ddd;text-align:left}tfoot td{font-weight:bold}</style></head><body><h1>Infinity Customizations — Invoice</h1><p>Order ID: <strong>${order.orderId}</strong></p><p>Date: ${new Date(order.createdAt).toLocaleString()}</p><h3>Billing / Shipping</h3><p><strong>${order.customerName}</strong><br/>${order.address}<br/>${order.city}, ${order.state} ${order.pincode}<br/>Phone: ${order.phoneNumber}<br/>Email: ${order.email}</p><h3>Items</h3><table><thead><tr><th>Product</th><th>Qty</th><th>Price (₹)</th><th>Line Total (₹)</th></tr></thead><tbody>${(order.items || []).map(it=>`<tr><td>${it.productName}</td><td>${it.quantity}</td><td>${it.price.toLocaleString('en-IN')}</td><td>${(it.price*it.quantity).toLocaleString('en-IN')}</td></tr>`).join('')}</tbody><tfoot><tr><td colspan="3">Subtotal</td><td>₹${Number(order.subtotal).toLocaleString('en-IN')}</td></tr><tr><td colspan="3">Shipping</td><td>₹${Number(order.shippingCost).toLocaleString('en-IN')}</td></tr><tr><td colspan="3">Taxes</td><td>₹${Number(order.tax).toLocaleString('en-IN')}</td></tr><tr><td colspan="3">Total</td><td>₹${Number(order.totalAmount).toLocaleString('en-IN')}</td></tr></tfoot></table><p style="margin-top:18px;font-size:12px;color:#555">Thank you for your order. For support, contact infinitycustomizations@gmail.com or WhatsApp +91 89859 93948.</p></body></html>`;
+
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `invoice-${order.orderId}.html`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
 
   if (!admin || admin.role !== 'super_admin') {
@@ -282,7 +296,15 @@ const AdminOrders = () => {
 
                     {/* Pricing Breakdown */}
                     <div>
-                      <h4 className="font-bold text-gray-900 mb-3">💰 Pricing</h4>
+                      <div className="flex justify-between items-center mb-3">
+                        <h4 className="font-bold text-gray-900">💰 Pricing</h4>
+                        <button
+                          onClick={() => generateInvoice(order)}
+                          className="flex items-center gap-2 bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900 text-sm font-semibold"
+                        >
+                          <Download size={16} /> Download Invoice
+                        </button>
+                      </div>
                       <div className="bg-gray-50 p-4 rounded space-y-2">
                         <div className="flex justify-between">
                           <span className="text-gray-600">Subtotal</span>

@@ -159,14 +159,18 @@ const Navbar = ({ cartCount }) => {
         </div>
       )}
       {showMobileSearch && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center p-4">
-          <div className="bg-white rounded-xl w-full max-w-md p-4">
-            <div className="flex items-center gap-2">
-              <input autoFocus type="text" placeholder="Search..." id="mobile-search-input" className="flex-1 px-4 py-2 border rounded" onKeyDown={(e) => {
+        <div className="fixed inset-0 bg-black/50 z-40 flex items-center justify-center p-4 pt-20">
+          <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl">
+            <h2 className="text-lg font-bold text-brand-dark mb-4">Search Products</h2>
+            <div className="flex flex-col gap-3">
+              <input autoFocus type="text" placeholder="Search for products, categories..." id="mobile-search-input" className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-brand-blue" onKeyDown={(e) => {
                 const v = e.target.value;
                 if (e.key === 'Enter' && v && v.trim()) { setShowMobileSearch(false); navigate(`/search?q=${encodeURIComponent(v.trim())}`); }
               }} />
-              <button onClick={() => setShowMobileSearch(false)} className="px-3 py-2 text-sm text-gray-600">Close</button>
+              <div className="flex gap-2">
+                <button onClick={() => setShowMobileSearch(false)} className="flex-1 px-4 py-2 text-sm font-semibold text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50">Cancel</button>
+                <button onClick={() => { const input = document.getElementById('mobile-search-input'); if (input && input.value.trim()) { setShowMobileSearch(false); navigate(`/search?q=${encodeURIComponent(input.value.trim())}`); } }} className="flex-1 px-4 py-2 text-sm font-semibold text-white bg-brand-blue rounded-lg hover:bg-blue-700">Search</button>
+              </div>
             </div>
           </div>
         </div>
@@ -538,7 +542,10 @@ const ProductPage = ({ addToCart }) => {
   const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '' });
   const [wrapType, setWrapType] = useState('none');
   const [wrapPrice, setWrapPrice] = useState(0);
+  const [hamperItems, setHamperItems] = useState([]);
+  const [hamperItemTotal, setHamperItemTotal] = useState(0);
   const isPhoneCase = product && (product.id === 'case1' || (product.name || '').toLowerCase().includes('phone case'));
+  const isHamper = product && (product.categoryId === 'hampers' || (product.name || '').toLowerCase().includes('hamper'));
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -643,8 +650,8 @@ const ProductPage = ({ addToCart }) => {
         return;
       }
     }
-    const customizationDetails = isPhoneCase ? `Phone: ${phoneCompany} / ${phoneModel}` : (product.customizationDetails || '');
-    const item = { ...product, id: product._id || product.id, price: Number(product.price || 0), quantity: qty, customizationDetails, addOn: { type: wrapType, price: wrapPrice } };
+    const customizationDetails = isPhoneCase ? `Phone: ${phoneCompany} / ${phoneModel}` : (isHamper ? JSON.stringify(hamperItems) : (product.customizationDetails || ''));
+    const item = { ...product, id: product._id || product.id, price: Number(product.price || 0), quantity: qty, customizationDetails, addOn: { type: wrapType, price: wrapPrice }, hamperItems, hamperItemTotal };
     addToCartContext(item);
     alert('Added to cart');
   };
@@ -656,8 +663,8 @@ const ProductPage = ({ addToCart }) => {
         return;
       }
     }
-    const customizationDetails = isPhoneCase ? `Phone: ${phoneCompany} / ${phoneModel}` : (product.customizationDetails || '');
-    const item = { ...product, id: product._id || product.id, price: Number(product.price || 0), quantity: qty, customizationDetails, addOn: { type: wrapType, price: wrapPrice } };
+    const customizationDetails = isPhoneCase ? `Phone: ${phoneCompany} / ${phoneModel}` : (isHamper ? JSON.stringify(hamperItems) : (product.customizationDetails || ''));
+    const item = { ...product, id: product._id || product.id, price: Number(product.price || 0), quantity: qty, customizationDetails, addOn: { type: wrapType, price: wrapPrice }, hamperItems, hamperItemTotal };
     addToCartContext(item);
     navigate('/checkout');
   };
@@ -698,6 +705,33 @@ const ProductPage = ({ addToCart }) => {
              <div className="bg-blue-50 p-4 rounded-lg flex gap-3 text-sm text-blue-900 font-bold"><Info size={18}/> Photo Upload: Please send photos on WhatsApp after order.</div>
           </div>
           <div className="space-y-3">
+            {isHamper && (
+              <div className="bg-blue-50 p-5 rounded-xl border border-blue-200 space-y-4">
+                <label className="block text-sm font-semibold text-gray-700">🎁 Hamper Items (Optional)</label>
+                <p className="text-xs text-gray-600">Add Amazon/Flipkart gift items to customize your hamper. Prices get added to the total.</p>
+                
+                {hamperItems.map((item, idx) => (
+                  <div key={idx} className="bg-white p-3 rounded-lg border border-blue-100 space-y-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <input type="text" placeholder="Paste Amazon/Flipkart link..." value={item.link} onChange={(e) => { const newItems = [...hamperItems]; newItems[idx].link = e.target.value; setHamperItems(newItems); }} className="flex-1 text-xs px-3 py-2 border rounded focus:outline-none" />
+                      <button onClick={() => { const newItems = hamperItems.filter((_, i) => i !== idx); setHamperItems(newItems); setHamperItemTotal(newItems.reduce((sum, it) => sum + (Number(it.price) || 0), 0)); }} className="text-red-500 hover:text-red-700 font-bold text-sm">Remove</button>
+                    </div>
+                    <input type="number" placeholder="Price (₹)" value={item.price} onChange={(e) => { const newItems = [...hamperItems]; newItems[idx].price = e.target.value; setHamperItems(newItems); setHamperItemTotal(newItems.reduce((sum, it) => sum + (Number(it.price) || 0), 0)); }} className="w-full text-xs px-3 py-2 border rounded focus:outline-none" min="0" />
+                  </div>
+                ))}
+                
+                <button onClick={() => { setHamperItems([...hamperItems, { link: '', price: 0 }]); }} className="w-full text-sm px-3 py-2 border-2 border-blue-400 text-blue-600 font-semibold rounded-lg hover:bg-blue-50\">
+                  + Add Item
+                </button>
+                
+                {hamperItemTotal > 0 && (
+                  <div className="bg-green-50 p-2 rounded text-sm font-semibold text-green-700 text-center\">
+                    Items Total: ₹{hamperItemTotal}
+                  </div>
+                )}
+              </div>
+            )}
+
             {isPhoneCase && (
               <div className="space-y-3">
                 <div>
