@@ -472,29 +472,57 @@ const Checkout = () => {
 
                   {/* Mobile Payment Button */}
                   {typeof window !== 'undefined' && window.innerWidth <= 768 && upiData?.upiLink && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        try {
-                          const link = upiData.upiLink;
-                          const isiOS = /iP(hone|od|ad)/.test(navigator.platform) || (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
-                          // Prefer same-window navigation on iOS to reliably open UPI apps
-                          if (/^upi:/i.test(link)) {
-                            if (isiOS) window.location.href = link; else window.open(link, '_self');
-                          } else {
-                            // Fallback to opening in new tab for https links
-                            window.open(link, '_blank', 'noopener');
-                          }
-                        } catch (err) { console.error('Failed to open UPI link', err); window.location.href = upiData.upiLink; }
-                      }}
-                      className="block w-full border border-blue-600 text-blue-600 bg-white py-3 rounded-xl font-semibold text-lg text-center transition-all duration-200 hover:bg-blue-50"
-                    >
-                      Pay via UPI
-                    </button>
+                    <>
+                      {(() => {
+                        const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                        return !isiOS ? (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              try {
+                                const link = upiData.upiLink;
+                                if (/^upi:/i.test(link)) {
+                                  window.open(link, '_self');
+                                } else {
+                                  window.open(link, '_blank', 'noopener');
+                                }
+                              } catch (err) { 
+                                console.error('Failed to open UPI link', err); 
+                                try { window.location.href = upiData.upiLink; } catch (e) {}
+                              }
+                            }}
+                            className="block w-full border border-blue-600 text-blue-600 bg-white py-3 rounded-xl font-semibold text-lg text-center transition-all duration-200 hover:bg-blue-50"
+                          >
+                            Pay via UPI
+                          </button>
+                        ) : (
+                          <div className="text-center text-sm text-yellow-700 bg-yellow-50 border border-yellow-200 p-3 rounded-lg">
+                            <p className="font-semibold mb-2">⚠️ iPhone UPI Payment</p>
+                            <p className="mb-3">Scan the QR code below with your UPI app or use the link button.</p>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                try {
+                                  window.open(upiData.upiLink, '_blank');
+                                } catch (err) { 
+                                  console.error('Failed to open payment link', err);
+                                }
+                              }}
+                              className="block w-full border border-blue-600 text-blue-600 bg-white py-3 rounded-lg font-semibold text-base hover:bg-blue-50 transition-all duration-200"
+                            >
+                              Open Payment Link
+                            </button>
+                          </div>
+                        );
+                      })()}
+                    </>
                   )}
 
-                  {/* Desktop PhonePe QR Screenshot */}
-                  {typeof window !== 'undefined' && window.innerWidth > 768 && (
+                  {/* QR Code - Show on Desktop or iPhone */}
+                  {typeof window !== 'undefined' && ((() => {
+                    const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                    return window.innerWidth > 768 || isiOS;
+                  })()) && (
                     <div className="bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 p-6 rounded-xl">
                       <p className="text-sm font-semibold text-gray-600 mb-4">UPI Payment</p>
                       <div className="flex justify-center">
@@ -506,8 +534,11 @@ const Checkout = () => {
                     </div>
                   )}
 
-                  {/* Manual Payment Link for Desktop */}
-                  {typeof window !== 'undefined' && window.innerWidth > 768 && upiData?.upiLink && (
+                  {/* Manual Payment Link for Desktop - Only show on non-iOS desktop */}
+                  {typeof window !== 'undefined' && window.innerWidth > 768 && upiData?.upiLink && ((() => {
+                    const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                    return !isiOS;
+                  })()) && (
                     <button
                       type="button"
                       onClick={() => { try { window.open(upiData.upiLink, '_blank', 'noopener'); } catch (err) { window.location.href = upiData.upiLink; } }}
