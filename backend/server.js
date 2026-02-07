@@ -188,6 +188,13 @@ const storage = isCloudinaryConfigured ? multer.memoryStorage() : multer.diskSto
 
 const upload = multer({ storage: storage, limits: { fileSize: 10 * 1024 * 1024 } }); // 10MB limit
 
+// Helper: Detect protocol correctly behind proxies (Render, Railway, etc.)
+const getProtocol = (req) => {
+  const forwarded = req.get('x-forwarded-proto');
+  if (forwarded) return forwarded;
+  return req.protocol || (req.secure ? 'https' : 'http');
+};
+
 // UPLOAD ENDPOINT (Admin only - for product images, hero images, etc.)
 app.post('/api/upload', authAdmin, authorize(['manage_products', 'manage_categories']), upload.single('image'), async (req, res) => {
   if (!req.file) {
@@ -197,37 +204,49 @@ app.post('/api/upload', authAdmin, authorize(['manage_products', 'manage_categor
   try {
     // If Cloudinary is configured, upload to Cloudinary
     if (isCloudinaryConfigured) {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        {
-          folder: 'infinity-shop',
-          resource_type: 'auto',
-          quality: 'auto',
-          fetch_format: 'auto'
-        },
-        (error, result) => {
-          if (error) {
-            console.error('Cloudinary upload error:', error);
-            return res.status(500).json({ message: 'Upload failed', error: error.message });
+      console.log('🌤️ Uploading to Cloudinary...');
+      return new Promise((resolve) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            folder: 'infinity-shop',
+            resource_type: 'auto',
+            quality: 'auto',
+            fetch_format: 'auto'
+          },
+          (error, result) => {
+            if (error) {
+              console.error('❌ Cloudinary upload error:', error);
+              res.status(500).json({ message: 'Upload failed', error: error.message });
+              return resolve();
+            }
+            console.log('✅ Image uploaded to Cloudinary:', result.secure_url);
+            // Return Cloudinary secure_url as the primary URL
+            res.json({ 
+              filePath: result.secure_url,
+              url: result.secure_url,
+              cloudinary_id: result.public_id
+            });
+            resolve();
           }
-          // Return Cloudinary secure_url as the primary URL
-          res.json({ 
-            filePath: result.secure_url,
-            url: result.secure_url,
-            cloudinary_id: result.public_id
-          });
-        }
-      );
-      uploadStream.end(req.file.buffer);
+        );
+        uploadStream.on('error', (error) => {
+          console.error('❌ Upload stream error:', error);
+          res.status(500).json({ message: 'Upload failed', error: error.message });
+          resolve();
+        });
+        uploadStream.end(req.file.buffer);
+      });
     } else {
       // Fallback to local disk storage
       const relativePath = `/uploads/${req.file.filename}`;
       const host = req.get('host');
-      const protocol = req.protocol || (req.secure ? 'https' : 'http');
+      const protocol = getProtocol(req);
       const absoluteUrl = `${protocol}://${host}${relativePath}`;
+      console.log('📁 Image saved to disk:', absoluteUrl);
       res.json({ filePath: relativePath, url: absoluteUrl });
     }
   } catch (error) {
-    console.error('Upload error:', error);
+    console.error('❌ Upload error:', error);
     res.status(500).json({ message: 'Upload failed', error: error.message });
   }
 });
