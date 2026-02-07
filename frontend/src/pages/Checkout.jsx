@@ -458,7 +458,7 @@ const Checkout = () => {
             <div className="lg:col-span-2">
               <div className="bg-white rounded-xl shadow-md p-8 border border-border-light">
                 <div className="mb-4"><BackButton /></div>
-                <h1 className="text-3xl font-serif font-bold text-brand-primary mb-8">Secure Payment</h1>
+                <h1 className="text-3xl font-bold text-brand-primary mb-8">Secure Payment</h1>
 
                 {/* Order ID */}
                 <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg mb-8">
@@ -469,7 +469,7 @@ const Checkout = () => {
                 {/* Amount */}
                 <div className="bg-gradient-to-br from-brand-secondary/5 to-brand-secondary/10 border border-brand-secondary/30 p-6 rounded-xl mb-8">
                   <p className="text-sm text-brand-primary/70 mb-2">Amount to Pay</p>
-                  <p className="text-4xl font-serif font-bold text-brand-secondary">₹{upiData?.amount}</p>
+                  <p className="text-4xl font-bold text-brand-secondary">₹{upiData?.amount}</p>
                 </div>
 
                 {/* Payment Options */}
