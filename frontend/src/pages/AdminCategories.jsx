@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { AlertCircle, Plus, Trash2, Edit2, X, Save, ChevronRight, Check } from 'lucide-react';
+import { AlertCircle, Plus, Trash2, Edit2, X, Save, ChevronRight, Check, Package } from 'lucide-react';
 // ✅ Import the centralized API service
 import api from '../services/api';
 import BackButton from '../components/BackButton'; 
@@ -332,8 +333,16 @@ const AdminCategories = () => {
               </div>
 
               <div className="mt-8">
-                <h3 className="text-xl font-bold mb-4 flex items-center gap-2">✨ Showcase Products</h3>
-                <p className="text-sm text-gray-500 mb-6">Select products to highlight in the homepage slideshow for this category.</p>
+                <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+                  <h3 className="text-xl font-bold flex items-center gap-2">✨ Showcase Products</h3>
+                  <Link
+                    to={`/admin/products?category=${selectedCategory._id}`}
+                    className="flex items-center gap-2 px-4 py-2 bg-brand-blue text-white rounded-lg hover:bg-brand-blue/90 transition font-medium text-sm"
+                  >
+                    <Package size={18} /> Add Product in this Category
+                  </Link>
+                </div>
+                <p className="text-sm text-gray-500 mb-6">Select products to highlight in the homepage slideshow for this category. Products added here appear on the home page.</p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {productLoading ? (

@@ -5,6 +5,7 @@ import { ShoppingCart, Menu, X, Search, User, Heart, ChevronRight, Phone, Mail, 
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { CartProvider, useCart } from './contexts/CartContext';
 import { API_BASE_URL } from './services/api';
+import { getImageSrc, isDataUrl } from './utils/imageUtils';
 import Login from './pages/Login';
 import UserProfile from './pages/UserProfile';
 import UserOrders from './pages/UserOrders';
@@ -342,15 +343,23 @@ const HeroCarousel = () => {
   return (
     <div className="mx-4 mt-4 rounded-2xl overflow-hidden shadow-lg relative h-[200px] md:h-[350px] group border border-white/20">
       <div className="flex transition-transform duration-700 h-full" style={{ transform: `translateX(-${current * 100}%)` }}>
-        {slides.map(s => (
-          <div key={s.id} className="min-w-full h-full relative">
-            <picture>
-              <source type="image/webp" srcSet={`${encodeURI(s.image)}?q=60&w=400 400w, ${encodeURI(s.image)}?q=60&w=800 800w, ${encodeURI(s.image)}?q=60&w=1200 1200w`} />
-              <img loading="lazy" decoding="async" src={encodeURI(s.image)} srcSet={`${encodeURI(s.image)}?q=60&w=400 400w, ${encodeURI(s.image)}?q=60&w=800 800w, ${encodeURI(s.image)}?q=60&w=1200 1200w`} sizes="100vw" className="w-full h-full object-cover" alt="" />
-            </picture>
-            <div className="absolute inset-0 bg-black/30 flex items-center px-10"><h2 className="text-3xl md:text-5xl font-serif font-bold text-white">{s.title}</h2></div>
-          </div>
-        ))}
+        {slides.map(s => {
+          const src = getImageSrc(s.image);
+          if (!src) return null;
+          return (
+            <div key={s.id} className="min-w-full h-full relative">
+              {isDataUrl(src) ? (
+                <img loading="lazy" src={src} className="w-full h-full object-cover" alt="" />
+              ) : (
+                <picture>
+                  <source type="image/webp" srcSet={`${src}?q=60&w=400 400w, ${src}?q=60&w=800 800w, ${src}?q=60&w=1200 1200w`} />
+                  <img loading="lazy" decoding="async" src={src} srcSet={`${src}?q=60&w=400 400w, ${src}?q=60&w=800 800w, ${src}?q=60&w=1200 1200w`} sizes="100vw" className="w-full h-full object-cover" alt="" />
+                </picture>
+              )}
+              <div className="absolute inset-0 bg-black/30 flex items-center px-10"><h2 className="text-3xl md:text-5xl font-serif font-bold text-white">{s.title}</h2></div>
+            </div>
+          );
+        })}
       </div>
       <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1">{slides.map((_, i) => (<div key={i} className={`h-1 rounded-full transition-all ${current === i ? 'w-6 bg-brand-gold' : 'w-2 bg-white/50'}`}></div>))}</div>
     </div>
@@ -387,14 +396,22 @@ const ShowcaseCard = ({ product, activeIdx, hidePriceOnHome }) => {
           </div>
         )}
         <div className="flex h-full transition-transform duration-700 ease-in-out" style={{ transform: `translateX(-${(activeIdx % images.length) * 100}%)` }}>
-          {images.map((img, i) => (
-            <div key={i} className="min-w-full h-full relative">
-              <picture>
-                <source type="image/webp" srcSet={`${encodeURI(img)}?q=60&w=400 400w, ${encodeURI(img)}?q=60&w=800 800w, ${encodeURI(img)}?q=60&w=1200 1200w`} />
-                <img loading="lazy" decoding="async" src={encodeURI(img)} srcSet={`${encodeURI(img)}?q=60&w=400 400w, ${encodeURI(img)}?q=60&w=800 800w, ${encodeURI(img)}?q=60&w=1200 1200w`} sizes="100vw" className="w-full h-full object-cover" alt="" />
-              </picture>
-            </div>
-          ))}
+          {images.map((img, i) => {
+            const src = getImageSrc(img);
+            if (!src) return <div key={i} className="min-w-full h-full relative bg-gray-200 flex items-center justify-center"><span className="text-gray-400 text-sm">No image</span></div>;
+            return (
+              <div key={i} className="min-w-full h-full relative">
+                {isDataUrl(src) ? (
+                  <img loading="lazy" src={src} className="w-full h-full object-cover" alt="" />
+                ) : (
+                  <picture>
+                    <source type="image/webp" srcSet={`${src}?q=60&w=400 400w, ${src}?q=60&w=800 800w, ${src}?q=60&w=1200 1200w`} />
+                    <img loading="lazy" decoding="async" src={src} srcSet={`${src}?q=60&w=400 400w, ${src}?q=60&w=800 800w, ${src}?q=60&w=1200 1200w`} sizes="100vw" className="w-full h-full object-cover" alt="" />
+                  </picture>
+                )}
+              </div>
+            );
+          })}
         </div>
         <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-brand-blue/90 p-3 pt-10">
           <h4 className="text-white font-bold text-sm truncate">{product.name}</h4>
@@ -500,10 +517,16 @@ const BestSellers = ({ hidePriceOnHome }) => {
               </div>
             )}
             <div className="h-40 md:h-60 overflow-hidden relative bg-gray-50">
-              <picture>
-                <source type="image/webp" srcSet={`${encodeURI(p.image)}?q=60&w=400 400w, ${encodeURI(p.image)}?q=60&w=800 800w`} />
-                <img loading="lazy" decoding="async" src={encodeURI(p.image)} srcSet={`${encodeURI(p.image)}?q=60&w=400 400w, ${encodeURI(p.image)}?q=60&w=800 800w`} sizes="(max-width: 768px) 50vw, 20vw" alt={p.name} className="w-full h-full object-cover" />
-              </picture>
+              {(() => {
+                const src = getImageSrc(p.images?.[0] || p.image);
+                if (!src) return <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">No image</div>;
+                return isDataUrl(src) ? <img loading="lazy" src={src} alt={p.name} className="w-full h-full object-cover" /> : (
+                  <picture>
+                    <source type="image/webp" srcSet={`${src}?q=60&w=400 400w, ${src}?q=60&w=800 800w`} />
+                    <img loading="lazy" decoding="async" src={src} srcSet={`${src}?q=60&w=400 400w, ${src}?q=60&w=800 800w`} sizes="(max-width: 768px) 50vw, 20vw" alt={p.name} className="w-full h-full object-cover" />
+                  </picture>
+                );
+              })()}
             </div>
             <div className="p-2 md:p-3">
               <h4 className="font-bold text-gray-900 text-xs md:text-sm truncate">{p.name}</h4>
@@ -516,19 +539,39 @@ const BestSellers = ({ hidePriceOnHome }) => {
   );
 };
 
+const defaultShowcaseCategories = [
+  { categoryId: "frames", categoryTitle: "Photo Frames" },
+  { categoryId: "magazines", categoryTitle: "Magazines & Books" },
+  { categoryId: "memories", categoryTitle: "Polaroids & Memories" },
+  { categoryId: "flowers", categoryTitle: "Flowers & Bouquets" },
+  { categoryId: "hampers", categoryTitle: "Hampers & Combos" },
+  { categoryId: "apparel", categoryTitle: "T-Shirts & Apparel" },
+  { categoryId: "essentials", categoryTitle: "Phone Cases & Essentials" },
+  { categoryId: "addons", categoryTitle: "Calendars & Magnets" },
+  { categoryId: "vintage", categoryTitle: "Vintage Collection" },
+  { categoryId: "smart-digital", categoryTitle: "Smart & Digital Services" },
+];
+
 const Home = () => {
-  const showcaseCategories = [
-    { categoryId: "frames", categoryTitle: "Photo Frames" },
-    { categoryId: "magazines", categoryTitle: "Magazines & Books" },
-    { categoryId: "memories", categoryTitle: "Polaroids & Memories" },
-    { categoryId: "flowers", categoryTitle: "Flowers & Bouquets" },
-    { categoryId: "hampers", categoryTitle: "Hampers & Combos" },
-    { categoryId: "apparel", categoryTitle: "T-Shirts & Apparel" },
-    { categoryId: "essentials", categoryTitle: "Phone Cases & Essentials" },
-    { categoryId: "addons", categoryTitle: "Calendars & Magnets" },
-    { categoryId: "vintage", categoryTitle: "Vintage Collection" },
-    { categoryId: "smart-digital", categoryTitle: "Smart & Digital Services" },
-  ];
+  const [showcaseCategories, setShowcaseCategories] = useState(defaultShowcaseCategories);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/categories`);
+        if (res.ok) {
+          const cats = await res.json();
+          if (Array.isArray(cats) && cats.length > 0) {
+            const filtered = cats.filter(c => c._id !== 'hero'); // hero is for banner images only
+            setShowcaseCategories(filtered.map(c => ({ categoryId: c._id, categoryTitle: c.title || c._id })));
+          }
+        }
+      } catch (err) {
+        // keep default categories
+      }
+    };
+    loadCategories();
+  }, []);
 
   const location = useLocation();
   const hidePriceOnHome = location.pathname === '/';
@@ -598,10 +641,16 @@ const CategoryPage = () => {
                   </div>
                 )}
                 <div className="rounded-xl overflow-hidden aspect-[4/5] bg-gray-100">
-                  <picture>
-                    <source type="image/webp" srcSet={`${encodeURI(p.image)}?q=60&w=400 400w, ${encodeURI(p.image)}?q=60&w=800 800w`} />
-                    <img loading="lazy" decoding="async" src={encodeURI(p.image)} srcSet={`${encodeURI(p.image)}?q=60&w=400 400w, ${encodeURI(p.image)}?q=60&w=800 800w`} sizes="(max-width: 768px) 50vw, 25vw" className="w-full h-full object-cover group-hover:scale-105 transition" alt="" />
-                  </picture>
+                  {(() => {
+                    const src = getImageSrc(p.images?.[0] || p.image);
+                    if (!src) return <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">No image</div>;
+                    return isDataUrl(src) ? <img loading="lazy" src={src} className="w-full h-full object-cover group-hover:scale-105 transition" alt="" /> : (
+                      <picture>
+                        <source type="image/webp" srcSet={`${src}?q=60&w=400 400w, ${src}?q=60&w=800 800w`} />
+                        <img loading="lazy" decoding="async" src={src} srcSet={`${src}?q=60&w=400 400w, ${src}?q=60&w=800 800w`} sizes="(max-width: 768px) 50vw, 25vw" className="w-full h-full object-cover group-hover:scale-105 transition" alt="" />
+                      </picture>
+                    );
+                  })()}
                 </div>
                 <h3 className="font-serif font-bold text-brand-dark text-sm mt-3 truncate">{p.name}</h3>
                 <p className="text-brand-blue font-bold text-sm">₹{p.price}</p>
@@ -925,20 +974,32 @@ const ProductPage = ({ addToCart }) => {
       <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-2 gap-12">
         <div>
           <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-sm border border-gray-100">
-            <picture>
-              <source type="image/webp" srcSet={`${encodeURI(mainImage)}?q=60&w=400 400w, ${encodeURI(mainImage)}?q=60&w=800 800w, ${encodeURI(mainImage)}?q=60&w=1200 1200w`} />
-              <img loading="lazy" decoding="async" src={encodeURI(mainImage)} srcSet={`${encodeURI(mainImage)}?q=60&w=400 400w, ${encodeURI(mainImage)}?q=60&w=800 800w, ${encodeURI(mainImage)}?q=60&w=1200 1200w`} sizes="(max-width: 768px) 80vw, 40vw" className="w-full h-full object-cover" alt="" />
-            </picture>
+            {(() => {
+              const src = getImageSrc(mainImage);
+              if (!src) return <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100">No image</div>;
+              return isDataUrl(src) ? (
+                <img loading="lazy" src={src} className="w-full h-full object-cover" alt="" />
+              ) : (
+                <picture>
+                  <source type="image/webp" srcSet={`${src}?q=60&w=400 400w, ${src}?q=60&w=800 800w, ${src}?q=60&w=1200 1200w`} />
+                  <img loading="lazy" decoding="async" src={src} srcSet={`${src}?q=60&w=400 400w, ${src}?q=60&w=800 800w, ${src}?q=60&w=1200 1200w`} sizes="(max-width: 768px) 80vw, 40vw" className="w-full h-full object-cover" alt="" />
+                </picture>
+              );
+            })()}
           </div>
 
           {/* Thumbnails */}
           {images && images.length > 1 && (
             <div className="mt-3 flex gap-3">
-              {images.map((img, idx) => (
-                <button key={idx} onClick={() => setMainImage(img)} className={`w-16 h-16 rounded overflow-hidden border ${img === mainImage ? 'ring-2 ring-brand-blue' : ''}`}>
-                  <img src={encodeURI(img)} alt={`thumb-${idx}`} className="w-full h-full object-cover" />
-                </button>
-              ))}
+              {images.map((img, idx) => {
+                const thumbSrc = getImageSrc(img);
+                if (!thumbSrc) return null;
+                return (
+                  <button key={idx} onClick={() => setMainImage(img)} className={`w-16 h-16 rounded overflow-hidden border ${img === mainImage ? 'ring-2 ring-brand-blue' : ''}`}>
+                    <img src={thumbSrc} alt={`thumb-${idx}`} className="w-full h-full object-cover" />
+                  </button>
+                );
+              })}
             </div>
           )}
         </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { API_BASE_URL } from '../services/api';
+import { getImageSrc, isDataUrl } from '../utils/imageUtils';
 import BackButton from '../components/BackButton';
 import { products as localProducts } from '../data';
 
@@ -63,10 +64,18 @@ export default function SearchResults() {
                   </div>
                 )}
                 <div className="h-40 overflow-hidden bg-gray-50 mb-2">
-                  <picture>
-                    <source type="image/webp" srcSet={`${encodeURI(p.image)}?q=60&w=400 400w, ${encodeURI(p.image)}?q=60&w=800 800w`} />
-                    <img loading="lazy" decoding="async" src={encodeURI(p.image)} srcSet={`${encodeURI(p.image)}?q=60&w=400 400w, ${encodeURI(p.image)}?q=60&w=800 800w`} sizes="(max-width: 768px) 50vw, 25vw" alt={p.name} className="w-full h-full object-cover" />
-                  </picture>
+                  {(() => {
+                    const src = getImageSrc(p.images?.[0] || p.image);
+                    if (!src) return <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">No image</div>;
+                    return isDataUrl(src) ? (
+                      <img loading="lazy" src={src} alt={p.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <picture>
+                        <source type="image/webp" srcSet={`${src}?q=60&w=400 400w, ${src}?q=60&w=800 800w`} />
+                        <img loading="lazy" decoding="async" src={src} srcSet={`${src}?q=60&w=400 400w, ${src}?q=60&w=800 800w`} sizes="(max-width: 768px) 50vw, 25vw" alt={p.name} className="w-full h-full object-cover" />
+                      </picture>
+                    );
+                  })()}
                 </div>
                 <h3 className="font-semibold text-sm truncate">{p.name}</h3>
                 <div className="text-brand-blue font-bold">₹{p.price}</div>

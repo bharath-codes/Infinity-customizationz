@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Plus, Edit2, Trash2, Search, X, Upload } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../services/api';
@@ -7,6 +7,8 @@ import { API_BASE_URL } from '../services/api';
 
 const AdminProducts = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const categoryFromUrl = searchParams.get('category');
   const { admin, adminToken } = useAuth();
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -56,6 +58,15 @@ const AdminProducts = () => {
       }
     })();
   }, [admin, navigate]);
+
+  // When coming from Categories page with ?category=xxx, open Add form with category pre-selected
+  useEffect(() => {
+    if (categoryFromUrl && categories.length > 0) {
+      setFormData(prev => ({ ...prev, categoryId: categoryFromUrl }));
+      setShowAddForm(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [categoryFromUrl, categories.length]);
 
   const fetchProducts = async () => {
     try {
@@ -282,9 +293,11 @@ const AdminProducts = () => {
     }
   };
 
-  const filteredProducts = products.filter(product =>
-    product.name?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredProducts = products.filter(product => {
+    const matchesSearch = product.name?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = !categoryFromUrl || product.categoryId === categoryFromUrl;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="min-h-screen bg-brand-light">
@@ -301,7 +314,9 @@ const AdminProducts = () => {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-brand-dark">Products Management</h1>
-              <p className="text-sm text-gray-500 mt-1">Add, edit, or delete products</p>
+              <p className="text-sm text-gray-500 mt-1">
+                {categoryFromUrl ? `Filtered: ${categories.find(c => c._id === categoryFromUrl)?.title || categoryFromUrl}` : 'Add, edit, or delete products'}
+              </p>
             </div>
             {!showAddForm && (
               <button
