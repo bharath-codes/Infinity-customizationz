@@ -447,9 +447,7 @@ const frontendBuildPath = path.join(__dirname, '..', 'frontend', 'dist');
 if (fs.existsSync(frontendBuildPath)) {
   app.use(express.static(frontendBuildPath));
   // Return index.html for non-API routes (SPA support)
-  app.get('*', (req, res, next) => {
-    // Skip API routes
-    if (req.path.startsWith('/api')) return next();
+  app.get(/^(?!\/api)/, (req, res, next) => {
     res.sendFile(path.join(frontendBuildPath, 'index.html'));
   });
 }

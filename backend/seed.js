@@ -427,6 +427,70 @@ const products = [
     inStock: true 
   },
 
+  // ===== NEW TSHIRT VARIANTS =====
+  {
+    _id: "collared-tshirt",
+    categoryId: "apparel",
+    subcategoryName: "Collared",
+    name: "Collared T-Shirts",
+    price: 299,
+    image: "/images/collared-tshirt.jpg",
+    images: ["/images/collared-tshirt.jpg"],
+    description: "Premium collared t-shirts available in poly cotton and pure cotton. Choose your fabric and color from our amazing collection.",
+    inStock: true,
+    pricingType: "fabric-based",
+    fabrics: [
+      { name: "Poly Cotton", price: 299, priceDifference: 0 },
+      { name: "Pure Cotton", price: 399, priceDifference: 100 }
+    ],
+    colors: ["Maroon", "Navy Blue", "Black", "White"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    minimumOrderQuantity: 0
+  },
+  {
+    _id: "collarless-tshirt",
+    categoryId: "apparel",
+    subcategoryName: "Collarless",
+    name: "Collarless T-Shirts",
+    price: 399,
+    image: "/images/collarless-tshirt.jpg",
+    images: ["/images/collarless-tshirt.jpg"],
+    description: "Comfortable collarless t-shirts in nylon and pure cotton options. Perfect for casual wear with vibrant colors.",
+    inStock: true,
+    pricingType: "fabric-based",
+    fabrics: [
+      { name: "Nylon", price: 399, priceDifference: 0 },
+      { name: "Pure Cotton", price: 449, priceDifference: 50 }
+    ],
+    colors: ["Maroon", "Navy Blue", "Black", "White"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    minimumOrderQuantity: 0
+  },
+  {
+    _id: "signature-tshirt",
+    categoryId: "apparel",
+    subcategoryName: "Signature",
+    name: "Signature T-Shirts",
+    price: 179,
+    image: "/images/signature-tshirt.jpg",
+    images: ["/images/signature-tshirt.jpg"],
+    description: "Premium signature polyester t-shirts with minimum order of 10 pieces. Bulk discounts available. Perfect for corporate gifting and events.",
+    inStock: true,
+    pricingType: "quantity-based",
+    fabrics: [
+      { name: "Polyester", price: 179, priceDifference: 0 }
+    ],
+    colors: ["White", "Light Blue", "Light Pink", "Light Yellow"],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    minimumOrderQuantity: 10,
+    quantityBasedPricing: [
+      { quantity: 10, price: 179 },
+      { quantity: 20, price: 169 },
+      { quantity: 50, price: 159 },
+      { quantity: 100, price: 149 }
+    ]
+  },
+
   // ===== CATEGORY 7: PHONE CASES & ESSENTIALS (4 Products) =====
   { 
     _id: "case1",
@@ -693,8 +757,11 @@ const categories = [
     title: 'T-Shirts & Accessories',
     desc: 'Customized & printed t-shirts, keychains & pouches with your designs.',
     emoji: '👕',
-    showcaseProducts: ['t1', 't2'],  // Customized T-Shirts
+    showcaseProducts: ['collared-tshirt', 'collarless-tshirt', 'signature-tshirt'],
     subCategories: [
+      { name: 'Collared', description: 'Premium collared t-shirts with fabric options' },
+      { name: 'Collarless', description: 'Comfortable collarless t-shirts' },
+      { name: 'Signature', description: 'Bulk signature polyester t-shirts with MOQ' },
       { name: 'T-shirts', description: 'Custom printed' },
       { name: 'Keychains', description: 'Personalized' },
       { name: 'Pouches', description: 'Customized bags' }

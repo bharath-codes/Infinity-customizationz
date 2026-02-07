@@ -18,6 +18,7 @@ import Checkout from './pages/Checkout';
 import SearchResults from './pages/SearchResults';
 
 import BackButton from './components/BackButton';
+import ProductVariantSelector from './components/ProductVariantSelector';
 
 // --- 1. GLOBAL CONTEXT & UTILITIES ---
 const LoaderContext = createContext();
@@ -579,6 +580,16 @@ const ProductPage = ({ addToCart }) => {
   const [signatureDayTShirtNeck, setSignatureDayTShirtNeck] = useState('colored');
   const [signatureDaySelectedColor, setSignatureDaySelectedColor] = useState('maroon'); // For colored neck
   const [signatureDayBasePrice, setSignatureDayBasePrice] = useState(179);
+  
+  // New fabric-based t-shirt variant state
+  const [currentVariant, setCurrentVariant] = useState({
+    fabric: '',
+    color: '',
+    size: '',
+    quantity: 1,
+    unitPrice: 0,
+    totalPrice: 0
+  });
 
   // Color options for t-shirts
   const coloredNeckColors = [
@@ -600,6 +611,11 @@ const ProductPage = ({ addToCart }) => {
   const isTShirt = product && (product.categoryId === 'apparel' && ((product.name || '').toLowerCase().includes('t-shirt') || (product.name || '').toLowerCase().includes('tshirt')));
   const isCustomizedTShirt = product && product.id === 't1';
   const isSignatureDayTShirt = product && product.id === 't2';
+  
+  // New fabric/color/size based t-shirts
+  const isFabricBasedTShirt = product && ['collared-tshirt', 'collarless-tshirt'].includes(product._id);
+  const isQuantityBasedTShirt = product && product._id === 'signature-tshirt';
+  const isNewStyleTShirt = isFabricBasedTShirt || isQuantityBasedTShirt;
 
   // Calculate T-shirt price based on quantity
   const calculateTShirtPrice = (quantity) => {
@@ -738,18 +754,37 @@ const ProductPage = ({ addToCart }) => {
   }, [product, wrapType]);
 
   const handleAddToCart = () => {
+    // Validate MOQ for new t-shirts
+    if (isNewStyleTShirt && product.minimumOrderQuantity > 1) {
+      if (currentVariant.quantity < product.minimumOrderQuantity) {
+        alert(`Minimum order quantity is ${product.minimumOrderQuantity} pieces. Please select at least that many.`);
+        return;
+      }
+    }
+    
     if (isPhoneCase) {
       if (!phoneCompany || !phoneModel) {
         alert('Please select phone company and model');
         return;
       }
     }
+    
     let customizationDetails = '';
-    if (isCustomizedTShirt) {
+    let itemPrice = Number(product.price || 0);
+    let itemQuantity = qty;
+    
+    if (isNewStyleTShirt) {
+      // Handle new fabric-based and quantity-based t-shirts
+      customizationDetails = `${product.subcategoryName} T-Shirt: Fabric: ${currentVariant.fabric}, Color: ${currentVariant.color}, Size: ${currentVariant.size}, Qty: ${currentVariant.quantity} pcs`;
+      itemPrice = currentVariant.unitPrice;
+      itemQuantity = currentVariant.quantity;
+    } else if (isCustomizedTShirt) {
       const selectedColor = tshirtNeck === 'round' ? tshirtColor : 'N/A';
       customizationDetails = `Material: ${tshirtMaterial}, Neck: ${tshirtNeck}, Color: ${selectedColor}, Size: ${tshirtSize}, Qty: ${qty} pcs`;
+      itemPrice = tshirtBasePrice;
     } else if (isSignatureDayTShirt) {
       customizationDetails = `Signature Day T-Shirt, Neck: ${signatureDayTShirtNeck}, Color: ${signatureDaySelectedColor}, Qty: ${qty} pcs`;
+      itemPrice = signatureDayBasePrice;
     } else if (isPhoneCase) {
       customizationDetails = `Phone: ${phoneCompany} / ${phoneModel}`;
     } else if (isHamper) {
@@ -758,33 +793,44 @@ const ProductPage = ({ addToCart }) => {
       customizationDetails = product.customizationDetails || '';
     }
     
-    let itemPrice;
-    if (isCustomizedTShirt) {
-      itemPrice = tshirtBasePrice;
-    } else if (isSignatureDayTShirt) {
-      itemPrice = signatureDayBasePrice;
-    } else {
-      itemPrice = Number(product.price || 0);
-    }
-    
-    const item = { ...product, id: product._id || product.id, price: itemPrice, quantity: qty, customizationDetails, addOn: { type: wrapType, price: wrapPrice }, hamperItems, hamperItemTotal };
+    const item = { ...product, id: product._id || product.id, price: itemPrice, quantity: itemQuantity, customizationDetails, addOn: { type: wrapType, price: wrapPrice }, hamperItems, hamperItemTotal };
     addToCartContext(item);
     alert('Added to cart');
   };
 
+
   const handleBuyNow = () => {
+    // Validate MOQ for new t-shirts
+    if (isNewStyleTShirt && product.minimumOrderQuantity > 1) {
+      if (currentVariant.quantity < product.minimumOrderQuantity) {
+        alert(`Minimum order quantity is ${product.minimumOrderQuantity} pieces. Please select at least that many.`);
+        return;
+      }
+    }
+    
     if (isPhoneCase) {
       if (!phoneCompany || !phoneModel) {
         alert('Please select phone company and model');
         return;
       }
     }
+    
     let customizationDetails = '';
-    if (isCustomizedTShirt) {
+    let itemPrice = Number(product.price || 0);
+    let itemQuantity = qty;
+    
+    if (isNewStyleTShirt) {
+      // Handle new fabric-based and quantity-based t-shirts
+      customizationDetails = `${product.subcategoryName} T-Shirt: Fabric: ${currentVariant.fabric}, Color: ${currentVariant.color}, Size: ${currentVariant.size}, Qty: ${currentVariant.quantity} pcs`;
+      itemPrice = currentVariant.unitPrice;
+      itemQuantity = currentVariant.quantity;
+    } else if (isCustomizedTShirt) {
       const selectedColor = tshirtNeck === 'round' ? tshirtColor : 'N/A';
       customizationDetails = `Material: ${tshirtMaterial}, Neck: ${tshirtNeck}, Color: ${selectedColor}, Size: ${tshirtSize}, Qty: ${qty} pcs`;
+      itemPrice = tshirtBasePrice;
     } else if (isSignatureDayTShirt) {
       customizationDetails = `Signature Day T-Shirt, Neck: ${signatureDayTShirtNeck}, Color: ${signatureDaySelectedColor}, Qty: ${qty} pcs`;
+      itemPrice = signatureDayBasePrice;
     } else if (isPhoneCase) {
       customizationDetails = `Phone: ${phoneCompany} / ${phoneModel}`;
     } else if (isHamper) {
@@ -793,16 +839,7 @@ const ProductPage = ({ addToCart }) => {
       customizationDetails = product.customizationDetails || '';
     }
     
-    let itemPrice;
-    if (isCustomizedTShirt) {
-      itemPrice = tshirtBasePrice;
-    } else if (isSignatureDayTShirt) {
-      itemPrice = signatureDayBasePrice;
-    } else {
-      itemPrice = Number(product.price || 0);
-    }
-    
-    const item = { ...product, id: product._id || product.id, price: itemPrice, quantity: qty, customizationDetails, addOn: { type: wrapType, price: wrapPrice }, hamperItems, hamperItemTotal };
+    const item = { ...product, id: product._id || product.id, price: itemPrice, quantity: itemQuantity, customizationDetails, addOn: { type: wrapType, price: wrapPrice }, hamperItems, hamperItemTotal };
     addToCartContext(item);
     navigate('/checkout');
   };
@@ -837,13 +874,23 @@ const ProductPage = ({ addToCart }) => {
         <div className="space-y-6">
           <div className="mb-2"><BackButton /></div>
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-brand-dark">{product.name}</h1>
-          <p className="text-3xl font-bold text-brand-blue">₹{isCustomizedTShirt ? (tshirtBasePrice * qty) : isSignatureDayTShirt ? (signatureDayBasePrice * qty) : (product.price * qty)}</p>
-          <div className="bg-gray-50 p-6 rounded-xl border space-y-6">
-             <div><span className="block text-sm font-bold text-gray-500 mb-3">QUANTITY</span><div className="flex items-center gap-6"><button onClick={() => setQty(Math.max(1, qty-1))} className="w-10 h-10 border rounded-full font-bold bg-white">-</button><span className="text-xl font-bold">{qty}</span><button onClick={() => setQty(qty+1)} className="w-10 h-10 border rounded-full font-bold bg-white">+</button></div></div>
-             <div className="bg-blue-50 p-4 rounded-lg flex gap-3 text-sm text-blue-900 font-bold"><Info size={18}/> Photo Upload: Please send photos on WhatsApp after order.</div>
-          </div>
+          <p className="text-3xl font-bold text-brand-blue">₹{isNewStyleTShirt ? currentVariant.totalPrice : isCustomizedTShirt ? (tshirtBasePrice * qty) : isSignatureDayTShirt ? (signatureDayBasePrice * qty) : (product.price * qty)}</p>
+          
+          {!isNewStyleTShirt && (
+            <div className="bg-gray-50 p-6 rounded-xl border space-y-6">
+              <div><span className="block text-sm font-bold text-gray-500 mb-3">QUANTITY</span><div className="flex items-center gap-6"><button onClick={() => setQty(Math.max(1, qty-1))} className="w-10 h-10 border rounded-full font-bold bg-white">-</button><span className="text-xl font-bold">{qty}</span><button onClick={() => setQty(qty+1)} className="w-10 h-10 border rounded-full font-bold bg-white">+</button></div></div>
+              <div className="bg-blue-50 p-4 rounded-lg flex gap-3 text-sm text-blue-900 font-bold"><Info size={18}/> Photo Upload: Please send photos on WhatsApp after order.</div>
+            </div>
+          )}
 
-          {isTShirt && (
+          {isNewStyleTShirt && product && (
+            <ProductVariantSelector 
+              product={product} 
+              onVariantChange={setCurrentVariant}
+            />
+          )}
+
+          {isTShirt && !isNewStyleTShirt && (
             <div className="bg-indigo-50 p-6 rounded-xl border border-indigo-200 space-y-4">
               <h3 className="text-lg font-bold text-indigo-900">👕 T-Shirt Configuration</h3>
               
