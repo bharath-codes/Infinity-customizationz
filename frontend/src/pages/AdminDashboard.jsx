@@ -470,7 +470,7 @@ const AdminDashboard = () => {
 
           <div className="bg-white rounded-xl shadow-md p-6 border border-border-light">
             <h3 className="text-lg font-semibold mb-4">Edit Hero / Banner Images</h3>
-            <p className="text-sm text-gray-500 mb-3">Upload up to 3 hero images (automatically compressed). Max 10MB per image.</p>
+            <p className="text-sm text-gray-500 mb-3">Manage homepage carousel here. Upload up to 3 hero images (auto-compressed). Max 10MB per image.</p>
             {heroUploading && <p className="text-sm text-blue-600 font-semibold mb-3">📸 Compressing image...</p>}
             <div className="flex gap-3 mb-4">
               {[0,1,2].map(i => (

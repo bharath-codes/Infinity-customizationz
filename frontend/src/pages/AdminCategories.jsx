@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { AlertCircle, Plus, Trash2, Edit2, X, Save, ChevronRight, Check, Package } from 'lucide-react';
 // ✅ Import the centralized API service
 import api from '../services/api';
+import { getImageSrc } from '../utils/imageUtils';
 import BackButton from '../components/BackButton'; 
 
 const AdminCategories = () => {
@@ -32,54 +33,6 @@ const AdminCategories = () => {
     loadInitialData();
   }, []);
 
-  // showcase images for hero (3 images)
-  const [showcaseImages, setShowcaseImagesState] = useState([null, null, null]);
-
-  useEffect(() => {
-    if (selectedCategory) {
-      setShowcaseImagesState(selectedCategory.showcaseImages || [null, null, null]);
-    }
-  }, [selectedCategory]);
-
-  const convertFileToBase64 = (file) => new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (err) => reject(err);
-    reader.readAsDataURL(file);
-  });
-
-  const handleShowcaseImageChange = async (index, file) => {
-    try {
-      const base64 = await convertFileToBase64(file);
-      const arr = [...showcaseImages];
-      arr[index] = base64;
-      setShowcaseImagesState(arr);
-    } catch (err) {
-      console.error('Image conversion failed', err);
-      alert('Failed to read image');
-    }
-  };
-
-  const saveShowcaseImages = async () => {
-    if (!selectedCategory) return;
-    try {
-      const response = await api.categories.updateShowcaseImages(selectedCategory._id, showcaseImages, adminToken);
-      // Update state immediately with response data if available
-      if (response.category) {
-        setCategories(categories.map(c => c._id === response.category._id ? response.category : c));
-        setSelectedCategory(response.category);
-      } else {
-        // Fallback: refresh from server
-        await refreshCategory(selectedCategory._id);
-      }
-      setSuccess('Showcase images saved');
-      setTimeout(() => setSuccess(''), 3000);
-    } catch (err) {
-      setError(err.message || 'Failed to save images');
-      setTimeout(() => setError(''), 3000);
-    }
-  };
-
   // Load only categories initially to avoid fetching all product payloads (images etc.)
   const loadInitialData = async () => {
     setLoading(true);
@@ -99,10 +52,15 @@ const AdminCategories = () => {
     if (productsByCategory[categoryId] && !force) return; // already cached
     setProductLoading(true);
     try {
-      const prodsData = await api.products.getByCategory(categoryId);
+      let prodsData = await api.products.getByCategory(categoryId);
+      if (!Array.isArray(prodsData) || prodsData.length === 0) {
+        const all = await api.products.getAll();
+        prodsData = Array.isArray(all) ? all.filter(p => (p.categoryId || '').toLowerCase() === categoryId.toLowerCase()) : [];
+      }
       setProductsByCategory(prev => ({ ...prev, [categoryId]: prodsData || [] }));
     } catch (err) {
       console.error('Error fetching products for category:', err);
+      setProductsByCategory(prev => ({ ...prev, [categoryId]: [] }));
     } finally {
       setProductLoading(false);
     }
@@ -342,7 +300,7 @@ const AdminCategories = () => {
                     <Package size={18} /> Add Product in this Category
                   </Link>
                 </div>
-                <p className="text-sm text-gray-500 mb-6">Select products to highlight in the homepage slideshow for this category. Products added here appear on the home page.</p>
+                <p className="text-sm text-gray-500 mb-6">Pick up to 2 products to show in the homepage for this category. Featured products appear in the home page section.</p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {productLoading ? (
@@ -357,7 +315,7 @@ const AdminCategories = () => {
                       return (
                         <div key={product._id} className="flex items-center justify-between p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 gap-4">
                           <div className="flex items-center gap-4 flex-1 min-w-0">
-                            <img loading="lazy" src={product.images?.[0]} alt={product.name} className="w-16 h-16 rounded object-cover flex-shrink-0 bg-gray-100" onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><rect width="100%" height="100%" fill="%23f3f4f6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="10" fill="%239ca3af">no image</text></svg>'; }} />
+                            <img loading="lazy" src={getImageSrc(product.images?.[0] || product.image) || '/images/logo.png'} alt={product.name} className="w-16 h-16 rounded object-cover flex-shrink-0 bg-gray-100" onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><rect width="100%" height="100%" fill="%23f3f4f6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="10" fill="%239ca3af">no image</text></svg>'; }} />
                             <div className="flex-1 min-w-0">
                               <p className="font-semibold text-sm truncate">{product.name}</p>
                               <p className="text-xs text-gray-500">₹{product.price}</p>
@@ -365,7 +323,8 @@ const AdminCategories = () => {
                           </div>
                           <button 
                             onClick={() => toggleShowcaseProduct(selectedCategory._id, product._id)}
-                            className={`px-4 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap flex-shrink-0 ${
+                            disabled={!isFeatured && (selectedCategory.showcaseProducts?.length || 0) >= 2}
+                            className={`px-4 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed ${
                               isFeatured ? 'bg-purple-600 text-white shadow-lg hover:bg-purple-700' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                             }`}
                           >
@@ -377,22 +336,6 @@ const AdminCategories = () => {
                   ))}
                 </div>
 
-                <div className="mt-8">
-                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2">🖼️ Showcase Images (Hero - 3 images)</h3>
-                  <p className="text-sm text-gray-500 mb-4">Upload up to 3 images that will be used in the homepage hero carousel for this category.</p>
-                  <div className="flex gap-3 mb-4">
-                    { [0,1,2].map(i => (
-                      <label key={i} className="w-32 h-20 border rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center cursor-pointer">
-                        {showcaseImages[i] ? <img src={showcaseImages[i]} className="w-full h-full object-cover" alt={`slide-${i+1}`} /> : <div className="text-xs text-gray-400">Upload {i+1}</div>}
-                        <input type="file" accept="image/*" className="hidden" onChange={(e) => handleShowcaseImageChange(i, e.target.files?.[0])} />
-                      </label>
-                    )) }
-                  </div>
-                  <div className="flex gap-2">
-                    <button onClick={saveShowcaseImages} className="px-4 py-2 bg-blue-600 text-white rounded-lg">Save Showcase Images</button>
-                    <button onClick={() => { setShowcaseImagesState(selectedCategory.showcaseImages || [null, null, null]); }} className="px-4 py-2 bg-gray-100 rounded-lg">Reset</button>
-                  </div>
-                </div>
               </div>
             </div>
           ) : (
