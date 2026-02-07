@@ -302,38 +302,16 @@ const Footer = () => {
 
 // --- 4. HOME PAGE COMPONENTS ---
 
+// Edit hero images here: change the slides array below (image URL, title, link).
+const HERO_SLIDES = [
+  { id: 1, image: "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?q=60&w=1200", title: "Flat 20% Off", link: "/shop/frames" },
+  { id: 2, image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=60&w=1200", title: "New Arrival: Tees", link: "/shop/apparel" },
+  { id: 3, image: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=60&w=1200", title: "Luxury Hampers", link: "/shop/hampers" }
+];
+
 const HeroCarousel = () => {
   const [current, setCurrent] = useState(0);
-  const [slides, setSlides] = useState([
-    { id: 1, image: "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?q=60&w=1200", title: "Flat 20% Off", link: "/shop/frames" },
-    { id: 2, image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=60&w=1200", title: "New Arrival: Tees", link: "/shop/apparel" },
-    { id: 3, image: "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=60&w=1200", title: "Luxury Hampers", link: "/shop/bouquets" }
-  ]);
-
-  useEffect(() => {
-    const fetchShowcaseImages = async () => {
-      const tryFetch = async (cat) => {
-        try {
-          const res = await fetch(`${API_BASE_URL}/categories/${cat}/showcase-images`);
-          if (!res.ok) return null;
-          const data = await res.json();
-          if (data.images && data.images.filter(img => img).length > 0) return data;
-        } catch (err) {
-          return null;
-        }
-        return null;
-      };
-
-      const data = await tryFetch('hero') || await tryFetch('frames');
-      if (data) {
-        const showcaseSlides = data.images
-          .filter(img => img)
-          .map((img, idx) => ({ id: idx + 1, image: img, title: data.categoryTitle || 'Featured Items', link: `/shop/${data.categoryId || 'frames'}` }));
-        if (showcaseSlides.length > 0) setSlides(showcaseSlides);
-      }
-    };
-    fetchShowcaseImages();
-  }, []);
+  const slides = HERO_SLIDES;
 
   useEffect(() => { 
     const t = setInterval(() => setCurrent(s => (s === slides.length-1 ? 0 : s+1)), 2000); 

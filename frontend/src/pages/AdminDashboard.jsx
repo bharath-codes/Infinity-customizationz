@@ -20,11 +20,7 @@ const AdminDashboard = () => {
   const [success, setSuccess] = useState('');
   
 
-  // Homepage controls state
   const [allProducts, setAllProducts] = useState([]);
-  const [heroImages, setHeroImages] = useState([null, null, null]);
-  const [heroUploading, setHeroUploading] = useState(false);
-  const [hpSaving, setHpSaving] = useState(false);
 
   useEffect(() => {
     if (admin) {
@@ -43,9 +39,14 @@ const AdminDashboard = () => {
       });
       const orders = ordersRes.ok ? await ordersRes.json() : [];
 
-      // 3. Use API_BASE_URL here as well
-      const categoriesRes = await fetch(`${API_BASE_URL}/categories`);
-      const categories = categoriesRes.ok ? await categoriesRes.json() : [];
+      let categories = [];
+      try {
+        const categoriesRes = await fetch(`${API_BASE_URL}/categories`);
+        if (categoriesRes.ok) categories = await categoriesRes.json();
+      } catch (_) {
+        categories = [];
+      }
+      if (!Array.isArray(categories)) categories = [];
 
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -104,137 +105,6 @@ const AdminDashboard = () => {
       console.error('Error toggling best seller:', err);
       setError(err.message || 'Failed to update');
       setTimeout(() => setError(''), 3000);
-    }
-  };
-
-  // Hero images loader/saver (uses category id 'hero')
-  useEffect(() => {
-    const loadHero = async () => {
-      try {
-        const res = await fetch(`${API_BASE_URL}/categories/hero/showcase-images`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data.images) setHeroImages(data.images.concat([]).slice(0,3));
-        }
-      } catch (err) {
-        // ignore
-      }
-    };
-    loadHero();
-  }, []);
-
-  const convertFileToBase64 = (file) => new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (err) => reject(err);
-    reader.readAsDataURL(file);
-  });
-
-  const compressImage = (file) => new Promise((resolve, reject) => {
-    if (file.size > 5 * 1024 * 1024) {
-      // File larger than 5MB - compress it
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          let width = img.width;
-          let height = img.height;
-          
-          // Resize if larger than 1920x1080
-          const maxWidth = 1920;
-          const maxHeight = 1080;
-          
-          if (width > maxWidth || height > maxHeight) {
-            const ratio = Math.min(maxWidth / width, maxHeight / height);
-            width *= ratio;
-            height *= ratio;
-          }
-          
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-          
-          canvas.toBlob((blob) => {
-            const reader2 = new FileReader();
-            reader2.onload = () => {
-              resolve(reader2.result);
-            };
-            reader2.onerror = reject;
-            reader2.readAsDataURL(blob);
-          }, 'image/jpeg', 0.85);
-        };
-        img.onerror = () => reject(new Error('Failed to load image'));
-        img.src = e.target.result;
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    } else {
-      // File is small enough, just convert to base64
-      convertFileToBase64(file)
-        .then(resolve)
-        .catch(reject);
-    }
-  });
-
-  const handleHeroChange = async (index, file) => {
-    if (!file) return;
-    try {
-      setHeroUploading(true);
-      
-      // Validate file size (max 10MB)
-      if (file.size > 10 * 1024 * 1024) {
-        setError('File size too large. Maximum 10MB allowed. Will compress automatically.');
-        setTimeout(() => setError(''), 4000);
-      }
-      
-      // Compress and convert to base64
-      const base64 = await compressImage(file);
-      
-      // Keep under 1.8MB so backend (2MB limit) always accepts
-      if (base64.length > 1.8 * 1024 * 1024) {
-        setError('Image still too large after compression. Please use a smaller image (e.g. under 1MB file).');
-        setTimeout(() => setError(''), 4000);
-        return;
-      }
-      
-      const arr = [...heroImages]; 
-      arr[index] = base64; 
-      setHeroImages(arr);
-      setSuccess(`Hero image ${index + 1} uploaded and compressed successfully`);
-      setTimeout(() => setSuccess(''), 2000);
-    } catch (err) {
-      console.error('Hero image read failed', err);
-      setError(err.message || 'Failed to read image');
-      setTimeout(() => setError(''), 3000);
-    } finally { 
-      setHeroUploading(false); 
-    }
-  };
-
-  const saveHeroImages = async () => {
-    if (!adminToken) return alert('Not authenticated');
-    if (heroImages.filter(img => img).length === 0) {
-      setError('Please upload at least one hero image');
-      setTimeout(() => setError(''), 3000);
-      return;
-    }
-    try {
-      setHpSaving(true);
-      const totalSize = heroImages.filter(img => img).reduce((sum, img) => sum + (img ? img.length : 0), 0);
-      console.log(`Saving hero images (total size: ${(totalSize / 1024 / 1024).toFixed(2)}MB)`);
-      
-      await api.categories.updateShowcaseImages('hero', heroImages, adminToken);
-      setSuccess('✅ Hero images updated successfully!');
-      setTimeout(() => setSuccess(''), 2500);
-    } catch (err) {
-      console.error('Error saving hero images:', err);
-      const errorMsg = (err.data && err.data.message) || err.message || 'Failed to save hero images';
-      setError(`❌ ${errorMsg}`);
-      setTimeout(() => setError(''), 5000);
-    } finally { 
-      setHpSaving(false); 
     }
   };
 
@@ -435,7 +305,7 @@ const AdminDashboard = () => {
           </div>
         </div>
         
-        {/* Homepage Controls: Best Sellers & Hero Images */}
+        {/* Homepage Controls: Best Sellers */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8 mb-12">
           <div className="bg-white rounded-xl shadow-md p-6 border border-border-light">
             <h3 className="text-lg font-semibold mb-4">Manage Best Sellers</h3>
@@ -468,32 +338,6 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-md p-6 border border-border-light">
-            <h3 className="text-lg font-semibold mb-4">Edit Hero / Banner Images</h3>
-            <p className="text-sm text-gray-500 mb-3">Manage homepage carousel here. Upload up to 3 hero images (auto-compressed). Max 10MB per image.</p>
-            {heroUploading && <p className="text-sm text-blue-600 font-semibold mb-3">📸 Compressing image...</p>}
-            <div className="flex gap-3 mb-4">
-              {[0,1,2].map(i => (
-                <label key={i} className={`w-32 h-20 border-2 rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center cursor-pointer transition ${ heroImages[i] ? 'border-green-400' : 'border-gray-300 hover:border-brand-blue'}`}>
-                  {heroImages[i] ? (
-                    <img src={heroImages[i]} className="w-full h-full object-cover" alt={`hero-${i+1}`} />
-                  ) : (
-                    <div className="text-center">
-                      <div className="text-xs text-gray-400">Upload {i+1}</div>
-                      <div className="text-xs text-gray-300 mt-1">Click to browse</div>
-                    </div>
-                  )}
-                  <input type="file" accept="image/*" className="hidden" onChange={(e) => handleHeroChange(i, e.target.files?.[0])} disabled={heroUploading} />
-                </label>
-              ))}
-            </div>
-            <div className="flex items-center gap-3">
-              <button onClick={saveHeroImages} disabled={hpSaving || heroImages.filter(img => img).length === 0} className={`px-4 py-2 rounded-lg font-semibold transition ${hpSaving ? 'bg-gray-300 text-gray-600 cursor-not-allowed' : 'bg-brand-blue text-white hover:bg-blue-700'}`}>
-                {hpSaving ? '⏳ Saving...' : `💾 Save Hero Images (${heroImages.filter(img => img).length}/3)`}
-              </button>
-              <button onClick={() => { setHeroImages([null,null,null]); }} className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition">Reset</button>
-            </div>
-          </div>
         </div>
       </div>
     </div>

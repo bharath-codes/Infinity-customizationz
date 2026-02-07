@@ -21,7 +21,13 @@ const apiCall = async (endpoint, method = 'GET', data = null, token = null) => {
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+    let response;
+    try {
+      response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+    } catch (networkErr) {
+      await new Promise(r => setTimeout(r, 1200));
+      response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+    }
     const responseText = await response.text();
     
     let result;
@@ -52,6 +58,9 @@ const apiCall = async (endpoint, method = 'GET', data = null, token = null) => {
     return result;
   } catch (error) {
     console.error('API Error:', error);
+    if (error && error.message === 'Failed to fetch') {
+      throw { message: 'Network error. Check your connection and that the API server is running.', status: 0, data: error };
+    }
     throw error;
   }
 };

@@ -28,9 +28,22 @@ const AdminCategories = () => {
     subCategories: [],
     showcaseProducts: []
   });
+  const [allProductsList, setAllProductsList] = useState([]);
 
   useEffect(() => {
     loadInitialData();
+  }, []);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const list = await api.products.getAll();
+        setAllProductsList(Array.isArray(list) ? list : []);
+      } catch (e) {
+        setAllProductsList([]);
+      }
+    };
+    load();
   }, []);
 
   // Load only categories initially to avoid fetching all product payloads (images etc.)
@@ -185,6 +198,34 @@ const AdminCategories = () => {
     }
   };
 
+  const handleMoveProductToCategory = async (productId, product, targetCategoryId) => {
+    if (!targetCategoryId || !adminToken) return;
+    try {
+      await api.products.update(productId, { ...product, categoryId: targetCategoryId }, adminToken);
+      await fetchProductsForCategory(selectedCategory._id, true);
+      setSuccess(`Product moved to ${categories.find(c => c._id === targetCategoryId)?.title || targetCategoryId}`);
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError(err.message || 'Failed to move product');
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
+  const handleAddExistingProductToCategory = async (productId) => {
+    if (!productId || !selectedCategory || !adminToken) return;
+    const product = allProductsList.find(p => p._id === productId);
+    if (!product) return;
+    try {
+      await api.products.update(productId, { ...product, categoryId: selectedCategory._id }, adminToken);
+      await fetchProductsForCategory(selectedCategory._id, true);
+      setSuccess(`"${product.name}" added to this category`);
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError(err.message || 'Failed to add product to category');
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
   const handleDeleteProduct = async (productId, productName) => {
     if (!window.confirm(`Delete product "${productName || productId}"? This cannot be undone.`)) return;
     if (!adminToken) return;
@@ -314,8 +355,32 @@ const AdminCategories = () => {
                     <Package size={18} /> Add Product in this Category
                   </Link>
                 </div>
-                <p className="text-sm text-gray-500 mb-6">Pick up to 2 products to show in the homepage for this category. Featured products appear in the home page section.</p>
-                
+                <p className="text-sm text-gray-500 mb-4">Pick up to 2 products to show in the homepage for this category. Featured products appear in the home page section.</p>
+
+                {/* Add existing product to this category */}
+                <div className="mb-6 p-4 bg-blue-50 rounded-xl border border-blue-100">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Add existing product to this category</label>
+                  <select
+                    className="w-full max-w-md p-2 border rounded-lg bg-white text-sm"
+                    value=""
+                    onChange={(e) => {
+                      const id = e.target.value;
+                      if (id) handleAddExistingProductToCategory(id);
+                      e.target.value = '';
+                    }}
+                  >
+                    <option value="">— Select a product to move here —</option>
+                    {allProductsList
+                      .filter(p => (p.categoryId || '').toLowerCase() !== (selectedCategory?._id || '').toLowerCase())
+                      .map(p => (
+                        <option key={p._id} value={p._id}>{p.name} (₹{p.price}) — currently in {p.categoryId || '?'}</option>
+                      ))}
+                  </select>
+                  {allProductsList.filter(p => (p.categoryId || '').toLowerCase() !== (selectedCategory?._id || '').toLowerCase()).length === 0 && (
+                    <p className="text-xs text-gray-500 mt-1">All products are already in this category, or no other products exist.</p>
+                  )}
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {productLoading ? (
                     <div className="col-span-full flex items-center justify-center p-6">
@@ -335,7 +400,22 @@ const AdminCategories = () => {
                               <p className="text-xs text-gray-500">₹{product.price}</p>
                             </div>
                           </div>
-                          <div className="flex items-center gap-2 flex-shrink-0">
+                          <div className="flex flex-wrap items-center gap-2 flex-shrink-0">
+                            <select
+                              className="text-xs p-1.5 border rounded bg-white"
+                              title="Move to another category"
+                              value=""
+                              onChange={(e) => {
+                                const toId = e.target.value;
+                                if (toId) handleMoveProductToCategory(product._id, product, toId);
+                                e.target.value = '';
+                              }}
+                            >
+                              <option value="">Move to…</option>
+                              {categories.filter(c => c._id !== selectedCategory._id).map(c => (
+                                <option key={c._id} value={c._id}>{c.title}</option>
+                              ))}
+                            </select>
                             <Link
                               to={`/admin/products?edit=${product._id}`}
                               className="p-2 rounded-lg text-gray-600 hover:bg-blue-100 hover:text-blue-700 transition"
