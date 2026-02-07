@@ -403,23 +403,61 @@ app.delete('/api/categories/:categoryId/products/:productId', authAdmin, authori
 // Save showcase images for category (Admin)
 app.put('/api/categories/:categoryId/showcase-images', authAdmin, authorize(['manage_categories']), async (req, res) => {
   try {
-    const { images } = req.body; // Array of 3 base64 images [img1, img2, img3]
+    const { images } = req.body; // Array of base64 images [img1, img2, img3]
     
+    if (!Array.isArray(images)) {
+      return res.status(400).json({ message: 'Images must be an array' });
+    }
+    
+    // Validate image sizes
+    const validImages = [];
+    for (let i = 0; i < images.length; i++) {
+      const img = images[i];
+      if (img === null || img === undefined || img === '') {
+        validImages.push(null);
+        continue;
+      }
+      
+      // Check size (base64 string size limit: 1.5MB per image)
+      if (typeof img !== 'string' || img.length > 1.5 * 1024 * 1024) {
+        return res.status(400).json({ 
+          message: `Image ${i + 1} is too large. Maximum size is 1.5MB. Please compress your images.` 
+        });
+      }
+      
+      // Basic validation that it's a data URI
+      if (!img.startsWith('data:image/')) {
+        return res.status(400).json({ 
+          message: `Image ${i + 1} is not a valid image format` 
+        });
+      }
+      
+      validImages.push(img);
+    }
+
+    // Find and update category
     const category = await Category.findById(req.params.categoryId);
     if (!category) {
       return res.status(404).json({ message: 'Category not found' });
     }
 
-    // Update showcase images (filter out null values)
-    category.showcaseImages = images.map(img => img || null);
+    // Update showcase images
+    category.showcaseImages = validImages.slice(0, 3);
     await category.save();
 
     res.json({ 
       message: 'Showcase images updated successfully', 
-      category,
-      savedImages: category.showcaseImages.filter(img => img).length
+      savedCount: validImages.filter(img => img).length,
+      totalImages: validImages.length
     });
   } catch (err) {
+    console.error('Error updating showcase images:', err);
+    if (err.name === 'MongoServerError' && err.code === 13049) {
+      // Document too large error
+      return res.status(413).json({ 
+        message: 'Images are too large in total. Please use smaller/compressed images.' 
+      });
+    }
     res.status(400).json({ message: err.message });
   }
 });
