@@ -13,7 +13,7 @@ export default {
           accent: '#F59E0B',     // Amber
           light: '#F9FAFB',      // Off White
           dark: '#111827',       // Near Black
-          blue: '#1E40AF',       // Dark Blue (reverted from teal)
+          blue: '#001a4d',       // Navy Blue
           gold: '#FBBF24',       // Warm Gold
         },
         surface: {

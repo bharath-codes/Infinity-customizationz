@@ -572,10 +572,28 @@ const ProductPage = ({ addToCart }) => {
   const [tshirtMaterial, setTshirtMaterial] = useState('poly-cotton');
   const [tshirtNeck, setTshirtNeck] = useState('round');
   const [tshirtSize, setTshirtSize] = useState('M');
+  const [tshirtColor, setTshirtColor] = useState('white'); // For round neck
   const [tshirtBasePrice, setTshirtBasePrice] = useState(499);
   // Signature Day T-Shirt states
   const [signatureDayTShirtColor, setSignatureDayTShirtColor] = useState('colorless');
+  const [signatureDayTShirtNeck, setSignatureDayTShirtNeck] = useState('colored');
+  const [signatureDaySelectedColor, setSignatureDaySelectedColor] = useState('maroon'); // For colored neck
   const [signatureDayBasePrice, setSignatureDayBasePrice] = useState(179);
+
+  // Color options for t-shirts
+  const coloredNeckColors = [
+    { name: 'maroon', hex: '#800000' },
+    { name: 'navy blue', hex: '#001a4d' },
+    { name: 'black', hex: '#000000' },
+    { name: 'white', hex: '#FFFFFF' }
+  ];
+
+  const roundNeckColors = [
+    { name: 'white', hex: '#FFFFFF' },
+    { name: 'light blue', hex: '#87CEEB' },
+    { name: 'pink', hex: '#FFB6C1' },
+    { name: 'yellow', hex: '#FFFF00' }
+  ];
 
   const isPhoneCase = product && (product.id === 'case1' || (product.name || '').toLowerCase().includes('phone case'));
   const isHamper = product && (product.categoryId === 'hampers' || (product.name || '').toLowerCase().includes('hamper'));
@@ -603,14 +621,25 @@ const ProductPage = ({ addToCart }) => {
 
   useEffect(() => {
     if (isCustomizedTShirt) {
-      setTshirtBasePrice(calculateTShirtPrice(qty));
+      let price = calculateTShirtPrice(qty);
+      // Round neck is 50 rupees less
+      if (tshirtNeck === 'round') {
+        price -= 50;
+      }
+      setTshirtBasePrice(price);
     } else if (isSignatureDayTShirt) {
-      const basePrice = calculateSignatureDayPrice(qty);
-      const colorfulPrice = basePrice + 50;
-      const finalPrice = signatureDayTShirtColor === 'colored' ? colorfulPrice : basePrice;
-      setSignatureDayBasePrice(finalPrice);
+      let basePrice = calculateSignatureDayPrice(qty);
+      // Add 50 for colored print if colored neck type
+      if (signatureDayTShirtNeck === 'colored' && signatureDayTShirtColor === 'colored') {
+        basePrice += 50;
+      }
+      // Round neck is 50 rupees less
+      if (signatureDayTShirtNeck === 'round') {
+        basePrice -= 50;
+      }
+      setSignatureDayBasePrice(basePrice);
     }
-  }, [qty, isCustomizedTShirt, isSignatureDayTShirt, signatureDayTShirtColor]);
+  }, [qty, isCustomizedTShirt, isSignatureDayTShirt, signatureDayTShirtColor, tshirtNeck, signatureDayTShirtNeck]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -717,9 +746,10 @@ const ProductPage = ({ addToCart }) => {
     }
     let customizationDetails = '';
     if (isCustomizedTShirt) {
-      customizationDetails = `Material: ${tshirtMaterial}, Neck: ${tshirtNeck}, Size: ${tshirtSize}, Qty: ${qty} pcs`;
+      const selectedColor = tshirtNeck === 'round' ? tshirtColor : 'N/A';
+      customizationDetails = `Material: ${tshirtMaterial}, Neck: ${tshirtNeck}, Color: ${selectedColor}, Size: ${tshirtSize}, Qty: ${qty} pcs`;
     } else if (isSignatureDayTShirt) {
-      customizationDetails = `Signature Day T-Shirt, Color: ${signatureDayTShirtColor}, Qty: ${qty} pcs`;
+      customizationDetails = `Signature Day T-Shirt, Neck: ${signatureDayTShirtNeck}, Color: ${signatureDaySelectedColor}, Qty: ${qty} pcs`;
     } else if (isPhoneCase) {
       customizationDetails = `Phone: ${phoneCompany} / ${phoneModel}`;
     } else if (isHamper) {
@@ -751,9 +781,10 @@ const ProductPage = ({ addToCart }) => {
     }
     let customizationDetails = '';
     if (isCustomizedTShirt) {
-      customizationDetails = `Material: ${tshirtMaterial}, Neck: ${tshirtNeck}, Size: ${tshirtSize}, Qty: ${qty} pcs`;
+      const selectedColor = tshirtNeck === 'round' ? tshirtColor : 'N/A';
+      customizationDetails = `Material: ${tshirtMaterial}, Neck: ${tshirtNeck}, Color: ${selectedColor}, Size: ${tshirtSize}, Qty: ${qty} pcs`;
     } else if (isSignatureDayTShirt) {
-      customizationDetails = `Signature Day T-Shirt, Color: ${signatureDayTShirtColor}, Qty: ${qty} pcs`;
+      customizationDetails = `Signature Day T-Shirt, Neck: ${signatureDayTShirtNeck}, Color: ${signatureDaySelectedColor}, Qty: ${qty} pcs`;
     } else if (isPhoneCase) {
       customizationDetails = `Phone: ${phoneCompany} / ${phoneModel}`;
     } else if (isHamper) {
@@ -818,7 +849,7 @@ const ProductPage = ({ addToCart }) => {
               
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Material Type</label>
-                <select value={tshirtMaterial} onChange={(e) => setTshirtMaterial(e.target.value)} className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <select value={tshirtMaterial} onChange={(e) => setTshirtMaterial(e.target.value)} className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-blue">
                   <option value="poly-cotton">Poly Cotton (Standard)</option>
                   <option value="pure-cotton">Pure Cotton (Premium)</option>
                   <option value="polyester">Polyester (Quality)</option>
@@ -827,11 +858,38 @@ const ProductPage = ({ addToCart }) => {
 
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Neck Type</label>
-                <select value={tshirtNeck} onChange={(e) => setTshirtNeck(e.target.value)} className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                  <option value="round">Round Neck (Crew Neck)</option>
-                  <option value="collar">Collar Neck (Polo)</option>
+                <select value={tshirtNeck} onChange={(e) => setTshirtNeck(e.target.value)} className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-blue">
+                  <option value="round">Round Neck (Crew Neck) - ₹50 Less</option>
+                  <option value="collar">Collar Neck (Polo) - Base Price</option>
                 </select>
               </div>
+
+              {tshirtNeck === 'round' && (
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">Color (Round Neck)</label>
+                  <div className="flex gap-3 flex-wrap">
+                    {roundNeckColors.map((color) => (
+                      <button
+                        key={color.name}
+                        onClick={() => setTshirtColor(color.name)}
+                        className={`relative group transition-transform hover:scale-110`}
+                      >
+                        <div
+                          className={`w-12 h-12 rounded-full border-4 transition ${
+                            tshirtColor === color.name
+                              ? 'border-brand-blue shadow-lg'
+                              : 'border-gray-300 hover:border-gray-500'
+                          }`}
+                          style={{ backgroundColor: color.hex }}
+                        />
+                        <span className="absolute top-full mt-1 text-xs font-semibold text-gray-700 whitespace-nowrap group-hover:text-brand-blue">
+                          {color.name}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Size</label>
@@ -842,8 +900,8 @@ const ProductPage = ({ addToCart }) => {
                       onClick={() => setTshirtSize(size)}
                       className={`py-3 px-2 rounded-lg border-2 font-bold transition ${
                         tshirtSize === size
-                          ? 'border-indigo-600 bg-indigo-600 text-white'
-                          : 'border-gray-300 bg-white text-gray-800 hover:border-indigo-300'
+                          ? 'border-brand-blue bg-brand-blue text-white'
+                          : 'border-gray-300 bg-white text-gray-800 hover:border-brand-blue'
                       }`}
                     >
                       {size}
@@ -852,7 +910,7 @@ const ProductPage = ({ addToCart }) => {
                 </div>
               </div>
 
-              <div className="bg-white p-4 rounded-lg border-2 border-indigo-300">
+              <div className="bg-white p-4 rounded-lg border-2 border-brand-blue/20">
                 <p className="text-sm text-gray-600 mb-2">💰 <strong>Quantity-Based Pricing:</strong></p>
                 <div className="grid grid-cols-2 gap-2 text-sm text-gray-700">
                   <div>1-4 pcs: <span className="font-bold">₹499</span></div>
@@ -860,8 +918,9 @@ const ProductPage = ({ addToCart }) => {
                   <div>10-19 pcs: <span className="font-bold">₹459</span></div>
                   <div>20+ pcs: <span className="font-bold">₹419</span></div>
                 </div>
+                {tshirtNeck === 'round' && <div className="text-xs text-green-600 mt-2">✓ Round neck saves ₹50/pc</div>}
                 <div className="mt-3 pt-3 border-t border-gray-200">
-                  <p className="font-bold text-indigo-700">
+                  <p className="font-bold text-brand-blue">
                     Your Price: ₹{tshirtBasePrice}/pc × {qty} = <span className="text-xl">₹{tshirtBasePrice * qty}</span>
                   </p>
                 </div>
@@ -874,19 +933,87 @@ const ProductPage = ({ addToCart }) => {
               <h3 className="text-lg font-bold text-amber-900">👕 Signature Day T-Shirt Configuration</h3>
               
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Shirt Color</label>
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    onClick={() => setSignatureDayTShirtColor('colorless')}
-                    className={`py-3 px-4 rounded-lg border-2 font-bold transition ${
-                      signatureDayTShirtColor === 'colorless'
-                        ? 'border-amber-600 bg-amber-600 text-white'
-                        : 'border-gray-300 bg-white text-gray-800 hover:border-amber-300'
-                    }`}
-                  >
-                    Colorless (Plain) - Base Price
-                  </button>
-                  <button
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Neck Type</label>
+                <select value={signatureDayTShirtNeck} onChange={(e) => setSignatureDayTShirtNeck(e.target.value)} className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                  <option value="colored">Colored / Collar Neck - Base Price</option>
+                  <option value="round">Round Neck - ₹50 Less</option>
+                </select>
+              </div>
+
+              {signatureDayTShirtNeck === 'colored' && (
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">Select Color</label>
+                  <div className="flex gap-3 flex-wrap">
+                    {coloredNeckColors.map((color) => (
+                      <button
+                        key={color.name}
+                        onClick={() => setSignatureDaySelectedColor(color.name)}
+                        className={`relative group transition-transform hover:scale-110`}
+                      >
+                        <div
+                          className={`w-12 h-12 rounded-full border-4 transition ${
+                            signatureDaySelectedColor === color.name
+                              ? 'border-amber-600 shadow-lg'
+                              : 'border-gray-300 hover:border-gray-500'
+                          }`}
+                          style={{ backgroundColor: color.hex }}
+                        />
+                        <span className="absolute top-full mt-1 text-xs font-semibold text-gray-700 whitespace-nowrap group-hover:text-amber-600">
+                          {color.name}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {signatureDayTShirtNeck === 'round' && (
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">Select Color (Round Neck)</label>
+                  <div className="flex gap-3 flex-wrap">
+                    {roundNeckColors.map((color) => (
+                      <button
+                        key={color.name}
+                        onClick={() => setSignatureDaySelectedColor(color.name)}
+                        className={`relative group transition-transform hover:scale-110`}
+                      >
+                        <div
+                          className={`w-12 h-12 rounded-full border-4 transition ${
+                            signatureDaySelectedColor === color.name
+                              ? 'border-amber-600 shadow-lg'
+                              : 'border-gray-300 hover:border-gray-500'
+                          }`}
+                          style={{ backgroundColor: color.hex }}
+                        />
+                        <span className="absolute top-full mt-1 text-xs font-semibold text-gray-700 whitespace-nowrap group-hover:text-amber-600">
+                          {color.name}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="bg-white p-4 rounded-lg border-2 border-amber-300">
+                <p className="text-sm text-gray-600 mb-3">💰 <strong>Quantity-Based Pricing:</strong></p>
+                <div className="grid grid-cols-2 gap-2 text-sm text-gray-700 mb-3">
+                  <div>40 pcs: <span className="font-bold">₹179</span></div>
+                  <div>50 pcs: <span className="font-bold">₹169</span></div>
+                  <div>60-70 pcs: <span className="font-bold">₹159</span></div>
+                  <div>70+ pcs: <span className="font-bold">₹149</span></div>
+                </div>
+                <div className="border-t border-amber-200 pt-3 space-y-1 text-xs text-gray-600">
+                  {signatureDayTShirtNeck === 'round' && <p className="text-green-600">✓ Round neck saves ₹50/pc</p>}
+                </div>
+                <div className="mt-3 pt-3 border-t border-gray-200">
+                  <p className="font-bold text-amber-700">
+                    Your Price: ₹{signatureDayBasePrice}/pc × {qty} = <span className="text-xl">₹{signatureDayBasePrice * qty}</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
                     onClick={() => setSignatureDayTShirtColor('colored')}
                     className={`py-3 px-4 rounded-lg border-2 font-bold transition ${
                       signatureDayTShirtColor === 'colored'
