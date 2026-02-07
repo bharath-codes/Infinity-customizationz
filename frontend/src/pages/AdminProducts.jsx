@@ -84,8 +84,11 @@ const AdminProducts = () => {
 
     try {
       setUploading(true);
+      const headers = {};
+      if (adminToken) headers['Authorization'] = `Bearer ${adminToken}`;
       const res = await fetch(`${API_BASE_URL}/upload`, {
         method: 'POST',
+        headers,
         body: formData,
       });
 
@@ -253,8 +256,11 @@ const AdminProducts = () => {
 
     try {
       setUploading(true);
+      const headers = {};
+      if (adminToken) headers['Authorization'] = `Bearer ${adminToken}`;
       const res = await fetch(`${API_BASE_URL}/upload`, {
         method: 'POST',
+        headers,
         body: fd
       });
 

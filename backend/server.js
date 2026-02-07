@@ -75,7 +75,9 @@ app.use('/api/phone-models', phoneModelsRoutes);
 // Product Routes (Public)
 app.get('/api/products', async (req, res) => {
   try {
-    const products = await Product.find();
+    const filter = {};
+    if (req.query.isBestSeller === 'true') filter.isBestSeller = true;
+    const products = await Product.find(filter);
     res.json(products);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -169,32 +171,34 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// UPLOAD ENDPOINT
-app.post('/api/upload', upload.single('image'), (req, res) => {
+// UPLOAD ENDPOINT (Admin only - for product images, hero images, etc.)
+app.post('/api/upload', authAdmin, authorize(['manage_products', 'manage_categories']), upload.single('image'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: 'No file uploaded' });
   }
-  // Return the full URL or relative path. For this setup, we'll return the relative path 
-  // which the frontend can prefix with the backend URL, OR return a full URL if host is known.
-  // Returning relative path is safer for portability.
-  // Note: The frontend proxy points /api to localhost:5000, but /uploads is not under /api.
-  // So frontend needs to know how to access /uploads.
-  // We can return the full URL if we knew the host.
-  // Let's return the relative path like '/uploads/filename.jpg'.
   const filePath = `/uploads/${req.file.filename}`;
   res.json({ filePath });
 });
 
 // Admin Product Management
 app.post('/api/products', authAdmin, authorize(['manage_products']), async (req, res) => {
+  const productId = req.body._id || ('prod_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9));
   const product = new Product({
+    _id: productId,
     name: req.body.name,
     categoryId: req.body.categoryId,
     price: req.body.price,
     image: req.body.image || '',
     images: req.body.images || [],
     description: req.body.description || '',
-    inStock: req.body.inStock !== undefined ? req.body.inStock : true
+    inStock: req.body.inStock !== undefined ? req.body.inStock : true,
+    isBestSeller: req.body.isBestSeller || false,
+    weight: req.body.weight || '',
+    dimensions: req.body.dimensions || '',
+    pricing: req.body.pricing,
+    colorPriceDiff: req.body.colorPriceDiff,
+    pricingType: req.body.pricingType,
+    quantityBasedPricing: req.body.quantityBasedPricing
   });
 
   try {
@@ -220,6 +224,13 @@ app.put('/api/products/:id', authAdmin, authorize(['manage_products']), async (r
     if ('images' in req.body) product.images = req.body.images;
     if ('description' in req.body) product.description = req.body.description;
     if ('inStock' in req.body) product.inStock = req.body.inStock;
+    if ('isBestSeller' in req.body) product.isBestSeller = req.body.isBestSeller;
+    if ('weight' in req.body) product.weight = req.body.weight;
+    if ('dimensions' in req.body) product.dimensions = req.body.dimensions;
+    if ('pricing' in req.body) product.pricing = req.body.pricing;
+    if ('colorPriceDiff' in req.body) product.colorPriceDiff = req.body.colorPriceDiff;
+    if ('pricingType' in req.body) product.pricingType = req.body.pricingType;
+    if ('quantityBasedPricing' in req.body) product.quantityBasedPricing = req.body.quantityBasedPricing;
 
     const updatedProduct = await product.save();
     res.json(updatedProduct);
@@ -400,7 +411,7 @@ app.delete('/api/categories/:categoryId/products/:productId', authAdmin, authori
   }
 });
 
-// Save showcase images for category (Admin)
+// Save showcase images for category (Admin) - auto-creates "hero" category if missing
 app.put('/api/categories/:categoryId/showcase-images', authAdmin, authorize(['manage_categories']), async (req, res) => {
   try {
     const { images } = req.body; // Array of base64 images [img1, img2, img3]
@@ -435,8 +446,16 @@ app.put('/api/categories/:categoryId/showcase-images', authAdmin, authorize(['ma
       validImages.push(img);
     }
 
-    // Find and update category
-    const category = await Category.findById(req.params.categoryId);
+    // Find or create category (auto-create hero for homepage banners)
+    let category = await Category.findById(req.params.categoryId);
+    if (!category && req.params.categoryId === 'hero') {
+      category = await Category.create({
+        _id: 'hero',
+        title: 'Hero Banner',
+        desc: 'Homepage hero carousel images',
+        showcaseImages: [null, null, null]
+      });
+    }
     if (!category) {
       return res.status(404).json({ message: 'Category not found' });
     }
@@ -471,10 +490,19 @@ app.put('/api/categories/:categoryId/showcase-images', authAdmin, authorize(['ma
   }
 });
 
-// Get showcase images for category (Public)
+// Get showcase images for category (Public) - auto-creates "hero" category if missing
 app.get('/api/categories/:categoryId/showcase-images', async (req, res) => {
   try {
-    const category = await Category.findById(req.params.categoryId);
+    let category = await Category.findById(req.params.categoryId);
+    // Auto-create hero category for homepage banner images
+    if (!category && req.params.categoryId === 'hero') {
+      category = await Category.create({
+        _id: 'hero',
+        title: 'Hero Banner',
+        desc: 'Homepage hero carousel images',
+        showcaseImages: [null, null, null]
+      });
+    }
     if (!category) {
       return res.status(404).json({ message: 'Category not found' });
     }

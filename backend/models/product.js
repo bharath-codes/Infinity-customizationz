@@ -10,6 +10,11 @@ const productSchema = new mongoose.Schema({
   images: [{ type: String }],
   description: { type: String, default: "" },
   inStock: { type: Boolean, default: true },
+  isBestSeller: { type: Boolean, default: false },
+  weight: { type: String, default: "" },
+  dimensions: { type: String, default: "" },
+  pricing: { type: mongoose.Schema.Types.Mixed },
+  colorPriceDiff: { type: Number, default: 50 },
   
   // Fabric/Material variants
   fabrics: [{

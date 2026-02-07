@@ -440,22 +440,29 @@ const AdminDashboard = () => {
           <div className="bg-white rounded-xl shadow-md p-6 border border-border-light">
             <h3 className="text-lg font-semibold mb-4">Manage Best Sellers</h3>
             <p className="text-sm text-gray-500 mb-4">Toggle products to appear in the Best Sellers section.</p>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-96 overflow-y-auto p-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-4 max-h-[420px] overflow-y-auto overflow-x-hidden p-1 pr-2">
               {allProducts.map(p => (
-                <div key={p._id || p.id} className="p-3 border rounded-lg flex flex-col items-start gap-2">
-                  <div className="flex items-center gap-2 w-full">
-                    <img src={p.images?.[0] || p.image} alt={p.name} className="w-12 h-12 object-cover rounded" />
-                    <div className="flex-1">
-                      <div className="font-semibold text-sm truncate">{p.name}</div>
+                <div key={p._id || p.id} className="flex flex-col min-w-0 p-3 border rounded-lg bg-gray-50/50 hover:bg-gray-50 transition">
+                  <div className="flex items-start gap-3 mb-2">
+                    <div className="flex-shrink-0 w-14 h-14 rounded-lg overflow-hidden bg-gray-200">
+                      {(p.images?.[0] || p.image) ? (
+                        <img src={p.images?.[0] || p.image} alt={p.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">No img</div>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-semibold text-sm truncate" title={p.name}>{p.name}</div>
                       <div className="text-xs text-gray-500">₹{p.price}</div>
+                      <div className="text-[10px] text-gray-400 truncate">{p.categoryId}</div>
                     </div>
                   </div>
-                  <div className="w-full flex items-center justify-between mt-2">
-                    <button onClick={() => toggleBestSeller(p)} className={`px-3 py-1 rounded-full text-xs font-bold ${p.isBestSeller ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}>
-                      {p.isBestSeller ? '★ Best Seller' : 'Mark Best'}
-                    </button>
-                    <div className="text-xs text-gray-400">{p.categoryId}</div>
-                  </div>
+                  <button 
+                    onClick={() => toggleBestSeller(p)} 
+                    className={`mt-auto w-full px-3 py-1.5 rounded-lg text-xs font-bold transition ${p.isBestSeller ? 'bg-purple-600 text-white hover:bg-purple-700' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+                  >
+                    {p.isBestSeller ? '★ Best Seller' : 'Mark Best'}
+                  </button>
                 </div>
               ))}
             </div>

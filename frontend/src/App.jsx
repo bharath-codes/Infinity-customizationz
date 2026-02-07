@@ -469,17 +469,11 @@ const BestSellers = ({ hidePriceOnHome }) => {
   useEffect(() => {
     const loadBest = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/categories/best-sellers`);
+        const res = await fetch(`${API_BASE_URL}/products?isBestSeller=true`);
         if (res.ok) {
-          const cat = await res.json();
-          if (cat && cat.showcaseProducts && cat.showcaseProducts.length > 0) {
-            const proms = cat.showcaseProducts.map(id => fetch(`${API_BASE_URL}/products/${id}`).then(r => r.ok ? r.json() : null));
-            const results = (await Promise.all(proms)).filter(Boolean);
-            if (results.length > 0) setBest(results);
-            else setBest(null);
-          } else {
-            setBest(null);
-          }
+          const results = await res.json();
+          if (Array.isArray(results) && results.length > 0) setBest(results);
+          else setBest(null);
         } else {
           setBest(null);
         }
