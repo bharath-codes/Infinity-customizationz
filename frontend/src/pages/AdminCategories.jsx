@@ -348,9 +348,9 @@ const AdminCategories = () => {
                       return (
                         <div key={product._id} className="flex items-center justify-between p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 gap-4">
                           <div className="flex items-center gap-4 flex-1 min-w-0">
-                            <img loading="lazy" src={product.images?.[0]} alt={product.name} className="w-16 h-16 rounded object-cover flex-shrink-0" />
+                            <img loading="lazy" src={product.images?.[0]} alt={product.name} className="w-16 h-16 rounded object-cover flex-shrink-0 bg-gray-100" onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><rect width="100%" height="100%" fill="%23f3f4f6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="10" fill="%239ca3af">no image</text></svg>'; }} />
                             <div className="flex-1 min-w-0">
-                              <p className="font-semibold text-sm line-clamp-1">{product.name}</p>
+                              <p className="font-semibold text-sm truncate">{product.name}</p>
                               <p className="text-xs text-gray-500">₹{product.price}</p>
                             </div>
                           </div>
