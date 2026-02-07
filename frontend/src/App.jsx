@@ -251,10 +251,7 @@ const Footer = () => {
                 <Mail size={18} className="flex-shrink-0 mt-0.5" />
                 <span>infinitycustomizations@gmail.com</span>
               </p>
-              <p className="flex items-start gap-3 hover:text-white transition-colors">
-                <Clock size={18} className="flex-shrink-0 mt-0.5" />
-                <span>Mon - Sat: 10:00 AM - 6:00 PM</span>
-              </p>
+
             </div>
           </div>
 

@@ -31,23 +31,44 @@ const ProductVariantSelector = ({ product, onVariantChange }) => {
     }
   }, [product]);
 
-  // Update price when fabric changes
+  // Update price when fabric or quantity changes - apply quantity-based discounts
   useEffect(() => {
     if (selectedFabric) {
-      const fabricPrice = selectedFabric.price || product.price;
-      setCurrentPrice(fabricPrice);
+      let fabricPrice = selectedFabric.price || product.price;
+      let finalPrice = fabricPrice;
+      let breakdown = '';
 
-      // Calculate pricing based on quantity for quantity-based pricing
-      if (product.pricingType === 'quantity-based' && product.quantityBasedPricing) {
+      // Apply quantity-based discounts for t-shirts
+      if (product._id === 'collared-tshirt' || product._id === 'collarless-tshirt') {
+        // Quantity tier discounts
+        if (quantity >= 20) {
+          finalPrice = fabricPrice - 80;
+          breakdown = `(${quantity} pieces @ ₹${finalPrice}/pc)`;
+        } else if (quantity >= 10) {
+          finalPrice = fabricPrice - 40;
+          breakdown = `(${quantity} pieces @ ₹${finalPrice}/pc)`;
+        } else if (quantity >= 5) {
+          finalPrice = fabricPrice - 20;
+          breakdown = `(${quantity} pieces @ ₹${finalPrice}/pc)`;
+        } else {
+          finalPrice = fabricPrice;
+          breakdown = `(${quantity} piece${quantity > 1 ? 's' : ''} @ ₹${finalPrice}/pc)`;
+        }
+      }
+      // For other quantity-based products
+      else if (product.pricingType === 'quantity-based' && product.quantityBasedPricing) {
         const applicablePricing = [...product.quantityBasedPricing]
           .sort((a, b) => b.quantity - a.quantity)
           .find(p => quantity >= p.quantity);
 
         if (applicablePricing) {
-          setCurrentPrice(applicablePricing.price);
-          setPriceBreakdown(`(${quantity} units @ ₹${applicablePricing.price}/pc)`);
+          finalPrice = applicablePricing.price;
+          breakdown = `(${quantity} units @ ₹${applicablePricing.price}/pc)`;
         }
       }
+
+      setCurrentPrice(finalPrice);
+      setPriceBreakdown(breakdown);
     }
   }, [selectedFabric, quantity, product]);
 
