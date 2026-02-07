@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Link, useParams } from 'react-router-dom';
 import { storyCategories, showcaseData, products, categoryDetails, phoneModelOptions } from './data';
-import { ShoppingCart, Menu, X, Search, User, Heart, ChevronRight, Phone, Mail, Instagram, Truck, ShieldCheck, Gift, Star, ArrowRight, MessageCircle, Filter, CheckCircle, AlertCircle, Info, ChevronDown, Trash2, ArrowLeft, LogOut, Share2, Copy, Check } from 'lucide-react';
+import { ShoppingCart, Menu, X, Search, User, Heart, ChevronRight, Phone, Mail, Instagram, Truck, ShieldCheck, Gift, Star, ArrowRight, MessageCircle, Filter, CheckCircle, AlertCircle, Info, ChevronDown, Trash2, ArrowLeft, LogOut, Share2, Copy, Check, Clock } from 'lucide-react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { CartProvider, useCart } from './contexts/CartContext';
 import { API_BASE_URL } from './services/api';
@@ -173,54 +173,134 @@ const Navbar = ({ cartCount }) => {
   );
 };
 
-const Footer = () => (
-  <footer className="bg-brand-blue text-white pt-16 pb-8 border-t border-brand-accent/10 mt-auto">
-    <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
-      <div>
-        <h2 className="text-2xl font-serif font-bold text-white mb-3">Infinity <span className="text-brand-accent text-xs ml-1 font-sans font-semibold tracking-wider">CUSTOMIZATIONS</span></h2>
-        <p className="text-gray-300 text-sm leading-relaxed mb-6 font-light">Premium custom printing and digital services delivered across India with exceptional quality and attention to detail.</p>
-        <div className="flex gap-4">
-          <a href="https://instagram.com/infinitycustomizations" target="_blank" rel="noreferrer" title="Instagram" className="text-gray-300 hover:text-brand-accent transition-colors duration-200 p-2 rounded-lg hover:bg-white/10">
-            <Instagram size={20} />
-          </a>
-          <a href="https://www.facebook.com/share/1FzoghaLcu/?mibextid=wwXIfr" target="_blank" rel="noreferrer" title="Facebook" className="text-gray-300 hover:text-blue-400 transition-colors duration-200 p-2 rounded-lg hover:bg-white/10">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12.072C22 6.477 17.523 2 11.928 2S2 6.477 2 12.072C2 17.09 5.657 21.128 10.438 21.924v-6.93H7.898v-2.922h2.54V9.845c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.242 0-1.63.77-1.63 1.56v1.874h2.773l-.443 2.922h-2.33v6.93C18.343 21.128 22 17.09 22 12.072z"/></svg>
-          </a>
-          <a href="https://wa.me/918985993948" target="_blank" rel="noreferrer" title="WhatsApp" className="text-gray-300 hover:text-green-400 transition-colors duration-200 p-2 rounded-lg hover:bg-white/10">
-            <WhatsAppIcon size={20} />
-          </a>
-          <a href="mailto:infinitycustomizations@gmail.com" title="Email" className="text-gray-300 hover:text-brand-accent transition-colors duration-200 p-2 rounded-lg hover:bg-white/10">
-            <Mail size={20} />
-          </a>
+const Footer = () => {
+  const [expandedSection, setExpandedSection] = React.useState(null);
+
+  const footerSections = [
+    {
+      id: 'about',
+      title: 'About Us',
+      content: 'Welcome to Infinity Customizations. We are a small business dedicated to creating customized products tailored to our customers\' preferences. Every product is made with attention to detail and personalized according to the design, text, or specifications provided by the customer. All our products are prepared only after an order is confirmed to ensure uniqueness and quality. We aim to deliver creative, reliable, and satisfactory customized solutions for gifts, personal use, and special occasions.'
+    },
+    {
+      id: 'contact',
+      title: 'Contact Us',
+      content: 'Business Name: Infinity Customizations\nEmail: infinitycustomizations@gmail.com\nPhone: +91 89859 93948\nWorking Hours: Monday – Saturday | 10:00 AM – 6:00 PM\n\nFor order-related queries, customization details, or support, feel free to contact us.'
+    },
+    {
+      id: 'privacy',
+      title: 'Privacy Policy',
+      content: 'At Infinity Customizations, your privacy is important to us. We collect personal information such as name, phone number, email address, and delivery address solely for order processing, communication, and delivery purposes. All payments made on our website are securely processed through trusted third-party payment gateways. We do not store or have access to your card, UPI, or banking details. Customer information is never sold, rented, or shared with third parties except when required to complete an order or comply with legal requirements. By using our website, you consent to this privacy policy.'
+    },
+    {
+      id: 'terms',
+      title: 'Terms & Conditions',
+      content: 'By accessing this website and placing an order with Infinity Customizations, you agree to the following terms:\n• All products are customized based on customer inputs.\n• Orders cannot be modified or cancelled once confirmed.\n• Slight variations in color or appearance may occur due to screen or material differences.\n• Delivery timelines are estimated and may vary due to courier or external factors.\n• We reserve the right to cancel or refuse orders that violate legal or ethical standards.\n\nThese terms may be updated at any time without prior notice.'
+    },
+    {
+      id: 'refund',
+      title: 'Refund & Cancellation Policy',
+      content: 'As all products sold by Infinity Customizations are custom-made and personalized, we do not offer cancellations or refunds once an order is placed. Refunds or replacements will be provided only if:\n• The product is damaged during delivery, or\n• There is a manufacturing defect, or\n• An incorrect product is delivered\n\nCustomers must report the issue within 48 hours of receiving the product, along with clear photos or videos. If approved, refunds will be processed within 5–7 business days to the original payment method.'
+    },
+    {
+      id: 'shipping',
+      title: 'Shipping Policy',
+      content: 'Orders are processed within 2-3 business days after confirmation. Shipping time depends on the customer\'s location and courier service. Infinity Customizations is not responsible for delays caused by courier partners or unforeseen circumstances.'
+    }
+  ];
+
+  return (
+    <footer className="bg-brand-blue text-white pt-16 pb-8 border-t border-brand-accent/10 mt-auto">
+      {/* Main Footer Content */}
+      <div className="max-w-7xl mx-auto px-4">
+        {/* Top Section: Branding + Contact + Quick Links */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+          {/* Brand & Social */}
+          <div>
+            <h2 className="text-2xl font-serif font-bold text-white mb-3">
+              Infinity <span className="text-brand-accent text-xs ml-1 font-sans font-semibold tracking-wider">CUSTOMIZATIONS</span>
+            </h2>
+            <p className="text-gray-300 text-sm leading-relaxed mb-6 font-light">
+              Premium custom printing and digital services delivered across India with exceptional quality and attention to detail.
+            </p>
+            <div className="flex gap-4">
+              <a href="https://instagram.com/infinitycustomizations" target="_blank" rel="noreferrer" title="Instagram" className="text-gray-300 hover:text-brand-accent transition-colors duration-200 p-2 rounded-lg hover:bg-white/10">
+                <Instagram size={20} />
+              </a>
+              <a href="https://www.facebook.com/share/1FzoghaLcu/?mibextid=wwXIfr" target="_blank" rel="noreferrer" title="Facebook" className="text-gray-300 hover:text-blue-400 transition-colors duration-200 p-2 rounded-lg hover:bg-white/10">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12.072C22 6.477 17.523 2 11.928 2S2 6.477 2 12.072C2 17.09 5.657 21.128 10.438 21.924v-6.93H7.898v-2.922h2.54V9.845c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.242 0-1.63.77-1.63 1.56v1.874h2.773l-.443 2.922h-2.33v6.93C18.343 21.128 22 17.09 22 12.072z"/></svg>
+              </a>
+              <a href="https://wa.me/918985993948" target="_blank" rel="noreferrer" title="WhatsApp" className="text-gray-300 hover:text-green-400 transition-colors duration-200 p-2 rounded-lg hover:bg-white/10">
+                <WhatsAppIcon size={20} />
+              </a>
+              <a href="mailto:infinitycustomizations@gmail.com" title="Email" className="text-gray-300 hover:text-brand-accent transition-colors duration-200 p-2 rounded-lg hover:bg-white/10">
+                <Mail size={20} />
+              </a>
+            </div>
+          </div>
+
+          {/* Contact Information */}
+          <div>
+            <h3 className="text-lg font-semibold text-brand-accent mb-6">📞 Get in Touch</h3>
+            <div className="space-y-4 text-sm text-gray-300">
+              <p className="flex items-start gap-3 hover:text-white transition-colors">
+                <Phone size={18} className="flex-shrink-0 mt-0.5" />
+                <span>+91 89859 93948</span>
+              </p>
+              <p className="flex items-start gap-3 hover:text-white transition-colors">
+                <Mail size={18} className="flex-shrink-0 mt-0.5" />
+                <span>infinitycustomizations@gmail.com</span>
+              </p>
+              <p className="flex items-start gap-3 hover:text-white transition-colors">
+                <Clock size={18} className="flex-shrink-0 mt-0.5" />
+                <span>Mon - Sat: 10:00 AM - 6:00 PM</span>
+              </p>
+            </div>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h3 className="text-lg font-semibold text-brand-accent mb-6">⚡ Quick Links</h3>
+            <div className="space-y-3 text-sm text-gray-300">
+              <Link to="/" className="block hover:text-brand-accent transition-colors duration-200">→ Home</Link>
+              <a href="https://wa.me/918985993948" target="_blank" rel="noreferrer" className="block hover:text-brand-accent transition-colors duration-200">→ Contact Support</a>
+              <a href="mailto:infinitycustomizations@gmail.com" className="block hover:text-brand-accent transition-colors duration-200">→ Email Us</a>
+              <Link to="/login" className="block hover:text-brand-accent transition-colors duration-200">→ Track Order</Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Expandable Policies Section */}
+        <div className="mb-8">
+          <h3 className="text-lg font-semibold text-brand-accent mb-4">📋 Policies & Information</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {footerSections.map((section) => (
+              <button
+                key={section.id}
+                onClick={() => setExpandedSection(expandedSection === section.id ? null : section.id)}
+                className="bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg p-4 text-left transition-all duration-200"
+              >
+                <div className="flex items-center justify-between">
+                  <h4 className="font-semibold text-brand-accent text-sm">{section.title}</h4>
+                  <ChevronDown size={16} className={`transition-transform duration-200 ${expandedSection === section.id ? 'rotate-180' : ''}`} />
+                </div>
+                {expandedSection === section.id && (
+                  <p className="text-xs text-gray-300 mt-3 leading-relaxed whitespace-pre-line">{section.content}</p>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Bottom Section */}
+        <div className="pt-8 border-t border-white/10 text-center">
+          <p className="text-xs text-gray-400 mb-2">© 2026 Infinity Customizations. All Rights Reserved.</p>
+          <p className="text-xs text-gray-500">Crafting memories, one customization at a time.</p>
         </div>
       </div>
-      <div>
-        <h3 className="text-lg font-semibold text-brand-accent mb-6">Contact Information</h3>
-        <div className="space-y-4 text-sm text-gray-300">
-          <p className="flex items-start gap-3 hover:text-white transition-colors">
-            <Phone size={18} className="flex-shrink-0 mt-0.5" />
-            <span>+91 89859 93948</span>
-          </p>
-          <p className="flex items-start gap-3 hover:text-white transition-colors">
-            <Mail size={18} className="flex-shrink-0 mt-0.5" />
-            <span>infinitycustomizations@gmail.com</span>
-          </p>
-        </div>
-      </div>
-      <div>
-        <h3 className="text-lg font-semibold text-brand-accent mb-6">Quick Links</h3>
-        <div className="space-y-3 text-sm text-gray-300">
-          <Link to="/" className="block hover:text-brand-accent transition-colors duration-200">Home</Link>
-          <a href="https://wa.me/918985993948" target="_blank" rel="noreferrer" className="block hover:text-brand-accent transition-colors duration-200">Contact Us</a>
-          <a href="mailto:infinitycustomizations@gmail.com" className="block hover:text-brand-accent transition-colors duration-200">Support</a>
-        </div>
-      </div>
-    </div>
-    <div className="max-w-7xl mx-auto px-4 pt-8 border-t border-white/10 text-center text-xs text-gray-400">
-      <p>© 2026 Infinity Customizations. All rights reserved.</p>
-    </div>
-  </footer>
-);
+    </footer>
+  );
+};
 
 // --- 4. HOME PAGE COMPONENTS ---
 
