@@ -62,9 +62,16 @@ const AdminCategories = () => {
   const saveShowcaseImages = async () => {
     if (!selectedCategory) return;
     try {
-      await api.categories.updateShowcaseImages(selectedCategory._id, showcaseImages, adminToken);
+      const response = await api.categories.updateShowcaseImages(selectedCategory._id, showcaseImages, adminToken);
+      // Update state immediately with response data if available
+      if (response.category) {
+        setCategories(categories.map(c => c._id === response.category._id ? response.category : c));
+        setSelectedCategory(response.category);
+      } else {
+        // Fallback: refresh from server
+        await refreshCategory(selectedCategory._id);
+      }
       setSuccess('Showcase images saved');
-      await refreshCategory(selectedCategory._id);
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
       setError(err.message || 'Failed to save images');
@@ -222,16 +229,31 @@ const AdminCategories = () => {
   const toggleShowcaseProduct = async (categoryId, productId) => {
     const category = categories.find(c => c._id === categoryId);
     const isInShowcase = category?.showcaseProducts?.includes(productId);
+    
+    // Optimistic update: update state immediately for instant UI feedback
+    const updatedShowcaseProducts = isInShowcase
+      ? category.showcaseProducts.filter(id => id !== productId)
+      : [...(category.showcaseProducts || []), productId];
+    
+    const updatedCategory = { ...category, showcaseProducts: updatedShowcaseProducts };
+    setCategories(categories.map(c => c._id === categoryId ? updatedCategory : c));
+    if (selectedCategory?._id === categoryId) {
+      setSelectedCategory(updatedCategory);
+    }
+    
     try {
       if (isInShowcase) {
         await api.categories.removeFromShowcase(categoryId, productId, adminToken);
       } else {
         await api.categories.addToShowcase(categoryId, productId, adminToken);
       }
+      // Confirm with server to ensure it persisted
       await refreshCategory(categoryId);
       setSuccess(`Product ${isInShowcase ? 'removed from' : 'added to'} showcase`);
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
+      // Revert optimistic update on error
+      await refreshCategory(categoryId);
       setError(err.message || 'Failed to update showcase');
       setTimeout(() => setError(''), 3000);
     }

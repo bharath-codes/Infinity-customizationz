@@ -445,8 +445,17 @@ app.put('/api/categories/:categoryId/showcase-images', authAdmin, authorize(['ma
     category.showcaseImages = validImages.slice(0, 3);
     await category.save();
 
-    res.json({ 
-      message: 'Showcase images updated successfully', 
+    res.json({
+      message: 'Showcase images updated successfully',
+      category: {
+        _id: category._id,
+        title: category.title,
+        desc: category.desc,
+        emoji: category.emoji,
+        showcaseProducts: category.showcaseProducts || [],
+        subCategories: category.subCategories || [],
+        showcaseImages: category.showcaseImages || []
+      },
       savedCount: validImages.filter(img => img).length,
       totalImages: validImages.length
     });
