@@ -1332,7 +1332,13 @@ const ProductPage = ({ addToCart }) => {
                             <div className="w-8 h-8 rounded-full bg-brand-gold/20 flex items-center justify-center font-semibold text-sm">{(r.name||'U').charAt(0)}</div>
                             <div>
                               <p className="font-semibold text-sm">{r.name || 'Anonymous'}</p>
-                              <p className="text-xs text-gray-500">{new Date(r.createdAt).toLocaleDateString()}</p>
+                              <p className="text-xs text-gray-500">{new Date(r.createdAt).toLocaleString('en-IN', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: '2-digit',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}</p>
                             </div>
                           </div>
                           <div className="text-sm text-yellow-600">{Array.from({length: Math.round(r.rating||0)}).map((_,i)=>(<span key={i}>★</span>))}{Array.from({length:5-Math.round(r.rating||0)}).map((_,i)=>(<span className="text-gray-300" key={i}>★</span>))}</div>

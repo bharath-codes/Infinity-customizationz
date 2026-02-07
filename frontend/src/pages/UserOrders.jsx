@@ -139,10 +139,13 @@ const UserOrders = () => {
                         </span>
                       </div>
                       <p className="text-sm text-brand-primary/70 font-light">
-                        Ordered on {new Date(order.createdAt).toLocaleDateString('en-IN', {
+                        Ordered on {new Date(order.createdAt).toLocaleString('en-IN', {
                           year: 'numeric',
                           month: 'short',
-                          day: 'numeric'
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          second: '2-digit'
                         })}
                       </p>
                     </div>

@@ -272,8 +272,15 @@ const AdminOrders = () => {
                       </div>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-600">Order Date</p>
-                      <p className="font-semibold">{new Date(order.createdAt).toLocaleDateString()}</p>
+                      <p className="text-xs text-gray-600">Order Date & Time</p>
+                      <p className="font-semibold">{new Date(order.createdAt).toLocaleString('en-IN', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                      })}</p>
                     </div>
                   </div>
                 </div>
