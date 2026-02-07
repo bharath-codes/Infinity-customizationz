@@ -163,10 +163,10 @@ app.delete('/api/products/:id/reviews/:reviewIndex', authAdmin, authorize(['mana
 // FILE UPLOAD CONFIGURATION
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const uploadDir = 'uploads/';
-    // Ensure directory exists
+    const uploadDir = path.join(__dirname, 'uploads');
+    // Ensure directory exists (recursive to be safe)
     if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir);
+      fs.mkdirSync(uploadDir, { recursive: true });
     }
     cb(null, uploadDir);
   },
@@ -183,8 +183,14 @@ app.post('/api/upload', authAdmin, authorize(['manage_products', 'manage_categor
   if (!req.file) {
     return res.status(400).json({ message: 'No file uploaded' });
   }
-  const filePath = `/uploads/${req.file.filename}`;
-  res.json({ filePath });
+
+  // Build both absolute URL and relative path for backwards compatibility
+  const relativePath = `/uploads/${req.file.filename}`;
+  const host = req.get('host');
+  const protocol = req.protocol || (req.secure ? 'https' : 'http');
+  const absoluteUrl = `${protocol}://${host}${relativePath}`;
+
+  res.json({ filePath: relativePath, url: absoluteUrl });
 });
 
 // Admin Product Management
@@ -263,8 +269,26 @@ app.delete('/api/products/:id', authAdmin, authorize(['manage_products']), async
 // Get all categories
 app.get('/api/categories', async (req, res) => {
   try {
-    const categories = await Category.find().populate('showcaseProducts');
-    res.json(categories);
+    const categories = await Category.find();
+
+    // For each category, load product docs for showcaseProducts (if any)
+    const enhanced = await Promise.all(categories.map(async (cat) => {
+      const showcaseIds = (cat.showcaseProducts || []).filter(Boolean);
+      let showcaseProducts = [];
+      if (showcaseIds.length) {
+        showcaseProducts = await Product.find({ _id: { $in: showcaseIds } }).select('_id name image price');
+      }
+      return {
+        _id: cat._id,
+        title: cat.title,
+        desc: cat.desc,
+        emoji: cat.emoji,
+        showcaseProducts,
+        subCategories: cat.subCategories || [],
+      };
+    }));
+
+    res.json(enhanced);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -277,16 +301,25 @@ app.get('/api/categories/:categoryId', async (req, res) => {
     if (!category) {
       return res.status(404).json({ message: 'Category not found' });
     }
-    
-    // Return category with its showcase products array
+
+    // Load product documents for both showcaseProducts and products arrays
+    const showcaseIds = (category.showcaseProducts || []).filter(Boolean);
+    const productIds = (category.products || []).filter(Boolean);
+
+    const [showcaseProducts, productsList] = await Promise.all([
+      showcaseIds.length ? Product.find({ _id: { $in: showcaseIds } }).select('_id name image price') : [],
+      productIds.length ? Product.find({ _id: { $in: productIds } }).select('_id name image price') : []
+    ]);
+
     res.json({
       _id: category._id,
       title: category.title,
       desc: category.desc,
       emoji: category.emoji,
-      showcaseProducts: category.showcaseProducts || [],
+      showcaseProducts: showcaseProducts || [],
       subCategories: category.subCategories || [],
-      showcaseImages: category.showcaseImages || []
+      showcaseImages: category.showcaseImages || [],
+      products: productsList || []
     });
   } catch (err) {
     res.status(500).json({ message: err.message });

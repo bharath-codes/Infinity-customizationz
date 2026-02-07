@@ -141,11 +141,13 @@ const AdminProducts = () => {
       if (!res.ok) throw new Error('Upload failed');
 
       const data = await res.json();
-      // Make sure the image URL is absolute so the browser can load it in dev (Vite) and prod
+      // Prefer absolute `url` returned by backend; fall back to filePath
       const backendBase = API_BASE_URL.replace(/\/api$/, '');
-      const fileUrl = data.filePath && data.filePath.startsWith('http') ? data.filePath : `${backendBase}${data.filePath}`;
-      setFormData(prev => ({ ...prev, image: fileUrl }));
-      setPreviewImage(fileUrl);
+      const fileUrl = data.url && data.url.startsWith('http') ? data.url : (data.filePath && data.filePath.startsWith('http') ? data.filePath : (data.filePath ? `${backendBase}${data.filePath}` : null));
+      if (fileUrl) {
+        setFormData(prev => ({ ...prev, image: fileUrl }));
+        setPreviewImage(fileUrl);
+      }
       // revoke temporary object URL now that we have the final server URL
       try { URL.revokeObjectURL(tempUrl); } catch (e) {}
     } catch (error) {
@@ -314,10 +316,10 @@ const AdminProducts = () => {
 
       const data = await res.json();
       const backendBase = API_BASE_URL.replace(/\/api$/, '');
-      const fileUrl = data.filePath && data.filePath.startsWith('http') ? data.filePath : `${backendBase}${data.filePath}`;
+      const fileUrl = data.url && data.url.startsWith('http') ? data.url : (data.filePath && data.filePath.startsWith('http') ? data.filePath : (data.filePath ? `${backendBase}${data.filePath}` : null));
       const imgs = [...(formData.images || [])];
       // replace temporary preview with final server URL
-      imgs[index] = fileUrl;
+      if (fileUrl) imgs[index] = fileUrl;
       setFormData(prev => ({ ...prev, images: imgs }));
       try { URL.revokeObjectURL(tempUrl); } catch (e) {}
     } catch (err) {
