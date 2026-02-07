@@ -4,17 +4,7 @@ const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
-
-// Configure Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
-});
-
-const isCloudinaryConfigured = process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET;
 
 const app = express();
 
@@ -171,8 +161,7 @@ app.delete('/api/products/:id/reviews/:reviewIndex', authAdmin, authorize(['mana
 });
 
 // FILE UPLOAD CONFIGURATION
-// Use memory storage for Cloudinary, or disk storage as fallback
-const storage = isCloudinaryConfigured ? multer.memoryStorage() : multer.diskStorage({
+const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const uploadDir = path.join(__dirname, 'uploads');
     if (!fs.existsSync(uploadDir)) {
@@ -196,55 +185,19 @@ const getProtocol = (req) => {
 };
 
 // UPLOAD ENDPOINT (Admin only - for product images, hero images, etc.)
-app.post('/api/upload', authAdmin, authorize(['manage_products', 'manage_categories']), upload.single('image'), async (req, res) => {
+app.post('/api/upload', authAdmin, authorize(['manage_products', 'manage_categories']), upload.single('image'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: 'No file uploaded' });
   }
 
   try {
-    // If Cloudinary is configured, upload to Cloudinary
-    if (isCloudinaryConfigured) {
-      console.log('🌤️ Uploading to Cloudinary...');
-      return new Promise((resolve) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
-          {
-            folder: 'infinity-shop',
-            resource_type: 'auto',
-            quality: 'auto',
-            fetch_format: 'auto'
-          },
-          (error, result) => {
-            if (error) {
-              console.error('❌ Cloudinary upload error:', error);
-              res.status(500).json({ message: 'Upload failed', error: error.message });
-              return resolve();
-            }
-            console.log('✅ Image uploaded to Cloudinary:', result.secure_url);
-            // Return Cloudinary secure_url as the primary URL
-            res.json({ 
-              filePath: result.secure_url,
-              url: result.secure_url,
-              cloudinary_id: result.public_id
-            });
-            resolve();
-          }
-        );
-        uploadStream.on('error', (error) => {
-          console.error('❌ Upload stream error:', error);
-          res.status(500).json({ message: 'Upload failed', error: error.message });
-          resolve();
-        });
-        uploadStream.end(req.file.buffer);
-      });
-    } else {
-      // Fallback to local disk storage
-      const relativePath = `/uploads/${req.file.filename}`;
-      const host = req.get('host');
-      const protocol = getProtocol(req);
-      const absoluteUrl = `${protocol}://${host}${relativePath}`;
-      console.log('📁 Image saved to disk:', absoluteUrl);
-      res.json({ filePath: relativePath, url: absoluteUrl });
-    }
+    // Local disk storage - return absolute URL
+    const relativePath = `/uploads/${req.file.filename}`;
+    const host = req.get('host');
+    const protocol = getProtocol(req);
+    const absoluteUrl = `${protocol}://${host}${relativePath}`;
+    console.log('📁 Image saved to disk:', absoluteUrl);
+    res.json({ filePath: relativePath, url: absoluteUrl });
   } catch (error) {
     console.error('❌ Upload error:', error);
     res.status(500).json({ message: 'Upload failed', error: error.message });
