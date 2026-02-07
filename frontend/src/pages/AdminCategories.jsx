@@ -346,18 +346,18 @@ const AdminCategories = () => {
                     (productsByCategory[selectedCategory._id] || []).map(product => {
                       const isFeatured = selectedCategory.showcaseProducts?.includes(product._id);
                       return (
-                        <div key={product._id} className="flex items-center justify-between p-3 border rounded-lg bg-gray-50">
-                          <div className="flex items-center gap-3">
-                            <img loading="lazy" src={product.images?.[0]} alt={product.name} className="w-12 h-12 rounded object-cover" />
-                            <div>
-                              <p className="font-semibold text-sm">{product.name}</p>
+                        <div key={product._id} className="flex items-center justify-between p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 gap-4">
+                          <div className="flex items-center gap-4 flex-1 min-w-0">
+                            <img loading="lazy" src={product.images?.[0]} alt={product.name} className="w-16 h-16 rounded object-cover flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <p className="font-semibold text-sm line-clamp-1">{product.name}</p>
                               <p className="text-xs text-gray-500">₹{product.price}</p>
                             </div>
                           </div>
                           <button 
                             onClick={() => toggleShowcaseProduct(selectedCategory._id, product._id)}
-                            className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
-                              isFeatured ? 'bg-purple-600 text-white shadow-lg' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                            className={`px-4 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap flex-shrink-0 ${
+                              isFeatured ? 'bg-purple-600 text-white shadow-lg hover:bg-purple-700' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                             }`}
                           >
                             {isFeatured ? '⭐ Featured' : 'Feature'}

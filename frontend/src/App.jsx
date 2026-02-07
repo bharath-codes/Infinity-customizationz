@@ -77,7 +77,7 @@ const WhatsAppIcon = ({ size = 22, className = "" }) => (
 const AnnouncementBar = () => (
   <div className="bg-brand-secondary text-white text-[10px] md:text-xs py-3 px-4 overflow-hidden relative z-50 border-b border-brand-secondary/30">
     <div className="animate-marquee font-semibold tracking-wide uppercase flex gap-12 text-white/90">
-      <span>Free shipping on orders above ₹500</span> <span>•</span> <span>New: Custom ID Cards & NFC Tags</span>
+      <span>Your imagination, our creation</span> <span>•</span> <span>Custom products handcrafted with care</span>
     </div>
   </div>
 );
