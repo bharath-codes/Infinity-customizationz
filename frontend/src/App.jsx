@@ -1014,38 +1014,6 @@ const ProductPage = ({ addToCart }) => {
             </div>
           )}
 
-                    onClick={() => setSignatureDayTShirtColor('colored')}
-                    className={`py-3 px-4 rounded-lg border-2 font-bold transition ${
-                      signatureDayTShirtColor === 'colored'
-                        ? 'border-amber-600 bg-amber-600 text-white'
-                        : 'border-gray-300 bg-white text-gray-800 hover:border-amber-300'
-                    }`}
-                  >
-                    Colored - +₹50/pc
-                  </button>
-                </div>
-              </div>
-
-              <div className="bg-white p-4 rounded-lg border-2 border-amber-300">
-                <p className="text-sm text-gray-600 mb-3">💰 <strong>Quantity-Based Pricing:</strong></p>
-                <div className="grid grid-cols-2 gap-2 text-sm text-gray-700 mb-3">
-                  <div>40 pcs: <span className="font-bold">₹179</span></div>
-                  <div>50 pcs: <span className="font-bold">₹169</span></div>
-                  <div>60-70 pcs: <span className="font-bold">₹159</span></div>
-                  <div>70+ pcs: <span className="font-bold">₹149</span></div>
-                </div>
-                <div className="border-t border-gray-200 pt-3">
-                  <p className="text-xs text-gray-600 mb-2">
-                    {signatureDayTShirtColor === 'colored' && <span>✓ +₹50/pc for colored print applies</span>}
-                  </p>
-                  <p className="font-bold text-amber-700">
-                    Your Price: ₹{signatureDayBasePrice}/pc × {qty} = <span className="text-xl">₹{signatureDayBasePrice * qty}</span>
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
           <div className="space-y-3">
             {isHamper && (
               <div className="bg-blue-50 p-5 rounded-xl border border-blue-200 space-y-4">
