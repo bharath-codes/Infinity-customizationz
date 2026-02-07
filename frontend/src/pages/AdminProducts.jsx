@@ -9,6 +9,7 @@ const AdminProducts = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const categoryFromUrl = searchParams.get('category');
+  const editIdFromUrl = searchParams.get('edit');
   const { admin, adminToken } = useAuth();
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -67,6 +68,40 @@ const AdminProducts = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [categoryFromUrl, categories.length]);
+
+  // When coming from Categories page with ?edit=productId, open Edit form for that product
+  useEffect(() => {
+    if (!editIdFromUrl || !adminToken) return;
+    const openEdit = async () => {
+      try {
+        const product = await api.products.getById(editIdFromUrl);
+        if (product) {
+          setEditingId(product._id);
+          setFormData({
+            name: product.name,
+            price: product.price,
+            description: product.description || '',
+            categoryId: product.categoryId,
+            weight: product.weight || '',
+            dimensions: product.dimensions || '',
+            image: product.image || '',
+            images: product.images || [],
+            inStock: product.inStock,
+            isBestSeller: product.isBestSeller || false,
+            pricingType: product.pricingType || 'standard',
+            pricing: product.pricing || { "40": 179, "50": 169, "60-70": 159, "70+": 149 },
+            colorPriceDiff: product.colorPriceDiff || 50
+          });
+          setPreviewImage(product.image || '');
+          setShowAddForm(true);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      } catch (err) {
+        console.error('Failed to load product for edit:', err);
+      }
+    };
+    openEdit();
+  }, [editIdFromUrl, adminToken]);
 
   const fetchProducts = async () => {
     try {

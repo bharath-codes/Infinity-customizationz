@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { AlertCircle, Plus, Trash2, Edit2, X, Save, ChevronRight, Check, Package } from 'lucide-react';
+import { AlertCircle, Plus, Trash2, Edit2, X, Save, ChevronRight, Check, Package, Pencil } from 'lucide-react';
 // ✅ Import the centralized API service
 import api from '../services/api';
 import { getImageSrc } from '../utils/imageUtils';
@@ -185,6 +185,20 @@ const AdminCategories = () => {
     }
   };
 
+  const handleDeleteProduct = async (productId, productName) => {
+    if (!window.confirm(`Delete product "${productName || productId}"? This cannot be undone.`)) return;
+    if (!adminToken) return;
+    try {
+      await api.products.delete(productId, adminToken);
+      await fetchProductsForCategory(selectedCategory._id, true);
+      setSuccess('Product deleted');
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError(err.message || 'Failed to delete product');
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
   const toggleShowcaseProduct = async (categoryId, productId) => {
     const category = categories.find(c => c._id === categoryId);
     const isInShowcase = category?.showcaseProducts?.includes(productId);
@@ -313,7 +327,7 @@ const AdminCategories = () => {
                     (productsByCategory[selectedCategory._id] || []).map(product => {
                       const isFeatured = selectedCategory.showcaseProducts?.includes(product._id);
                       return (
-                        <div key={product._id} className="flex items-center justify-between p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 gap-4">
+                        <div key={product._id} className="flex items-center justify-between p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 gap-4 flex-wrap">
                           <div className="flex items-center gap-4 flex-1 min-w-0">
                             <img loading="lazy" src={getImageSrc(product.images?.[0] || product.image) || '/images/logo.png'} alt={product.name} className="w-16 h-16 rounded object-cover flex-shrink-0 bg-gray-100" onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><rect width="100%" height="100%" fill="%23f3f4f6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="10" fill="%239ca3af">no image</text></svg>'; }} />
                             <div className="flex-1 min-w-0">
@@ -321,15 +335,32 @@ const AdminCategories = () => {
                               <p className="text-xs text-gray-500">₹{product.price}</p>
                             </div>
                           </div>
-                          <button 
-                            onClick={() => toggleShowcaseProduct(selectedCategory._id, product._id)}
-                            disabled={!isFeatured && (selectedCategory.showcaseProducts?.length || 0) >= 2}
-                            className={`px-4 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed ${
-                              isFeatured ? 'bg-purple-600 text-white shadow-lg hover:bg-purple-700' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
-                            }`}
-                          >
-                            {isFeatured ? '⭐ Featured' : 'Feature'}
-                          </button>
+                          <div className="flex items-center gap-2 flex-shrink-0">
+                            <Link
+                              to={`/admin/products?edit=${product._id}`}
+                              className="p-2 rounded-lg text-gray-600 hover:bg-blue-100 hover:text-blue-700 transition"
+                              title="Edit product"
+                            >
+                              <Pencil size={18} />
+                            </Link>
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteProduct(product._id, product.name)}
+                              className="p-2 rounded-lg text-gray-600 hover:bg-red-100 hover:text-red-700 transition"
+                              title="Delete product"
+                            >
+                              <Trash2 size={18} />
+                            </button>
+                            <button 
+                              onClick={() => toggleShowcaseProduct(selectedCategory._id, product._id)}
+                              disabled={!isFeatured && (selectedCategory.showcaseProducts?.length || 0) >= 2}
+                              className={`px-4 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed ${
+                                isFeatured ? 'bg-purple-600 text-white shadow-lg hover:bg-purple-700' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                              }`}
+                            >
+                              {isFeatured ? '⭐ Featured' : 'Feature'}
+                            </button>
+                          </div>
                         </div>
                       );
                     })

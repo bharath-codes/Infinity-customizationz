@@ -86,7 +86,14 @@ app.get('/api/products', async (req, res) => {
 
 app.get('/api/products/category/:categoryId', async (req, res) => {
   try {
-    const products = await Product.find({ categoryId: req.params.categoryId });
+    const rawId = (req.params.categoryId || '').trim();
+    let products = await Product.find({ categoryId: rawId });
+    // If no products, try case-insensitive match (e.g. DB has "Frames" vs "frames")
+    if (products.length === 0 && rawId) {
+      products = await Product.find({
+        categoryId: new RegExp('^' + rawId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$', 'i')
+      });
+    }
     res.json(products);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -348,7 +355,12 @@ app.post('/api/categories/:categoryId/showcase/:productId', authAdmin, authorize
     }
 
     if (!category.showcaseProducts.includes(req.params.productId)) {
-      category.showcaseProducts.push(req.params.productId);
+      const arr = category.showcaseProducts || [];
+      if (arr.length >= 2) {
+        return res.status(400).json({ message: 'Maximum 2 products can be showcased per category.' });
+      }
+      arr.push(req.params.productId);
+      category.showcaseProducts = arr;
       await category.save();
     }
 
@@ -429,10 +441,10 @@ app.put('/api/categories/:categoryId/showcase-images', authAdmin, authorize(['ma
         continue;
       }
       
-      // Check size (base64 string size limit: 1.5MB per image)
-      if (typeof img !== 'string' || img.length > 1.5 * 1024 * 1024) {
+      // Check size (base64 string size limit: 2MB per image to match frontend compression)
+      if (typeof img !== 'string' || img.length > 2 * 1024 * 1024) {
         return res.status(400).json({ 
-          message: `Image ${i + 1} is too large. Maximum size is 1.5MB. Please compress your images.` 
+          message: `Image ${i + 1} is too large. Maximum size is 2MB. Please use a smaller image.` 
         });
       }
       
@@ -446,15 +458,16 @@ app.put('/api/categories/:categoryId/showcase-images', authAdmin, authorize(['ma
       validImages.push(img);
     }
 
-    // Find or create category (auto-create hero for homepage banners)
-    let category = await Category.findById(req.params.categoryId);
-    if (!category && req.params.categoryId === 'hero') {
-      category = await Category.create({
-        _id: 'hero',
-        title: 'Hero Banner',
-        desc: 'Homepage hero carousel images',
-        showcaseImages: [null, null, null]
-      });
+    // Find or create category (auto-create hero for homepage banners) - use upsert to avoid duplicate key
+    const categoryId = req.params.categoryId;
+    let category = await Category.findById(categoryId);
+    if (!category && categoryId === 'hero') {
+      category = await Category.findOneAndUpdate(
+        { _id: 'hero' },
+        { $setOnInsert: { _id: 'hero', title: 'Hero Banner', desc: 'Homepage hero carousel images', showcaseImages: [null, null, null] } },
+        { upsert: true, new: true }
+      );
+      if (!category.showcaseImages) category.showcaseImages = [null, null, null];
     }
     if (!category) {
       return res.status(404).json({ message: 'Category not found' });
@@ -493,15 +506,16 @@ app.put('/api/categories/:categoryId/showcase-images', authAdmin, authorize(['ma
 // Get showcase images for category (Public) - auto-creates "hero" category if missing
 app.get('/api/categories/:categoryId/showcase-images', async (req, res) => {
   try {
-    let category = await Category.findById(req.params.categoryId);
-    // Auto-create hero category for homepage banner images
-    if (!category && req.params.categoryId === 'hero') {
-      category = await Category.create({
-        _id: 'hero',
-        title: 'Hero Banner',
-        desc: 'Homepage hero carousel images',
-        showcaseImages: [null, null, null]
-      });
+    const categoryId = req.params.categoryId;
+    let category = await Category.findById(categoryId);
+    // Auto-create hero category for homepage banner images (upsert to avoid duplicate key)
+    if (!category && categoryId === 'hero') {
+      category = await Category.findOneAndUpdate(
+        { _id: 'hero' },
+        { $setOnInsert: { _id: 'hero', title: 'Hero Banner', desc: 'Homepage hero carousel images', showcaseImages: [null, null, null] } },
+        { upsert: true, new: true }
+      );
+      if (category && !category.showcaseImages) category.showcaseImages = [null, null, null];
     }
     if (!category) {
       return res.status(404).json({ message: 'Category not found' });

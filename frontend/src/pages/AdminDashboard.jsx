@@ -192,10 +192,10 @@ const AdminDashboard = () => {
       // Compress and convert to base64
       const base64 = await compressImage(file);
       
-      // Check final size
-      if (base64.length > 2 * 1024 * 1024) {
-        setError('Compressed image still too large. Please use a smaller image.');
-        setTimeout(() => setError(''), 3000);
+      // Keep under 1.8MB so backend (2MB limit) always accepts
+      if (base64.length > 1.8 * 1024 * 1024) {
+        setError('Image still too large after compression. Please use a smaller image (e.g. under 1MB file).');
+        setTimeout(() => setError(''), 4000);
         return;
       }
       
@@ -230,7 +230,7 @@ const AdminDashboard = () => {
       setTimeout(() => setSuccess(''), 2500);
     } catch (err) {
       console.error('Error saving hero images:', err);
-      const errorMsg = err.response?.data?.message || err.message || 'Failed to save hero images';
+      const errorMsg = (err.data && err.data.message) || err.message || 'Failed to save hero images';
       setError(`❌ ${errorMsg}`);
       setTimeout(() => setError(''), 5000);
     } finally { 
