@@ -436,7 +436,7 @@ const products = [
     price: 499,
     image: "/images/collared-tshirt.jpg",
     images: ["/images/collared-tshirt.jpg"],
-    description: "Premium collared t-shirts available in poly cotton and pure cotton. Choose your fabric and color from our amazing collection. Bulk discounts available at 5, 10, and 20+ pieces.",
+    description: "Premium collared t-shirts available in poly cotton and pure cotton. Choose your fabric and color from our amazing collection. Sizes S to XXL. Bulk discounts available at 5, 10, and 20+ pieces.",
     inStock: true,
     pricingType: "fabric-based",
     fabrics: [
@@ -458,15 +458,15 @@ const products = [
     categoryId: "apparel",
     subcategoryName: "Collarless",
     name: "Collarless T-Shirts",
-    price: 499,
+    price: 399,
     image: "/images/collarless-tshirt.jpg",
     images: ["/images/collarless-tshirt.jpg"],
-    description: "Comfortable collarless t-shirts in poly cotton and pure cotton options. Perfect for casual wear with vibrant colors. Bulk discounts available at 5, 10, and 20+ pieces.",
+    description: "Comfortable collarless t-shirts in nylon and pure cotton options. Sizes S to XXL. Perfect for casual wear with vibrant colors. Bulk discounts available at 5, 10, and 20+ pieces.",
     inStock: true,
     pricingType: "fabric-based",
     fabrics: [
-      { name: "Poly Cotton", price: 499, priceDifference: 0 },
-      { name: "Pure Cotton", price: 599, priceDifference: 100 }
+      { name: "Nylon", price: 399, priceDifference: 0 },
+      { name: "Pure Cotton", price: 449, priceDifference: 50 }
     ],
     colors: ["Maroon", "Navy Blue", "Black", "White"],
     sizes: ["S", "M", "L", "XL", "XXL"],
