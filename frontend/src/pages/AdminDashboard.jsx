@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { LogOut, Package, ShoppingCart, TrendingUp, ChevronRight, AlertCircle, Settings, BarChart3 } from 'lucide-react';
+import api from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
 import { useAuth } from '../contexts/AuthContext';
 // 1. Import the dynamic API URL from your service file
 import { API_BASE_URL } from '../services/api'; 
@@ -16,6 +18,13 @@ const AdminDashboard = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const { adminToken } = useAuth();
+
+  // Homepage controls state
+  const [allProducts, setAllProducts] = useState([]);
+  const [heroImages, setHeroImages] = useState([null, null, null]);
+  const [heroUploading, setHeroUploading] = useState(false);
+  const [hpSaving, setHpSaving] = useState(false);
 
   useEffect(() => {
     if (admin) {
@@ -68,6 +77,84 @@ const AdminDashboard = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    // load products list for best-seller management
+    const loadAll = async () => {
+      try {
+        const prods = await api.products.getAll();
+        setAllProducts(Array.isArray(prods) ? prods : []);
+      } catch (err) {
+        console.error('Failed to load products for admin dashboard:', err);
+      }
+    };
+    loadAll();
+  }, []);
+
+  const toggleBestSeller = async (product) => {
+    if (!adminToken) return alert('Not authenticated');
+    try {
+      const updated = { ...product, isBestSeller: !product.isBestSeller };
+      await api.products.update(product._id || product.id, updated, adminToken);
+      setAllProducts(prev => prev.map(p => p._id === product._id ? { ...p, isBestSeller: !p.isBestSeller } : p));
+      setSuccess('Updated best seller status');
+      setTimeout(() => setSuccess(''), 2500);
+    } catch (err) {
+      console.error('Error toggling best seller:', err);
+      setError(err.message || 'Failed to update');
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
+  // Hero images loader/saver (uses category id 'hero')
+  useEffect(() => {
+    const loadHero = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/categories/hero/showcase-images`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.images) setHeroImages(data.images.concat([]).slice(0,3));
+        }
+      } catch (err) {
+        // ignore
+      }
+    };
+    loadHero();
+  }, []);
+
+  const convertFileToBase64 = (file) => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (err) => reject(err);
+    reader.readAsDataURL(file);
+  });
+
+  const handleHeroChange = async (index, file) => {
+    if (!file) return;
+    try {
+      setHeroUploading(true);
+      const base64 = await convertFileToBase64(file);
+      const arr = [...heroImages]; arr[index] = base64; setHeroImages(arr);
+    } catch (err) {
+      console.error('Hero image read failed', err);
+      setError('Failed to read image');
+      setTimeout(() => setError(''), 3000);
+    } finally { setHeroUploading(false); }
+  };
+
+  const saveHeroImages = async () => {
+    if (!adminToken) return alert('Not authenticated');
+    try {
+      setHpSaving(true);
+      await api.categories.updateShowcaseImages('hero', heroImages, adminToken);
+      setSuccess('Hero images updated');
+      setTimeout(() => setSuccess(''), 2500);
+    } catch (err) {
+      console.error('Error saving hero images', err);
+      setError(err.message || 'Failed to save');
+      setTimeout(() => setError(''), 3000);
+    } finally { setHpSaving(false); }
   };
 
   const handleLogout = () => {
@@ -263,6 +350,50 @@ const AdminDashboard = () => {
                 <h3 className="font-semibold text-brand-primary">Analytics</h3>
                 <p className="text-sm text-brand-primary/70 mt-1 font-light">Real-time insights into orders, customer activity, and business performance</p>
               </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Homepage Controls: Best Sellers & Hero Images */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8 mb-12">
+          <div className="bg-white rounded-xl shadow-md p-6 border border-border-light">
+            <h3 className="text-lg font-semibold mb-4">Manage Best Sellers</h3>
+            <p className="text-sm text-gray-500 mb-4">Toggle products to appear in the Best Sellers section.</p>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-96 overflow-y-auto p-2">
+              {allProducts.map(p => (
+                <div key={p._id || p.id} className="p-3 border rounded-lg flex flex-col items-start gap-2">
+                  <div className="flex items-center gap-2 w-full">
+                    <img src={p.images?.[0] || p.image} alt={p.name} className="w-12 h-12 object-cover rounded" />
+                    <div className="flex-1">
+                      <div className="font-semibold text-sm truncate">{p.name}</div>
+                      <div className="text-xs text-gray-500">₹{p.price}</div>
+                    </div>
+                  </div>
+                  <div className="w-full flex items-center justify-between mt-2">
+                    <button onClick={() => toggleBestSeller(p)} className={`px-3 py-1 rounded-full text-xs font-bold ${p.isBestSeller ? 'bg-purple-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}>
+                      {p.isBestSeller ? '★ Best Seller' : 'Mark Best'}
+                    </button>
+                    <div className="text-xs text-gray-400">{p.categoryId}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-md p-6 border border-border-light">
+            <h3 className="text-lg font-semibold mb-4">Edit Hero / Banner Images</h3>
+            <p className="text-sm text-gray-500 mb-4">Upload up to 3 hero images used on the homepage carousel.</p>
+            <div className="flex gap-3 mb-4">
+              {[0,1,2].map(i => (
+                <label key={i} className="w-32 h-20 border rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center cursor-pointer">
+                  {heroImages[i] ? <img src={heroImages[i]} className="w-full h-full object-cover" alt={`hero-${i+1}`} /> : <div className="text-xs text-gray-400">Upload {i+1}</div>}
+                  <input type="file" accept="image/*" className="hidden" onChange={(e) => handleHeroChange(i, e.target.files?.[0])} />
+                </label>
+              ))}
+            </div>
+            <div className="flex items-center gap-3">
+              <button onClick={saveHeroImages} disabled={hpSaving} className="px-4 py-2 bg-brand-blue text-white rounded-lg">{hpSaving ? 'Saving...' : 'Save Hero Images'}</button>
+              <button onClick={() => { setHeroImages([null,null,null]); }} className="px-4 py-2 bg-gray-100 rounded-lg">Reset</button>
             </div>
           </div>
         </div>

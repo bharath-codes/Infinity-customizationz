@@ -184,6 +184,16 @@ const AdminCategories = () => {
     }
   };
 
+  // Lock body scroll when modal is open to avoid overlapping scrolling issues
+  React.useEffect(() => {
+    if (showForm) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [showForm]);
+
 
   const addProductToCategory = async (categoryId, productId) => {
     try {
@@ -365,7 +375,7 @@ const AdminCategories = () => {
 
       {/* Modal Form */}
       {showForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[200] p-4">
           <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold">{editingCategory ? 'Edit Category' : 'New Category'}</h2>
