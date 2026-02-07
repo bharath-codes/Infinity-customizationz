@@ -3,12 +3,11 @@ import { Link } from 'react-router-dom';
 import { LogOut, Package, ShoppingCart, TrendingUp, ChevronRight, AlertCircle, Settings, BarChart3 } from 'lucide-react';
 import api from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
-import { useAuth } from '../contexts/AuthContext';
 // 1. Import the dynamic API URL from your service file
 import { API_BASE_URL } from '../services/api'; 
 
 const AdminDashboard = () => {
-  const { admin, logoutAdmin } = useAuth();
+  const { admin, logoutAdmin, adminToken } = useAuth();
   const [stats, setStats] = useState({
     totalOrders: 0,
     todayOrders: 0,
@@ -18,7 +17,8 @@ const AdminDashboard = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const { adminToken } = useAuth();
+  const [success, setSuccess] = useState('');
+  
 
   // Homepage controls state
   const [allProducts, setAllProducts] = useState([]);
