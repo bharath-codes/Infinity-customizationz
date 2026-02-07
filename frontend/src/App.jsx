@@ -173,7 +173,7 @@ const Navbar = ({ cartCount }) => {
 };
 
 const Footer = () => (
-  <footer className="bg-brand-dark text-white pt-16 pb-8 border-t border-brand-accent/10 mt-auto">
+  <footer className="bg-brand-blue text-white pt-16 pb-8 border-t border-brand-accent/10 mt-auto">
     <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
       <div>
         <h2 className="text-2xl font-serif font-bold text-white mb-3">Infinity <span className="text-brand-accent text-xs ml-1 font-sans font-semibold tracking-wider">CUSTOMIZATIONS</span></h2>

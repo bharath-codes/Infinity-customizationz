@@ -109,7 +109,23 @@ const AdminOrders = () => {
       return rowHTML;
     }).join('');
 
-    const html = `<!doctype html><html><head><meta charset="utf-8"><title>Invoice ${order.orderId}</title><style>body{font-family:Arial,Helvetica,sans-serif;padding:20px;color:#111}h1{color:#0b63a7}h3{margin-top:20px}table{width:100%;border-collapse:collapse;margin-top:16px}th,td{padding:8px;border:1px solid #ddd;text-align:left}tfoot td{font-weight:bold}</style></head><body><h1>Infinity Customizations — Invoice</h1><p>Order ID: <strong>${order.orderId}</strong></p><p>Date: ${new Date(order.createdAt).toLocaleString()}</p><h3>Billing / Shipping</h3><p><strong>${order.customerName}</strong><br/>${order.address}<br/>${order.city}, ${order.state} ${order.pincode}<br/>Phone: ${order.phoneNumber}<br/>Email: ${order.email}</p><h3>Items</h3><table><thead><tr><th>Product</th><th>Qty</th><th>Price (₹)</th><th>Line Total (₹)</th></tr></thead><tbody>${itemsHTML}</tbody><tfoot><tr><td colspan="3">Subtotal</td><td>₹${Number(order.subtotal).toLocaleString('en-IN')}</td></tr><tr><td colspan="3">Shipping</td><td>₹${Number(order.shippingCost).toLocaleString('en-IN')}</td></tr><tr><td colspan="3">Taxes</td><td>₹${Number(order.tax).toLocaleString('en-IN')}</td></tr><tr><td colspan="3">Total</td><td>₹${Number(order.totalAmount).toLocaleString('en-IN')}</td></tr></tfoot></table><p style="margin-top:18px;font-size:12px;color:#555">Thank you for your order. For support, contact infinitycustomizations@gmail.com or WhatsApp +91 89859 93948.</p></body></html>`;
+    // compute totals including hamper/added products
+    const computedSubtotal = (order.items || []).reduce((acc, item) => {
+      let hamperItems = [];
+      try {
+        if (item.customizationDetails) {
+          const parsed = JSON.parse(item.customizationDetails);
+          if (Array.isArray(parsed)) hamperItems = parsed;
+        }
+      } catch (e) {}
+      const hamperTotal = (hamperItems || []).reduce((s, h) => s + (Number(h.price) || 0), 0);
+      return acc + ((Number(item.price) || 0) * (Number(item.quantity) || 1)) + hamperTotal;
+    }, 0);
+    const shippingLocal = Number(order.shippingCost) || 0;
+    const taxLocal = Number(order.tax) || 0;
+    const computedTotal = computedSubtotal + shippingLocal + taxLocal;
+
+    const html = `<!doctype html><html><head><meta charset="utf-8"><title>Invoice ${order.orderId}</title><style>body{font-family:Arial,Helvetica,sans-serif;padding:20px;color:#111}h1{color:#0b63a7}h3{margin-top:20px}table{width:100%;border-collapse:collapse;margin-top:16px}th,td{padding:8px;border:1px solid #ddd;text-align:left}tfoot td{font-weight:bold}</style></head><body><h1>Infinity Customizations — Invoice</h1><p>Order ID: <strong>${order.orderId}</strong></p><p>Date: ${new Date(order.createdAt).toLocaleString()}</p><h3>Billing / Shipping</h3><p><strong>${order.customerName}</strong><br/>${order.address}<br/>${order.city}, ${order.state} ${order.pincode}<br/>Phone: ${order.phoneNumber}<br/>Email: ${order.email}</p><h3>Items</h3><table><thead><tr><th>Product</th><th>Qty</th><th>Price (₹)</th><th>Line Total (₹)</th></tr></thead><tbody>${itemsHTML}</tbody><tfoot><tr><td colspan="3">Subtotal</td><td>₹${Number(computedSubtotal).toLocaleString('en-IN')}</td></tr><tr><td colspan="3">Shipping</td><td>₹${Number(shippingLocal).toLocaleString('en-IN')}</td></tr><tr><td colspan="3">Taxes</td><td>₹${Number(taxLocal).toLocaleString('en-IN')}</td></tr><tr><td colspan="3">Total</td><td>₹${Number(computedTotal).toLocaleString('en-IN')}</td></tr></tfoot></table><p style="margin-top:18px;font-size:12px;color:#555">Thank you for your order. For support, contact infinitycustomizations@gmail.com or WhatsApp +91 89859 93948.</p></body></html>`;
 
     const blob = new Blob([html], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
@@ -193,7 +209,27 @@ const AdminOrders = () => {
               <p className="text-gray-600 text-lg">No orders found</p>
             </div>
           ) : (
-            filteredOrders.map(order => (
+            filteredOrders.map(order => {
+              // compute subtotal including any added/hamper items stored in customizationDetails
+              const computedSubtotal = (order.items || []).reduce((acc, item) => {
+                let hamperItems = [];
+                try {
+                  if (item.customizationDetails) {
+                    const parsed = JSON.parse(item.customizationDetails);
+                    if (Array.isArray(parsed)) hamperItems = parsed;
+                  }
+                } catch (e) {
+                  // ignore parse errors
+                }
+                const hamperTotal = (hamperItems || []).reduce((s, h) => s + (Number(h.price) || 0), 0);
+                const lineTotal = (Number(item.price) || 0) * (Number(item.quantity) || 1) + hamperTotal;
+                return acc + lineTotal;
+              }, 0);
+              const shipping = Number(order.shippingCost) || 0;
+              const tax = Number(order.tax) || 0;
+              const computedTotal = computedSubtotal + shipping + tax;
+
+              return (
               <div key={order._id} className="bg-white rounded-lg shadow hover:shadow-lg transition">
                 {/* Order Header */}
                 <div className="p-6 border-b">
@@ -208,7 +244,7 @@ const AdminOrders = () => {
                       <p className={`inline-block px-3 py-1 rounded-full text-sm font-bold ${statusColors[order.status]}`}>
                         {order.status?.toUpperCase()}
                       </p>
-                      <p className="text-2xl font-bold text-gray-900 mt-2">₹{order.totalAmount}</p>
+                      <p className="text-2xl font-bold text-gray-900 mt-2">₹{computedTotal}</p>
                     </div>
                   </div>
 
@@ -379,23 +415,23 @@ const AdminOrders = () => {
                       <div className="bg-gray-50 p-4 rounded space-y-2">
                         <div className="flex justify-between">
                           <span className="text-gray-600">Subtotal</span>
-                          <span className="font-semibold">₹{order.subtotal}</span>
+                          <span className="font-semibold">₹{computedSubtotal}</span>
                         </div>
-                        {order.shippingCost > 0 && (
+                        {shipping > 0 && (
                           <div className="flex justify-between">
                             <span className="text-gray-600">Shipping</span>
-                            <span className="font-semibold">₹{order.shippingCost}</span>
+                            <span className="font-semibold">₹{shipping}</span>
                           </div>
                         )}
-                        {order.tax > 0 && (
+                        {tax > 0 && (
                           <div className="flex justify-between">
                             <span className="text-gray-600">Tax</span>
-                            <span className="font-semibold">₹{order.tax}</span>
+                            <span className="font-semibold">₹{tax}</span>
                           </div>
                         )}
                         <div className="border-t pt-2 flex justify-between">
                           <span className="font-bold">Total</span>
-                          <span className="font-bold text-lg text-blue-600">₹{order.totalAmount}</span>
+                          <span className="font-bold text-lg text-blue-600">₹{computedTotal}</span>
                         </div>
                       </div>
                     </div>
