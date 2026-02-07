@@ -303,6 +303,11 @@ const ShowcaseCard = ({ product, activeIdx, hidePriceOnHome }) => {
   return (
     <SmartLink to={`/product/${productId}`} className="block group w-full">
       <div className="relative w-full aspect-[4/5] md:h-[400px] rounded-xl overflow-hidden shadow-sm border border-gray-100 bg-gray-100">
+        {product.isBestSeller && (
+          <div className="absolute top-4 right-4 bg-brand-secondary text-white px-3 py-1 rounded-full text-xs font-bold uppercase z-10">
+            Best Seller
+          </div>
+        )}
         <div className="flex h-full transition-transform duration-700 ease-in-out" style={{ transform: `translateX(-${(activeIdx % images.length) * 100}%)` }}>
           {images.map((img, i) => (
             <div key={i} className="min-w-full h-full relative">
@@ -416,7 +421,12 @@ const BestSellers = ({ hidePriceOnHome }) => {
       {list.map((p) => {
         const productId = p._id || p.id;
         return (
-          <SmartLink to={`/product/${productId}`} key={productId} className="min-w-[140px] md:min-w-[200px] snap-start bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden flex-shrink-0">
+          <SmartLink to={`/product/${productId}`} key={productId} className="min-w-[140px] md:min-w-[200px] snap-start bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden flex-shrink-0 relative">
+            {p.isBestSeller && (
+              <div className="absolute top-2 right-2 bg-brand-secondary text-white px-2 py-1 rounded-full text-xs font-bold uppercase z-10">
+                Best Seller
+              </div>
+            )}
             <div className="h-40 md:h-60 overflow-hidden relative bg-gray-50">
               <picture>
                 <source type="image/webp" srcSet={`${encodeURI(p.image)}?q=60&w=400 400w, ${encodeURI(p.image)}?q=60&w=800 800w`} />
@@ -509,7 +519,12 @@ const CategoryPage = () => {
           catProducts.map(p => {
             const productId = p._id || p.id;
             return (
-              <SmartLink to={`/product/${productId}`} key={productId} className="block group">
+              <SmartLink to={`/product/${productId}`} key={productId} className="block group relative">
+                {p.isBestSeller && (
+                  <div className="absolute top-2 right-2 bg-brand-secondary text-white px-3 py-1 rounded-full text-xs font-bold uppercase z-10">
+                    Best Seller
+                  </div>
+                )}
                 <div className="rounded-xl overflow-hidden aspect-[4/5] bg-gray-100">
                   <picture>
                     <source type="image/webp" srcSet={`${encodeURI(p.image)}?q=60&w=400 400w, ${encodeURI(p.image)}?q=60&w=800 800w`} />
@@ -891,6 +906,43 @@ const ProductPage = ({ addToCart }) => {
 
             <button onClick={handleBuyNow} className="w-full bg-brand-blue text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition">Buy Now</button>
             <button onClick={handleAddToCart} className="w-full bg-gray-200 text-brand-dark py-4 rounded-xl font-bold text-lg hover:bg-gray-300 transition">Add to Cart</button>
+
+            {/* Share Button Section */}
+            <div className="grid grid-cols-3 gap-3">
+              <button 
+                onClick={() => {
+                  const text = `Check out ${product.name} for ₹${product.price} at Infinity Customizations!\n\n${window.location.href}`;
+                  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                }}
+                className="bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition"
+                title="Share on WhatsApp"
+              >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.1 1.29 4.74 1.29 5.46 0 9.91-4.45 9.91-9.91 0-5.46-4.45-9.91-9.91-9.91zm0 18.06c-1.47 0-2.93-.39-4.25-1.17l-.3-.18-3.15.83.84-3.07-.19-.3c-.88-1.39-1.35-2.98-1.35-4.63 0-4.7 3.82-8.52 8.52-8.52 4.7 0 8.52 3.82 8.52 8.52 0 4.7-3.82 8.52-8.52 8.52zm4.22-6.38c-.23-.11-1.36-.67-1.57-.75-.21-.08-.36-.11-.51.11-.15.23-.59.75-.72.9-.14.15-.27.17-.5.06-.23-.11-.97-.36-1.84-1.14-.68-.61-1.14-1.36-1.27-1.59-.14-.23-.02-.35.1-.46.1-.09.23-.23.35-.35.11-.11.15-.19.23-.31.08-.11.04-.21-.02-.33-.06-.11-.51-1.23-.7-1.68-.19-.45-.38-.38-.52-.39-.14-.01-.3-.01-.45-.01-.15 0-.41.06-.62.29-.21.23-.81.79-.81 1.93 0 1.14.83 2.24.95 2.39.11.15 1.63 2.49 3.95 3.49 1.55.67 2.15.54 2.94.46.88-.09 1.36-.67 1.55-1.32.19-.64.19-1.19.14-1.29-.05-.1-.19-.17-.42-.29z"/></svg>
+                Share
+              </button>
+              <button 
+                onClick={() => {
+                  const text = `Check out ${product.name} - ${window.location.href}`;
+                  window.open(`https://www.instagram.com/?text=${encodeURIComponent(text)}`, '_blank');
+                }}
+                className="bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition"
+                title="Share on Instagram"
+              >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.265-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zM5.838 12a6.162 6.162 0 1 1 12.324 0 6.162 6.162 0 0 1-12.324 0zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm4.965-10.322a1.44 1.44 0 1 1 2.881.001 1.44 1.44 0 0 1-2.881-.001z"/></svg>
+                Share
+              </button>
+              <button 
+                onClick={() => {
+                  navigator.clipboard.writeText(window.location.href);
+                  alert('Product link copied to clipboard!');
+                }}
+                className="bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition"
+                title="Copy product link"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                Copy
+              </button>
+            </div>
 
             <button type="button" onClick={() => setShowTerms(s => !s)} className="w-full text-sm text-gray-600 hover:text-brand-blue underline">{showTerms ? 'Hide' : 'View'} Return & Refund Policy</button>
 

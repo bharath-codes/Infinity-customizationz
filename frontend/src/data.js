@@ -4,15 +4,13 @@ export const storyCategories = [
   { id: "magazines", name: "Magazines", image: "/images/anniversary MAG.jpg" },
   { id: "magazines", name: "Photo Books & Albums", image: "/images/PB.jpg" },
   { id: "memories", name: "Polaroids", image: "/images/polaroids.jpg" },
-  { id: "flowers", name: "Flowers", image: "/images/real flower boq 249.jpg" },
-  { id: "flowers", name: "Rose Bouquets", image: "/images/Boquet.jpg" },
+  { id: "flowers", name: "Flowers & Bouquets", image: "/images/real flower boq 249.jpg" },
   { id: "hampers", name: "Hampers", image: "/images/HAMPER.jpg" },
   { id: "apparel", name: "T-Shirts", image: "/images/CUSTOMIZED T-SHIRTS 499.jpg" },
   { id: "apparel", name: "Caps", image: "/images/cap.jpeg" },
   { id: "essentials", name: "Phone Cases", image: "/images/PC.jpeg" },
   { id: "essentials", name: "Photo Cups", image: "/images/photo cup 299.jpg" },
-  { id: "vintage", name: "Vintage Frames", image: "/images/vintage frame.jpg" },
-  { id: "vintage", name: "Vintage Letters", image: "/images/vintage letter 119.JPG" },
+  { id: "vintage", name: "Vintage Frames & Letters", image: "/images/vintage frame.jpg" },
   { id: "addons", name: "Calendars", image: "/images/calender 199.jpg" },
   { id: "addons", name: "Magnets", image: "/images/fridge magents 179.jpg" },
   { id: "smart-digital", name: "ID Cards", image: "/images/ID.jpeg" },
@@ -77,7 +75,7 @@ export const categoryDetails = {
 // --- 3. ALL PRODUCTS (60+ Complete Products) ---
 export const products = [
   // ===== CATEGORY 1: PHOTO FRAMES (13 Products) =====
-  { id: "f1", categoryId: "frames", name: "4x6 Black Premium Frame", price: 199, image: "/images/4 x 6 black frame 199.jpg", images: ["/images/4 x 6 black frame 199.jpg", "/images/4 x 6 p2.jpg", "/images/4 x 6 p3.jpg"] },
+  { id: "f1", categoryId: "frames", name: "4x6 Black Premium Frame", price: 199, image: "/images/4 x 6 black frame 199.jpg", images: ["/images/4 x 6 black frame 199.jpg", "/images/4 x 6 p2.jpg", "/images/4 x 6 p3.jpg"], isBestSeller: true },
   { id: "f1b", categoryId: "frames", name: "4x6 White Premium Frame", price: 199, image: "/images/4 x 6 white frame 199.jpg", images: ["/images/4 x 6 white frame 199.jpg", "/images/4 x 6 white frame 199.jpg", "/images/5 x 7 white 299.jpg"] },
   { id: "f2", categoryId: "frames", name: "4x4 Compact Frame", price: 149, image: "/images/4 x 4 149.jpg", images: ["/images/4 x 4 149.jpg", "/images/4 x 4 149.jpg", "/images/4 x 4 149.jpg"] },
   { id: "f3", categoryId: "frames", name: "5x7 White Frame", price: 299, image: "/images/5 x 7 white 299.jpg", images: ["/images/5 x 7 white 299.jpg", "/images/5 x 7 299.jpg", "/images/5 x 7 white 299.jpg"] },
@@ -111,7 +109,7 @@ export const products = [
   // ===== CATEGORY 4: FLOWERS & BOUQUETS (7 Products) =====
   { id: "bou1", categoryId: "flowers", name: "Real Flower Bouquet 249", price: 249, image: "/images/real flower boq 249.jpg", images: ["/images/real flower boq 249.jpg", "/images/real flower boq 249(1).jpg", "/images/real flower boq 249.jpg"] },
   { id: "bou2", categoryId: "flowers", name: "Real Flowers Bouquet 249", price: 249, image: "/images/real flwr 249.jpg", images: ["/images/real flwr 249.jpg", "/images/real flwrs 249 p2.jpg", "/images/real flwrs p3 249.jpg"] },
-  { id: "bou3", categoryId: "flowers", name: "Premium Rose Bouquet 899", price: 899, image: "/images/real flwr boq 899.jpg", images: ["/images/real flwr boq 899.jpg", "/images/real flwr boq 899.jpg", "/images/real flwr boq 899.jpg"] },
+  { id: "bou3", categoryId: "flowers", name: "Premium Rose Bouquet 899", price: 899, image: "/images/real flwr boq 899.jpg", images: ["/images/real flwr boq 899.jpg", "/images/real flwr boq 899.jpg", "/images/real flwr boq 899.jpg"], isBestSeller: true },
   { id: "bou4", categoryId: "flowers", name: "Artificial Single Flower Bouquet 199", price: 199, image: "/images/artificial single flower boq 199.jpg", images: ["/images/artificial single flower boq 199.jpg", "/images/artificial single flower boq 199 p2.jpg", "/images/artificial single flower boq 199.jpg"] },
   { id: "bou5", categoryId: "flowers", name: "Red Bouquet Arrangement", price: 249, image: "/images/red boq p2.jpg", images: ["/images/red boq p2.jpg", "/images/red boq p3.jpg", "/images/red boq p2.jpg"] },
   { id: "bou6", categoryId: "flowers", name: "Art Bouquet with Flowers", price: 899, image: "/images/artboqwith,pol,flow,choc 899.jpg", images: ["/images/artboqwith,pol,flow,choc 899.jpg", "/images/artboqwith,pol,flow,cktpr, 899.jpg", "/images/artboqwith,pol,flow,choc 899.jpg"] },
@@ -123,14 +121,14 @@ export const products = [
   { id: "ham3", categoryId: "hampers", name: "Artistic Hamper Combo", price: 999, image: "/images/hamperc.jpeg", images: ["/images/hamperc.jpeg", "/images/hamperc.jpeg", "/images/hamper.jpg"] },
 
   // ===== CATEGORY 6: APPAREL (T-SHIRTS) (5 Products) =====
-  { id: "t1", categoryId: "apparel", name: "Customized T-Shirt 499", price: 499, image: "/images/CUSTOMIZED T-SHIRTS 499.jpg", images: ["/images/CUSTOMIZED T-SHIRTS 499.jpg", "/images/CUSTOMIZED T-SHIRTS P2 499.jpg", "/images/CUSTOMIZED T-SHIRTS P3 499.jpg"] },
+  { id: "t1", categoryId: "apparel", name: "Customized T-Shirt 499", price: 499, image: "/images/CUSTOMIZED T-SHIRTS 499.jpg", images: ["/images/CUSTOMIZED T-SHIRTS 499.jpg", "/images/CUSTOMIZED T-SHIRTS P2 499.jpg", "/images/CUSTOMIZED T-SHIRTS P3 499.jpg"], isBestSeller: true },
   { id: "t2", categoryId: "apparel", name: "Classic T-Shirt", price: 499, image: "/images/Tshirt.jpeg", images: ["/images/Tshirt.jpeg", "/images/Tshirt.jpeg", "/images/Tshirt.jpeg"] },
   { id: "cap1", categoryId: "apparel", name: "Custom Cap", price: 99, image: "/images/cap.jpeg", images: ["/images/cap.jpeg", "/images/cap.jpeg", "/images/cap.jpeg"] },
   { id: "pouch1", categoryId: "apparel", name: "Photo Pouch 299", price: 299, image: "/images/photo cup p2 299.jpg", images: ["/images/photo cup p2 299.jpg", "/images/photo cup p2 299.jpg", "/images/photo cup p2 299.jpg"] },
   { id: "apparel5", categoryId: "apparel", name: "Apparel Collection", price: 599, image: "/images/CUSTOMIZED T-SHIRTS 499.jpg", images: ["/images/CUSTOMIZED T-SHIRTS 499.jpg", "/images/CUSTOMIZED T-SHIRTS P2 499.jpg", "/images/cap.jpeg"] },
 
   // ===== CATEGORY 7: PHONE CASES & ESSENTIALS (4 Products) =====
-  { id: "case1", categoryId: "essentials", name: "Customized Phone Case", price: 299, image: "/images/PC.jpeg", images: ["/images/PC.jpeg", "/images/CUSTOMIZED PHONE CASE.jpg", "/images/CUSTOMIZED PHONE CASE P2.jpg"] },
+  { id: "case1", categoryId: "essentials", name: "Customized Phone Case", price: 299, image: "/images/PC.jpeg", images: ["/images/PC.jpeg", "/images/CUSTOMIZED PHONE CASE.jpg", "/images/CUSTOMIZED PHONE CASE P2.jpg"], isBestSeller: true },
   { id: "cup1", categoryId: "essentials", name: "Photo Cup 299", price: 299, image: "/images/photo cup 299.jpg", images: ["/images/photo cup 299.jpg", "/images/photo cup 299.jpg", "/images/photo cup 299.jpg"] },
   { id: "cup2", categoryId: "essentials", name: "Photo Cup Premium 299", price: 299, image: "/images/photo cup p2 299.jpg", images: ["/images/photo cup p2 299.jpg", "/images/photo cup p2 299.jpg", "/images/photo cup p2 299.jpg"] },
   { id: "ess4", categoryId: "essentials", name: "Daily Essentials Set", price: 399, image: "/images/PC.jpeg", images: ["/images/PC.jpeg", "/images/photo cup 299.jpg", "/images/CUSTOMIZED PHONE CASE P2.jpg"] },

@@ -56,7 +56,12 @@ export default function SearchResults() {
             {results.length === 0 ? (
               <div className="col-span-full bg-white p-8 rounded-lg text-center">No products found. Try a different keyword.</div>
             ) : results.map(p => (
-              <Link to={`/product/${p._id || p.id}`} key={p._id || p.id} className="block bg-white rounded-lg border p-3">
+              <Link to={`/product/${p._id || p.id}`} key={p._id || p.id} className="block bg-white rounded-lg border p-3 relative">
+                {p.isBestSeller && (
+                  <div className="absolute top-2 right-2 bg-indigo-600 text-white px-2 py-1 rounded-full text-xs font-bold uppercase z-10">
+                    Best Seller
+                  </div>
+                )}
                 <div className="h-40 overflow-hidden bg-gray-50 mb-2">
                   <picture>
                     <source type="image/webp" srcSet={`${encodeURI(p.image)}?q=60&w=400 400w, ${encodeURI(p.image)}?q=60&w=800 800w`} />

@@ -23,7 +23,8 @@ const AdminProducts = () => {
     dimensions: '',
     image: '', // Stores the image URL/path (primary)
     images: [], // dynamic list of product images
-    inStock: true
+    inStock: true,
+    isBestSeller: false // Add best seller flag
   };
 
   const [formData, setFormData] = useState(initialFormState);
@@ -151,7 +152,8 @@ const AdminProducts = () => {
       dimensions: product.dimensions || '',
       image: product.image || '',
       images: product.images || [],
-      inStock: product.inStock
+      inStock: product.inStock,
+      isBestSeller: product.isBestSeller || false
     });
     setPreviewImage(product.image || '');
     setShowAddForm(true);
@@ -439,6 +441,16 @@ const AdminProducts = () => {
                 />
                 <label htmlFor="inStock" className="text-gray-700 font-medium">In Stock</label>
               </div>
+              <div className="flex items-center gap-2 px-4">
+                <input
+                  type="checkbox"
+                  id="isBestSeller"
+                  checked={formData.isBestSeller}
+                  onChange={(e) => setFormData({ ...formData, isBestSeller: e.target.checked })}
+                  className="w-5 h-5 text-brand-secondary"
+                />
+                <label htmlFor="isBestSeller" className="text-gray-700 font-medium">Mark as Best Seller</label>
+              </div>
               <textarea
                 placeholder="Description"
                 required
@@ -509,6 +521,11 @@ const AdminProducts = () => {
                 ) : (
                   <div className="w-full h-56 bg-gray-100 flex items-center justify-center text-gray-400">
                     No Image
+                  </div>
+                )}
+                {product.isBestSeller && (
+                  <div className="absolute top-4 right-4 bg-brand-secondary text-white px-3 py-1 rounded-full text-xs font-bold uppercase">
+                    Best Seller
                   </div>
                 )}
                 {product.images && product.images.length > 1 && (

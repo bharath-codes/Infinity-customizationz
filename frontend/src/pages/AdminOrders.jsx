@@ -80,7 +80,36 @@ const AdminOrders = () => {
   };
 
   const generateInvoice = (order) => {
-    const html = `<!doctype html><html><head><meta charset="utf-8"><title>Invoice ${order.orderId}</title><style>body{font-family:Arial,Helvetica,sans-serif;padding:20px;color:#111}h1{color:#0b63a7}h3{margin-top:20px}table{width:100%;border-collapse:collapse;margin-top:16px}th,td{padding:8px;border:1px solid #ddd;text-align:left}tfoot td{font-weight:bold}</style></head><body><h1>Infinity Customizations — Invoice</h1><p>Order ID: <strong>${order.orderId}</strong></p><p>Date: ${new Date(order.createdAt).toLocaleString()}</p><h3>Billing / Shipping</h3><p><strong>${order.customerName}</strong><br/>${order.address}<br/>${order.city}, ${order.state} ${order.pincode}<br/>Phone: ${order.phoneNumber}<br/>Email: ${order.email}</p><h3>Items</h3><table><thead><tr><th>Product</th><th>Qty</th><th>Price (₹)</th><th>Line Total (₹)</th></tr></thead><tbody>${(order.items || []).map(it=>`<tr><td>${it.productName}</td><td>${it.quantity}</td><td>${it.price.toLocaleString('en-IN')}</td><td>${(it.price*it.quantity).toLocaleString('en-IN')}</td></tr>`).join('')}</tbody><tfoot><tr><td colspan="3">Subtotal</td><td>₹${Number(order.subtotal).toLocaleString('en-IN')}</td></tr><tr><td colspan="3">Shipping</td><td>₹${Number(order.shippingCost).toLocaleString('en-IN')}</td></tr><tr><td colspan="3">Taxes</td><td>₹${Number(order.tax).toLocaleString('en-IN')}</td></tr><tr><td colspan="3">Total</td><td>₹${Number(order.totalAmount).toLocaleString('en-IN')}</td></tr></tfoot></table><p style="margin-top:18px;font-size:12px;color:#555">Thank you for your order. For support, contact infinitycustomizations@gmail.com or WhatsApp +91 89859 93948.</p></body></html>`;
+    // Generate item rows including hamper items if they exist
+    let itemsHTML = (order.items || []).map(it => {
+      let hamperItems = [];
+      let hamperItemTotal = 0;
+      
+      try {
+        if (it.customizationDetails) {
+          const parsed = JSON.parse(it.customizationDetails);
+          if (Array.isArray(parsed)) {
+            hamperItems = parsed;
+            hamperItemTotal = parsed.reduce((sum, h) => sum + (Number(h.price) || 0), 0);
+          }
+        }
+      } catch (e) {
+        // Not hamper items, just regular customization
+      }
+      
+      let rowHTML = `<tr><td>${it.productName}</td><td>${it.quantity}</td><td>${it.price.toLocaleString('en-IN')}</td><td>${(it.price*it.quantity).toLocaleString('en-IN')}</td></tr>`;
+      
+      // Add hamper items as sub-rows
+      if (hamperItems.length > 0) {
+        hamperItems.forEach(h => {
+          rowHTML += `<tr style="background:#f9fafb;"><td style="padding-left:20px;">↳ ${h.link || 'Added Product'}</td><td>1</td><td>${h.price.toLocaleString('en-IN')}</td><td>${h.price.toLocaleString('en-IN')}</td></tr>`;
+        });
+      }
+      
+      return rowHTML;
+    }).join('');
+
+    const html = `<!doctype html><html><head><meta charset="utf-8"><title>Invoice ${order.orderId}</title><style>body{font-family:Arial,Helvetica,sans-serif;padding:20px;color:#111}h1{color:#0b63a7}h3{margin-top:20px}table{width:100%;border-collapse:collapse;margin-top:16px}th,td{padding:8px;border:1px solid #ddd;text-align:left}tfoot td{font-weight:bold}</style></head><body><h1>Infinity Customizations — Invoice</h1><p>Order ID: <strong>${order.orderId}</strong></p><p>Date: ${new Date(order.createdAt).toLocaleString()}</p><h3>Billing / Shipping</h3><p><strong>${order.customerName}</strong><br/>${order.address}<br/>${order.city}, ${order.state} ${order.pincode}<br/>Phone: ${order.phoneNumber}<br/>Email: ${order.email}</p><h3>Items</h3><table><thead><tr><th>Product</th><th>Qty</th><th>Price (₹)</th><th>Line Total (₹)</th></tr></thead><tbody>${itemsHTML}</tbody><tfoot><tr><td colspan="3">Subtotal</td><td>₹${Number(order.subtotal).toLocaleString('en-IN')}</td></tr><tr><td colspan="3">Shipping</td><td>₹${Number(order.shippingCost).toLocaleString('en-IN')}</td></tr><tr><td colspan="3">Taxes</td><td>₹${Number(order.tax).toLocaleString('en-IN')}</td></tr><tr><td colspan="3">Total</td><td>₹${Number(order.totalAmount).toLocaleString('en-IN')}</td></tr></tfoot></table><p style="margin-top:18px;font-size:12px;color:#555">Thank you for your order. For support, contact infinitycustomizations@gmail.com or WhatsApp +91 89859 93948.</p></body></html>`;
 
     const blob = new Blob([html], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
@@ -277,20 +306,62 @@ const AdminOrders = () => {
 
                     {/* Order Items */}
                     <div>
-                      <h4 className="font-bold text-gray-900 mb-3">📦 Ordered Items</h4>
+                      <h4 className="font-bold text-gray-900 mb-3">Package Contents</h4>
                       <div className="space-y-2">
-                        {order.items?.map((item, idx) => (
-                          <div key={idx} className="flex justify-between items-center p-3 bg-gray-50 rounded">
-                            <div className="flex-1">
-                              <p className="font-semibold text-gray-900">{item.productName}</p>
-                              <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
+                        {order.items?.map((item, idx) => {
+                          let hamperItems = [];
+                          let hamperItemTotal = 0;
+                          
+                          // Try to parse hamper items from customization details
+                          try {
+                            if (item.customizationDetails) {
+                              const parsed = JSON.parse(item.customizationDetails);
+                              if (Array.isArray(parsed)) {
+                                hamperItems = parsed;
+                                hamperItemTotal = parsed.reduce((sum, it) => sum + (Number(it.price) || 0), 0);
+                              }
+                            }
+                          } catch (e) {
+                            // Not hamper items, just regular customization
+                          }
+                          
+                          return (
+                            <div key={idx} className="bg-gray-50 rounded overflow-hidden">
+                              <div className="p-3 flex justify-between items-center">
+                                <div className="flex-1">
+                                  <p className="font-semibold text-gray-900">{item.productName}</p>
+                                  <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
+                                  {item.customizationDetails && !hamperItems.length && (
+                                    <p className="text-sm text-blue-600 mt-1">Customization: {item.customizationDetails.substring(0, 50)}...</p>
+                                  )}
+                                </div>
+                                <div className="text-right">
+                                  <p className="font-semibold text-gray-900">₹{item.price * item.quantity}</p>
+                                  <p className="text-sm text-gray-600">₹{item.price} each</p>
+                                </div>
+                              </div>
+                              
+                              {/* Show hamper items if they exist */}
+                              {hamperItems.length > 0 && (
+                                <div className="bg-blue-50 border-t border-blue-200 p-3">
+                                  <p className="text-sm font-semibold text-blue-900 mb-2">Added Products:</p>
+                                  <div className="space-y-1">
+                                    {hamperItems.map((h, hIdx) => (
+                                      <div key={hIdx} className="flex justify-between text-sm">
+                                        <span className="text-blue-800">{h.link || `Added Product ${hIdx + 1}`}</span>
+                                        <span className="font-semibold text-blue-900">₹{h.price}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                  <div className="border-t border-blue-200 mt-2 pt-2 flex justify-between font-semibold text-sm text-blue-900">
+                                    <span>Total Added Products:</span>
+                                    <span>₹{hamperItemTotal}</span>
+                                  </div>
+                                </div>
+                              )}
                             </div>
-                            <div className="text-right">
-                              <p className="font-semibold text-gray-900">₹{item.price * item.quantity}</p>
-                              <p className="text-sm text-gray-600">₹{item.price} each</p>
-                            </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
 
