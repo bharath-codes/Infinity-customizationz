@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Link, useParams } from 'react-router-dom';
 import { storyCategories, showcaseData, products, categoryDetails, phoneModelOptions } from './data';
-import { ShoppingCart, Menu, X, Search, User, Heart, ChevronRight, Phone, Mail, Instagram, Truck, ShieldCheck, Gift, Star, ArrowRight, MessageCircle, Filter, CheckCircle, AlertCircle, Info, ChevronDown, Trash2, ArrowLeft, LogOut } from 'lucide-react';
+import { ShoppingCart, Menu, X, Search, User, Heart, ChevronRight, Phone, Mail, Instagram, Truck, ShieldCheck, Gift, Star, ArrowRight, MessageCircle, Filter, CheckCircle, AlertCircle, Info, ChevronDown, Trash2, ArrowLeft, LogOut, Share2, Copy, Check } from 'lucide-react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { CartProvider, useCart } from './contexts/CartContext';
 import { API_BASE_URL } from './services/api';
@@ -555,6 +555,8 @@ const ProductPage = ({ addToCart }) => {
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [mainImage, setMainImage] = useState("");
   const [showTerms, setShowTerms] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [copyLinkClicked, setCopyLinkClicked] = useState(false);
   const [phoneCompany, setPhoneCompany] = useState('');
   const [phoneModel, setPhoneModel] = useState('');
   // phoneCompanies expected as an object mapping company -> [models]
@@ -996,42 +998,140 @@ const ProductPage = ({ addToCart }) => {
             <button onClick={handleBuyNow} className="w-full bg-brand-blue text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition">Buy Now</button>
             <button onClick={handleAddToCart} className="w-full bg-gray-200 text-brand-dark py-4 rounded-xl font-bold text-lg hover:bg-gray-300 transition">Add to Cart</button>
 
-            {/* Share Button Section */}
-            <div className="grid grid-cols-3 gap-3">
-              <button 
-                onClick={() => {
-                  const text = `Check out ${product.name} for ₹${product.price} at Infinity Customizations!\n\n${window.location.href}`;
-                  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
-                }}
-                className="bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition"
-                title="Share on WhatsApp"
-              >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.1 1.29 4.74 1.29 5.46 0 9.91-4.45 9.91-9.91 0-5.46-4.45-9.91-9.91-9.91zm0 18.06c-1.47 0-2.93-.39-4.25-1.17l-.3-.18-3.15.83.84-3.07-.19-.3c-.88-1.39-1.35-2.98-1.35-4.63 0-4.7 3.82-8.52 8.52-8.52 4.7 0 8.52 3.82 8.52 8.52 0 4.7-3.82 8.52-8.52 8.52zm4.22-6.38c-.23-.11-1.36-.67-1.57-.75-.21-.08-.36-.11-.51.11-.15.23-.59.75-.72.9-.14.15-.27.17-.5.06-.23-.11-.97-.36-1.84-1.14-.68-.61-1.14-1.36-1.27-1.59-.14-.23-.02-.35.1-.46.1-.09.23-.23.35-.35.11-.11.15-.19.23-.31.08-.11.04-.21-.02-.33-.06-.11-.51-1.23-.7-1.68-.19-.45-.38-.38-.52-.39-.14-.01-.3-.01-.45-.01-.15 0-.41.06-.62.29-.21.23-.81.79-.81 1.93 0 1.14.83 2.24.95 2.39.11.15 1.63 2.49 3.95 3.49 1.55.67 2.15.54 2.94.46.88-.09 1.36-.67 1.55-1.32.19-.64.19-1.19.14-1.29-.05-.1-.19-.17-.42-.29z"/></svg>
-                Share
-              </button>
-              <button 
-                onClick={() => {
-                  const text = `Check out ${product.name} - ${window.location.href}`;
-                  window.open(`https://www.instagram.com/?text=${encodeURIComponent(text)}`, '_blank');
-                }}
-                className="bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition"
-                title="Share on Instagram"
-              >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.265-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zM5.838 12a6.162 6.162 0 1 1 12.324 0 6.162 6.162 0 0 1-12.324 0zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm4.965-10.322a1.44 1.44 0 1 1 2.881.001 1.44 1.44 0 0 1-2.881-.001z"/></svg>
-                Share
-              </button>
-              <button 
-                onClick={() => {
-                  navigator.clipboard.writeText(window.location.href);
-                  alert('Product link copied to clipboard!');
-                }}
-                className="bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition"
-                title="Copy product link"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
-                Copy
-              </button>
-            </div>
+            {/* Professional Share Button */}
+            <button 
+              onClick={() => setShowShareModal(true)}
+              className="w-full bg-gradient-to-r from-brand-blue to-blue-700 text-white py-4 rounded-xl font-bold text-lg hover:shadow-lg transition-all flex items-center justify-center gap-3"
+              title="Share this product"
+            >
+              <Share2 size={20} />
+              Share this Product
+            </button>
+
+            {/* Share Modal */}
+            {showShareModal && (
+              <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+                <div className="bg-white rounded-2xl shadow-xl max-w-md w-full animate-in fade-in zoom-in-95 duration-300">
+                  {/* Modal Header */}
+                  <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                    <h3 className="text-xl font-bold text-brand-dark flex items-center gap-2">
+                      <Share2 size={24} className="text-brand-blue" />
+                      Share Product
+                    </h3>
+                    <button 
+                      onClick={() => setShowShareModal(false)}
+                      className="text-gray-400 hover:text-gray-600 transition"
+                    >
+                      <X size={24} />
+                    </button>
+                  </div>
+
+                  {/* Modal Content */}
+                  <div className="p-6 space-y-3">
+                    
+                    {/* WhatsApp */}
+                    <button 
+                      onClick={() => {
+                        const text = `Check out ${product.name} for ₹${product.price} at Infinity Customizations!\n\n${window.location.href}`;
+                        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+                        setShowShareModal(false);
+                      }}
+                      className="w-full flex items-center gap-4 p-4 rounded-xl border-2 border-gray-200 hover:border-green-500 hover:bg-green-50 transition group"
+                    >
+                      <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center group-hover:bg-green-500 transition">
+                        <svg className="w-6 h-6 text-green-600 group-hover:text-white transition" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.1 1.29 4.74 1.29 5.46 0 9.91-4.45 9.91-9.91 0-5.46-4.45-9.91-9.91-9.91zm0 18.06c-1.47 0-2.93-.39-4.25-1.17l-.3-.18-3.15.83.84-3.07-.19-.3c-.88-1.39-1.35-2.98-1.35-4.63 0-4.7 3.82-8.52 8.52-8.52 4.7 0 8.52 3.82 8.52 8.52 0 4.7-3.82 8.52-8.52 8.52z"/>
+                        </svg>
+                      </div>
+                      <div className="text-left flex-1">
+                        <p className="font-semibold text-brand-dark">WhatsApp</p>
+                        <p className="text-xs text-gray-500">Share via WhatsApp</p>
+                      </div>
+                      <ChevronRight size={20} className="text-gray-400 group-hover:text-green-500 transition" />
+                    </button>
+
+                    {/* Instagram */}
+                    <button 
+                      onClick={() => {
+                        const text = `Check out ${product.name} - ${window.location.href}`;
+                        window.open(`https://www.instagram.com/?text=${encodeURIComponent(text)}`, '_blank');
+                        setShowShareModal(false);
+                      }}
+                      className="w-full flex items-center gap-4 p-4 rounded-xl border-2 border-gray-200 hover:border-pink-500 hover:bg-pink-50 transition group"
+                    >
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 flex items-center justify-center group-hover:shadow-lg transition">
+                        <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.265-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073z"/>
+                        </svg>
+                      </div>
+                      <div className="text-left flex-1">
+                        <p className="font-semibold text-brand-dark">Instagram</p>
+                        <p className="text-xs text-gray-500">Share via Instagram Stories</p>
+                      </div>
+                      <ChevronRight size={20} className="text-gray-400 group-hover:text-pink-500 transition" />
+                    </button>
+
+                    {/* Copy Link */}
+                    <button 
+                      onClick={() => {
+                        navigator.clipboard.writeText(window.location.href);
+                        setCopyLinkClicked(true);
+                        setTimeout(() => setCopyLinkClicked(false), 2000);
+                      }}
+                      className="w-full flex items-center gap-4 p-4 rounded-xl border-2 border-gray-200 hover:border-brand-blue hover:bg-blue-50 transition group"
+                    >
+                      <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center group-hover:bg-brand-blue transition">
+                        {copyLinkClicked ? (
+                          <Check size={24} className="text-green-600 group-hover:text-white transition" />
+                        ) : (
+                          <Copy size={24} className="text-brand-blue group-hover:text-white transition" />
+                        )}
+                      </div>
+                      <div className="text-left flex-1">
+                        <p className="font-semibold text-brand-dark">
+                          {copyLinkClicked ? 'Copied!' : 'Copy Link'}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {copyLinkClicked ? 'Link copied to clipboard' : 'Copy product link to clipboard'}
+                        </p>
+                      </div>
+                      {copyLinkClicked && <Check size={20} className="text-green-600" />}
+                    </button>
+
+                    {/* Email */}
+                    <button 
+                      onClick={() => {
+                        const subject = `Check out ${product.name}`;
+                        const body = `I found this amazing product: ${product.name} - ${window.location.href}`;
+                        window.open(`mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
+                        setShowShareModal(false);
+                      }}
+                      className="w-full flex items-center gap-4 p-4 rounded-xl border-2 border-gray-200 hover:border-orange-500 hover:bg-orange-50 transition group"
+                    >
+                      <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center group-hover:bg-orange-500 transition">
+                        <Mail size={24} className="text-orange-600 group-hover:text-white transition" />
+                      </div>
+                      <div className="text-left flex-1">
+                        <p className="font-semibold text-brand-dark">Email</p>
+                        <p className="text-xs text-gray-500">Share via email</p>
+                      </div>
+                      <ChevronRight size={20} className="text-gray-400 group-hover:text-orange-500 transition" />
+                    </button>
+                  </div>
+
+                  {/* Modal Footer */}
+                  <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 rounded-b-2xl">
+                    <button 
+                      onClick={() => setShowShareModal(false)}
+                      className="w-full py-3 text-gray-700 font-semibold hover:bg-gray-200 rounded-lg transition"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
 
             <button type="button" onClick={() => setShowTerms(s => !s)} className="w-full text-sm text-gray-600 hover:text-brand-blue underline">{showTerms ? 'Hide' : 'View'} Return & Refund Policy</button>
 
