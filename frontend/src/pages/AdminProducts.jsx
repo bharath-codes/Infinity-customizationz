@@ -24,7 +24,10 @@ const AdminProducts = () => {
     image: '', // Stores the image URL/path (primary)
     images: [], // dynamic list of product images
     inStock: true,
-    isBestSeller: false // Add best seller flag
+    isBestSeller: false, // Add best seller flag
+    pricingType: 'standard', // standard or quantity-based
+    pricing: { "40": 179, "50": 169, "60-70": 159, "70+": 149 }, // for signature day tshirts
+    colorPriceDiff: 50 // color price difference
   };
 
   const [formData, setFormData] = useState(initialFormState);
@@ -153,7 +156,10 @@ const AdminProducts = () => {
       image: product.image || '',
       images: product.images || [],
       inStock: product.inStock,
-      isBestSeller: product.isBestSeller || false
+      isBestSeller: product.isBestSeller || false,
+      pricingType: product.pricingType || 'standard',
+      pricing: product.pricing || { "40": 179, "50": 169, "60-70": 159, "70+": 149 },
+      colorPriceDiff: product.colorPriceDiff || 50
     });
     setPreviewImage(product.image || '');
     setShowAddForm(true);
@@ -451,6 +457,82 @@ const AdminProducts = () => {
                 />
                 <label htmlFor="isBestSeller" className="text-gray-700 font-medium">Mark as Best Seller</label>
               </div>
+
+              {/* T-Shirt Pricing Configuration */}
+              {formData.categoryId === 'apparel' && (
+                <div className="md:col-span-2 border-2 border-amber-200 rounded-lg p-4 bg-amber-50">
+                  <label className="text-gray-700 font-bold mb-4 block">👕 T-Shirt Pricing Configuration</label>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Pricing Type</label>
+                      <select
+                        value={formData.pricingType}
+                        onChange={(e) => setFormData({ ...formData, pricingType: e.target.value })}
+                        className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-brand-blue"
+                      >
+                        <option value="standard">Standard (Single Price)</option>
+                        <option value="quantity-based">Quantity-Based Pricing</option>
+                      </select>
+                    </div>
+
+                    {formData.pricingType === 'quantity-based' && (
+                      <>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">40 pieces</label>
+                            <input
+                              type="number"
+                              value={formData.pricing["40"] || 179}
+                              onChange={(e) => setFormData({ ...formData, pricing: { ...formData.pricing, "40": parseInt(e.target.value) || 179 } })}
+                              className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:outline-none"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">50 pieces</label>
+                            <input
+                              type="number"
+                              value={formData.pricing["50"] || 169}
+                              onChange={(e) => setFormData({ ...formData, pricing: { ...formData.pricing, "50": parseInt(e.target.value) || 169 } })}
+                              className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:outline-none"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">60-70 pieces</label>
+                            <input
+                              type="number"
+                              value={formData.pricing["60-70"] || 159}
+                              onChange={(e) => setFormData({ ...formData, pricing: { ...formData.pricing, "60-70": parseInt(e.target.value) || 159 } })}
+                              className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:outline-none"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">70+ pieces</label>
+                            <input
+                              type="number"
+                              value={formData.pricing["70+"] || 149}
+                              onChange={(e) => setFormData({ ...formData, pricing: { ...formData.pricing, "70+": parseInt(e.target.value) || 149 } })}
+                              className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:outline-none"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Color Print Price Difference (₹)</label>
+                          <input
+                            type="number"
+                            value={formData.colorPriceDiff || 50}
+                            onChange={(e) => setFormData({ ...formData, colorPriceDiff: parseInt(e.target.value) || 50 })}
+                            className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:outline-none"
+                          />
+                          <p className="text-xs text-gray-600 mt-1">This amount is added when customer selects colored print option</p>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
+
               <textarea
                 placeholder="Description"
                 required

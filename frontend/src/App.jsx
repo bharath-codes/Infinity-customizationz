@@ -571,10 +571,15 @@ const ProductPage = ({ addToCart }) => {
   const [tshirtNeck, setTshirtNeck] = useState('round');
   const [tshirtSize, setTshirtSize] = useState('M');
   const [tshirtBasePrice, setTshirtBasePrice] = useState(499);
+  // Signature Day T-Shirt states
+  const [signatureDayTShirtColor, setSignatureDayTShirtColor] = useState('colorless');
+  const [signatureDayBasePrice, setSignatureDayBasePrice] = useState(179);
 
   const isPhoneCase = product && (product.id === 'case1' || (product.name || '').toLowerCase().includes('phone case'));
   const isHamper = product && (product.categoryId === 'hampers' || (product.name || '').toLowerCase().includes('hamper'));
   const isTShirt = product && (product.categoryId === 'apparel' && ((product.name || '').toLowerCase().includes('t-shirt') || (product.name || '').toLowerCase().includes('tshirt')));
+  const isCustomizedTShirt = product && product.id === 't1';
+  const isSignatureDayTShirt = product && product.id === 't2';
 
   // Calculate T-shirt price based on quantity
   const calculateTShirtPrice = (quantity) => {
@@ -585,11 +590,25 @@ const ProductPage = ({ addToCart }) => {
     return 499;
   };
 
+  // Calculate Signature Day T-shirt price
+  const calculateSignatureDayPrice = (quantity) => {
+    if (quantity >= 40 && quantity <= 49) return 179;
+    if (quantity >= 50 && quantity <= 59) return 169;
+    if (quantity >= 60 && quantity <= 70) return 159;
+    if (quantity > 70) return 149;
+    return 179; // default for less than 40
+  };
+
   useEffect(() => {
-    if (isTShirt) {
+    if (isCustomizedTShirt) {
       setTshirtBasePrice(calculateTShirtPrice(qty));
+    } else if (isSignatureDayTShirt) {
+      const basePrice = calculateSignatureDayPrice(qty);
+      const colorfulPrice = basePrice + 50;
+      const finalPrice = signatureDayTShirtColor === 'colored' ? colorfulPrice : basePrice;
+      setSignatureDayBasePrice(finalPrice);
     }
-  }, [qty, isTShirt]);
+  }, [qty, isCustomizedTShirt, isSignatureDayTShirt, signatureDayTShirtColor]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -695,8 +714,10 @@ const ProductPage = ({ addToCart }) => {
       }
     }
     let customizationDetails = '';
-    if (isTShirt) {
+    if (isCustomizedTShirt) {
       customizationDetails = `Material: ${tshirtMaterial}, Neck: ${tshirtNeck}, Size: ${tshirtSize}, Qty: ${qty} pcs`;
+    } else if (isSignatureDayTShirt) {
+      customizationDetails = `Signature Day T-Shirt, Color: ${signatureDayTShirtColor}, Qty: ${qty} pcs`;
     } else if (isPhoneCase) {
       customizationDetails = `Phone: ${phoneCompany} / ${phoneModel}`;
     } else if (isHamper) {
@@ -705,7 +726,15 @@ const ProductPage = ({ addToCart }) => {
       customizationDetails = product.customizationDetails || '';
     }
     
-    const itemPrice = isTShirt ? tshirtBasePrice : Number(product.price || 0);
+    let itemPrice;
+    if (isCustomizedTShirt) {
+      itemPrice = tshirtBasePrice;
+    } else if (isSignatureDayTShirt) {
+      itemPrice = signatureDayBasePrice;
+    } else {
+      itemPrice = Number(product.price || 0);
+    }
+    
     const item = { ...product, id: product._id || product.id, price: itemPrice, quantity: qty, customizationDetails, addOn: { type: wrapType, price: wrapPrice }, hamperItems, hamperItemTotal };
     addToCartContext(item);
     alert('Added to cart');
@@ -719,8 +748,10 @@ const ProductPage = ({ addToCart }) => {
       }
     }
     let customizationDetails = '';
-    if (isTShirt) {
+    if (isCustomizedTShirt) {
       customizationDetails = `Material: ${tshirtMaterial}, Neck: ${tshirtNeck}, Size: ${tshirtSize}, Qty: ${qty} pcs`;
+    } else if (isSignatureDayTShirt) {
+      customizationDetails = `Signature Day T-Shirt, Color: ${signatureDayTShirtColor}, Qty: ${qty} pcs`;
     } else if (isPhoneCase) {
       customizationDetails = `Phone: ${phoneCompany} / ${phoneModel}`;
     } else if (isHamper) {
@@ -729,7 +760,15 @@ const ProductPage = ({ addToCart }) => {
       customizationDetails = product.customizationDetails || '';
     }
     
-    const itemPrice = isTShirt ? tshirtBasePrice : Number(product.price || 0);
+    let itemPrice;
+    if (isCustomizedTShirt) {
+      itemPrice = tshirtBasePrice;
+    } else if (isSignatureDayTShirt) {
+      itemPrice = signatureDayBasePrice;
+    } else {
+      itemPrice = Number(product.price || 0);
+    }
+    
     const item = { ...product, id: product._id || product.id, price: itemPrice, quantity: qty, customizationDetails, addOn: { type: wrapType, price: wrapPrice }, hamperItems, hamperItemTotal };
     addToCartContext(item);
     navigate('/checkout');
@@ -765,7 +804,7 @@ const ProductPage = ({ addToCart }) => {
         <div className="space-y-6">
           <div className="mb-2"><BackButton /></div>
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-brand-dark">{product.name}</h1>
-          <p className="text-3xl font-bold text-brand-blue">₹{isTShirt ? (tshirtBasePrice * qty) : (product.price * qty)}</p>
+          <p className="text-3xl font-bold text-brand-blue">₹{isCustomizedTShirt ? (tshirtBasePrice * qty) : isSignatureDayTShirt ? (signatureDayBasePrice * qty) : (product.price * qty)}</p>
           <div className="bg-gray-50 p-6 rounded-xl border space-y-6">
              <div><span className="block text-sm font-bold text-gray-500 mb-3">QUANTITY</span><div className="flex items-center gap-6"><button onClick={() => setQty(Math.max(1, qty-1))} className="w-10 h-10 border rounded-full font-bold bg-white">-</button><span className="text-xl font-bold">{qty}</span><button onClick={() => setQty(qty+1)} className="w-10 h-10 border rounded-full font-bold bg-white">+</button></div></div>
              <div className="bg-blue-50 p-4 rounded-lg flex gap-3 text-sm text-blue-900 font-bold"><Info size={18}/> Photo Upload: Please send photos on WhatsApp after order.</div>
@@ -822,6 +861,56 @@ const ProductPage = ({ addToCart }) => {
                 <div className="mt-3 pt-3 border-t border-gray-200">
                   <p className="font-bold text-indigo-700">
                     Your Price: ₹{tshirtBasePrice}/pc × {qty} = <span className="text-xl">₹{tshirtBasePrice * qty}</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {isSignatureDayTShirt && (
+            <div className="bg-amber-50 p-6 rounded-xl border border-amber-200 space-y-4">
+              <h3 className="text-lg font-bold text-amber-900">👕 Signature Day T-Shirt Configuration</h3>
+              
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Shirt Color</label>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => setSignatureDayTShirtColor('colorless')}
+                    className={`py-3 px-4 rounded-lg border-2 font-bold transition ${
+                      signatureDayTShirtColor === 'colorless'
+                        ? 'border-amber-600 bg-amber-600 text-white'
+                        : 'border-gray-300 bg-white text-gray-800 hover:border-amber-300'
+                    }`}
+                  >
+                    Colorless (Plain) - Base Price
+                  </button>
+                  <button
+                    onClick={() => setSignatureDayTShirtColor('colored')}
+                    className={`py-3 px-4 rounded-lg border-2 font-bold transition ${
+                      signatureDayTShirtColor === 'colored'
+                        ? 'border-amber-600 bg-amber-600 text-white'
+                        : 'border-gray-300 bg-white text-gray-800 hover:border-amber-300'
+                    }`}
+                  >
+                    Colored - +₹50/pc
+                  </button>
+                </div>
+              </div>
+
+              <div className="bg-white p-4 rounded-lg border-2 border-amber-300">
+                <p className="text-sm text-gray-600 mb-3">💰 <strong>Quantity-Based Pricing:</strong></p>
+                <div className="grid grid-cols-2 gap-2 text-sm text-gray-700 mb-3">
+                  <div>40 pcs: <span className="font-bold">₹179</span></div>
+                  <div>50 pcs: <span className="font-bold">₹169</span></div>
+                  <div>60-70 pcs: <span className="font-bold">₹159</span></div>
+                  <div>70+ pcs: <span className="font-bold">₹149</span></div>
+                </div>
+                <div className="border-t border-gray-200 pt-3">
+                  <p className="text-xs text-gray-600 mb-2">
+                    {signatureDayTShirtColor === 'colored' && <span>✓ +₹50/pc for colored print applies</span>}
+                  </p>
+                  <p className="font-bold text-amber-700">
+                    Your Price: ₹{signatureDayBasePrice}/pc × {qty} = <span className="text-xl">₹{signatureDayBasePrice * qty}</span>
                   </p>
                 </div>
               </div>

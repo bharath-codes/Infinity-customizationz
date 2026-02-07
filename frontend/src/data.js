@@ -121,8 +121,8 @@ export const products = [
   { id: "ham3", categoryId: "hampers", name: "Artistic Hamper Combo", price: 999, image: "/images/hamperc.jpeg", images: ["/images/hamperc.jpeg", "/images/hamperc.jpeg", "/images/hamper.jpg"] },
 
   // ===== CATEGORY 6: APPAREL (T-SHIRTS) (5 Products) =====
-  { id: "t1", categoryId: "apparel", name: "Customized T-Shirt 499", price: 499, image: "/images/CUSTOMIZED T-SHIRTS 499.jpg", images: ["/images/CUSTOMIZED T-SHIRTS 499.jpg", "/images/CUSTOMIZED T-SHIRTS P2 499.jpg", "/images/CUSTOMIZED T-SHIRTS P3 499.jpg"], isBestSeller: true },
-  { id: "t2", categoryId: "apparel", name: "Classic T-Shirt", price: 499, image: "/images/Tshirt.jpeg", images: ["/images/Tshirt.jpeg", "/images/Tshirt.jpeg", "/images/Tshirt.jpeg"] },
+  { id: "t1", categoryId: "apparel", name: "Customized T-Shirt 499", price: 499, image: "/images/CUSTOMIZED T-SHIRTS 499.jpg", images: ["/images/CUSTOMIZED T-SHIRTS 499.jpg", "/images/CUSTOMIZED T-SHIRTS P2 499.jpg", "/images/CUSTOMIZED T-SHIRTS P3 499.jpg"], isBestSeller: true, pricingType: "standard" },
+  { id: "t2", categoryId: "apparel", name: "Signature Day T-Shirts", price: 179, image: "/images/Tshirt.jpeg", images: ["/images/Tshirt.jpeg", "/images/Tshirt.jpeg", "/images/Tshirt.jpeg"], pricingType: "quantity-based", pricing: { "40": 179, "50": 169, "60-70": 159, "70+": 149 }, colorPriceDiff: 50 },
   { id: "cap1", categoryId: "apparel", name: "Custom Cap", price: 99, image: "/images/cap.jpeg", images: ["/images/cap.jpeg", "/images/cap.jpeg", "/images/cap.jpeg"] },
   { id: "pouch1", categoryId: "apparel", name: "Photo Pouch 299", price: 299, image: "/images/photo cup p2 299.jpg", images: ["/images/photo cup p2 299.jpg", "/images/photo cup p2 299.jpg", "/images/photo cup p2 299.jpg"] },
   { id: "apparel5", categoryId: "apparel", name: "Apparel Collection", price: 599, image: "/images/CUSTOMIZED T-SHIRTS 499.jpg", images: ["/images/CUSTOMIZED T-SHIRTS 499.jpg", "/images/CUSTOMIZED T-SHIRTS P2 499.jpg", "/images/cap.jpeg"] },
