@@ -74,9 +74,9 @@ const WhatsAppIcon = ({ size = 22, className = "" }) => (
 );
 
 const AnnouncementBar = () => (
-  <div className="bg-brand-blue text-white text-[10px] md:text-xs py-2 overflow-hidden relative z-50">
-    <div className="animate-marquee font-bold tracking-widest uppercase flex gap-8">
-      <span>💡 Shipping calculated per item</span> <span>• New Service: Custom ID Cards & NFC</span>
+  <div className="bg-brand-secondary text-white text-[10px] md:text-xs py-3 px-4 overflow-hidden relative z-50 border-b border-brand-secondary/30">
+    <div className="animate-marquee font-semibold tracking-wide uppercase flex gap-12 text-white/90">
+      <span>Free shipping on orders above ₹500</span> <span>•</span> <span>New: Custom ID Cards & NFC Tags</span>
     </div>
   </div>
 );
@@ -95,76 +95,76 @@ const Navbar = ({ cartCount }) => {
   };
 
   return (
-    <nav className="bg-white text-brand-dark sticky top-0 z-50 shadow-sm border-b border-gray-100">
+    <nav className="bg-white text-brand-dark sticky top-0 z-50 shadow-md border-b border-border-light transition-shadow duration-300">
       <div className="max-w-7xl mx-auto px-4 h-16 md:h-20 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <button className="md:hidden text-gray-800" onClick={() => setIsOpen(!isOpen)}>{isOpen ? <X size={24} /> : <Menu size={24} />}</button>
+          <button className="md:hidden text-brand-primary hover:text-brand-secondary transition-colors p-2" onClick={() => setIsOpen(!isOpen)}>{isOpen ? <X size={24} /> : <Menu size={24} />}</button>
           <SmartLink to="/" className="flex-shrink-0">
              <div className="h-10 w-28 md:h-12 md:w-36 overflow-hidden relative">
                <img src="/images/logo.png" alt="Infinity" className="w-full h-full object-cover object-center scale-110" />
              </div>
           </SmartLink>
         </div>
-        <div className="hidden md:flex flex-1 max-w-md mx-auto bg-gray-50 border border-gray-200 rounded-full px-4 py-2.5 items-center text-gray-500 focus-within:bg-white transition-all">
-          <Search size={18} className="text-gray-400" />
-          <input id="global-search-input" type="text" placeholder="Search..." className="bg-transparent border-none outline-none text-sm ml-3 w-full text-brand-dark" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && searchTerm.trim()) navigate(`/search?q=${encodeURIComponent(searchTerm.trim())}`); }} />
+        <div className="hidden md:flex flex-1 max-w-md mx-auto bg-surface-elevated border border-border-light rounded-xl px-4 py-3 items-center text-brand-dark/60 focus-within:bg-white focus-within:border-brand-secondary focus-within:shadow-md transition-all duration-200">
+          <Search size={18} className="text-brand-dark/40" />
+          <input id="global-search-input" type="text" placeholder="Search products..." className="bg-transparent border-none outline-none text-sm ml-3 w-full text-brand-dark placeholder:text-brand-dark/40" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && searchTerm.trim()) navigate(`/search?q=${encodeURIComponent(searchTerm.trim())}`); }} />
         </div>
-        <div className="flex items-center gap-4 md:gap-6 text-gray-700">
-          <a href="https://wa.me/918985993948" target="_blank" rel="noreferrer" className="text-gray-700 hover:text-green-600 transition hover:scale-110"><WhatsAppIcon size={22} /></a>
-          <button className="md:hidden text-gray-700" onClick={() => setShowMobileSearch(true)}><Search size={22} /></button>
+        <div className="flex items-center gap-4 md:gap-6 text-brand-primary">
+          <a href="https://wa.me/918985993948" target="_blank" rel="noreferrer" className="text-brand-primary hover:text-green-600 transition-colors hover:scale-110 duration-200 p-2" title="WhatsApp"><WhatsAppIcon size={22} /></a>
+          <button className="md:hidden text-brand-primary hover:text-brand-secondary transition-colors p-2" onClick={() => setShowMobileSearch(true)}><Search size={22} /></button>
           {isAuthenticated ? (
             <div className="relative group">
-              <button className="flex items-center gap-2 text-gray-700 hover:text-brand-blue transition">
+              <button className="flex items-center gap-2 text-brand-primary hover:text-brand-secondary transition-colors p-2 rounded-lg hover:bg-surface-elevated duration-200">
                 <User size={24} />
               </button>
-              <div className="absolute right-0 mt-0 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity">
-                <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg border-b">📋 My Profile</Link>
-                <Link to="/orders" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 border-b">📦 My Orders</Link>
-                <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg flex items-center gap-2">
+              <div className="absolute right-0 mt-2 w-48 bg-white border border-border-light rounded-xl shadow-lg opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity duration-200 overflow-hidden z-50">
+                <Link to="/profile" className="block px-4 py-3 text-sm text-brand-dark hover:bg-surface-elevated transition-colors border-b border-border-light font-medium">My Profile</Link>
+                <Link to="/orders" className="block px-4 py-3 text-sm text-brand-dark hover:bg-surface-elevated transition-colors border-b border-border-light font-medium">My Orders</Link>
+                <button onClick={handleLogout} className="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 rounded-b-lg flex items-center gap-2 font-medium transition-colors">
                   <LogOut size={16} />
                   Logout
                 </button>
               </div>
             </div>
           ) : (
-            <SmartLink to="/login" className="flex items-center gap-2 text-brand-blue hover:text-brand-blue/80 transition">
+            <SmartLink to="/login" className="flex items-center gap-2 text-brand-secondary hover:text-brand-secondary/80 transition-colors p-2 rounded-lg hover:bg-surface-elevated duration-200">
               <User size={24} />
             </SmartLink>
           )}
-          <SmartLink to="/cart" className="relative text-gray-700 hover:text-brand-blue transition hover:scale-110">
+          <SmartLink to="/cart" className="relative text-brand-primary hover:text-brand-secondary transition-colors hover:scale-110 duration-200 p-2">
             <ShoppingCart size={24} />
-            {cartCount > 0 && <span className="absolute -top-1.5 -right-1.5 bg-brand-blue text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-white shadow-sm">{cartCount}</span>}
+            {cartCount > 0 && <span className="absolute -top-0.5 -right-0.5 bg-red-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-md">{cartCount}</span>}
           </SmartLink>
         </div>
       </div>
       {isOpen && (
-        <div className="md:hidden bg-white border-t border-gray-100 p-4 space-y-4 absolute w-full left-0 shadow-xl z-50">
-          <SmartLink to="/" className="block font-bold text-brand-blue" onClick={() => setIsOpen(false)}>Home</SmartLink>
-          <SmartLink to="/shop/frames" className="block text-gray-600" onClick={() => setIsOpen(false)}>Photo Frames</SmartLink>
-          <SmartLink to="/shop/apparel" className="block text-gray-600" onClick={() => setIsOpen(false)}>Apparel</SmartLink>
+        <div className="md:hidden bg-white border-t border-border-light p-4 space-y-2 absolute w-full left-0 shadow-lg z-50 animate-slideDown">
+          <SmartLink to="/" className="block font-semibold text-brand-secondary py-2 px-4 rounded-lg hover:bg-surface-elevated transition-colors" onClick={() => setIsOpen(false)}>Home</SmartLink>
+          <SmartLink to="/shop/frames" className="block text-brand-primary py-2 px-4 rounded-lg hover:bg-surface-elevated transition-colors" onClick={() => setIsOpen(false)}>Photo Frames</SmartLink>
+          <SmartLink to="/shop/apparel" className="block text-brand-primary py-2 px-4 rounded-lg hover:bg-surface-elevated transition-colors" onClick={() => setIsOpen(false)}>Apparel</SmartLink>
           {isAuthenticated ? (
             <>
-              <SmartLink to="/profile" className="block text-gray-600" onClick={() => setIsOpen(false)}>👤 My Profile</SmartLink>
-              <SmartLink to="/orders" className="block text-gray-600" onClick={() => setIsOpen(false)}>📦 My Orders</SmartLink>
-              <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg flex items-center gap-2">
+              <SmartLink to="/profile" className="block text-brand-primary py-2 px-4 rounded-lg hover:bg-surface-elevated transition-colors" onClick={() => setIsOpen(false)}>My Profile</SmartLink>
+              <SmartLink to="/orders" className="block text-brand-primary py-2 px-4 rounded-lg hover:bg-surface-elevated transition-colors" onClick={() => setIsOpen(false)}>My Orders</SmartLink>
+              <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg flex items-center gap-2 font-medium mt-2 transition-colors">
                 <LogOut size={16} />
                 Logout
               </button>
             </>
           ) : (
-            <SmartLink to="/login" className="block text-brand-blue font-semibold" onClick={() => setIsOpen(false)}>Login</SmartLink>
+            <SmartLink to="/login" className="block text-brand-secondary font-semibold py-2 px-4 rounded-lg hover:bg-surface-elevated transition-colors" onClick={() => setIsOpen(false)}>Login</SmartLink>
           )}
         </div>
       )}
       {showMobileSearch && (
         <div className="fixed inset-0 bg-black/50 z-40 flex items-center justify-center p-4 pt-20">
-          <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl">
-            <h2 className="text-lg font-bold text-brand-dark mb-4">Search Products</h2>
-            <input autoFocus type="text" placeholder="Search for products, categories..." id="mobile-search-input" className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-brand-blue" onKeyDown={(e) => {
+          <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl animate-slideInUp">
+            <h2 className="text-lg font-semibold text-brand-dark mb-4">Search Products</h2>
+            <input autoFocus type="text" placeholder="Search for products, categories..." id="mobile-search-input" className="w-full px-4 py-3 border-2 border-border-light rounded-xl focus:outline-none focus:border-brand-secondary focus:shadow-md transition-all duration-200" onKeyDown={(e) => {
               const v = e.target.value;
               if (e.key === 'Enter' && v && v.trim()) { setShowMobileSearch(false); navigate(`/search?q=${encodeURIComponent(v.trim())}`); }
             }} />
-            <button onClick={() => setShowMobileSearch(false)} className="w-full mt-3 px-4 py-2 text-sm font-semibold text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50">Close</button>
+            <button onClick={() => setShowMobileSearch(false)} className="w-full mt-4 px-4 py-3 text-sm font-semibold text-brand-primary border-2 border-border-light rounded-lg hover:bg-surface-elevated transition-colors duration-200">Close</button>
           </div>
         </div>
       )}
@@ -173,35 +173,49 @@ const Navbar = ({ cartCount }) => {
 };
 
 const Footer = () => (
-  <footer className="bg-brand-blue text-white pt-16 pb-8 border-t border-brand-gold/20 mt-auto">
+  <footer className="bg-brand-dark text-white pt-16 pb-8 border-t border-brand-accent/10 mt-auto">
     <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
       <div>
-        <h2 className="text-2xl font-serif font-bold text-white mb-4">Infinity<span className="text-brand-gold text-xs ml-1 font-sans tracking-widest">CUSTOMIZATIONS</span></h2>
-        <p className="text-blue-100 text-sm leading-relaxed mb-6">Premium custom printing & digital services delivered across India.</p>
+        <h2 className="text-2xl font-serif font-bold text-white mb-3">Infinity <span className="text-brand-accent text-xs ml-1 font-sans font-semibold tracking-wider">CUSTOMIZATIONS</span></h2>
+        <p className="text-gray-300 text-sm leading-relaxed mb-6 font-light">Premium custom printing and digital services delivered across India with exceptional quality and attention to detail.</p>
         <div className="flex gap-4">
-          <a href="https://instagram.com/infinitycustomizations" target="_blank" rel="noreferrer" aria-label="Instagram" className="cursor-pointer hover:text-brand-gold">
-            <Instagram />
+          <a href="https://instagram.com/infinitycustomizations" target="_blank" rel="noreferrer" title="Instagram" className="text-gray-300 hover:text-brand-accent transition-colors duration-200 p-2 rounded-lg hover:bg-white/10">
+            <Instagram size={20} />
           </a>
-          <a href="https://www.facebook.com/share/1FzoghaLcu/?mibextid=wwXIfr" target="_blank" rel="noreferrer" aria-label="Facebook" className="cursor-pointer hover:text-[#4267B2]">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" className="inline-block"><path d="M22 12.072C22 6.477 17.523 2 11.928 2S2 6.477 2 12.072C2 17.09 5.657 21.128 10.438 21.924v-6.93H7.898v-2.922h2.54V9.845c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.242 0-1.63.77-1.63 1.56v1.874h2.773l-.443 2.922h-2.33v6.93C18.343 21.128 22 17.09 22 12.072z"/></svg>
+          <a href="https://www.facebook.com/share/1FzoghaLcu/?mibextid=wwXIfr" target="_blank" rel="noreferrer" title="Facebook" className="text-gray-300 hover:text-blue-400 transition-colors duration-200 p-2 rounded-lg hover:bg-white/10">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M22 12.072C22 6.477 17.523 2 11.928 2S2 6.477 2 12.072C2 17.09 5.657 21.128 10.438 21.924v-6.93H7.898v-2.922h2.54V9.845c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.242 0-1.63.77-1.63 1.56v1.874h2.773l-.443 2.922h-2.33v6.93C18.343 21.128 22 17.09 22 12.072z"/></svg>
           </a>
-          <a href="https://wa.me/918985993948" target="_blank" rel="noreferrer" aria-label="WhatsApp" className="cursor-pointer hover:text-green-400">
-            <WhatsAppIcon />
+          <a href="https://wa.me/918985993948" target="_blank" rel="noreferrer" title="WhatsApp" className="text-gray-300 hover:text-green-400 transition-colors duration-200 p-2 rounded-lg hover:bg-white/10">
+            <WhatsAppIcon size={20} />
           </a>
-          <a href="mailto:infinitycustomizations@gmail.com" className="cursor-pointer hover:text-brand-gold" aria-label="Email">
-            <Mail />
+          <a href="mailto:infinitycustomizations@gmail.com" title="Email" className="text-gray-300 hover:text-brand-accent transition-colors duration-200 p-2 rounded-lg hover:bg-white/10">
+            <Mail size={20} />
           </a>
         </div>
       </div>
       <div>
-        <h3 className="text-lg font-bold text-brand-gold mb-6 font-serif">Contact</h3>
-        <div className="space-y-4 text-sm text-blue-100">
-          <p className="flex items-start gap-3"><Phone size={18} /><span>+91 89859 93948</span></p>
-          <p className="flex items-start gap-3"><Mail size={18} /><span>infinitycustomizations@gmail.com</span></p>
+        <h3 className="text-lg font-semibold text-brand-accent mb-6">Contact Information</h3>
+        <div className="space-y-4 text-sm text-gray-300">
+          <p className="flex items-start gap-3 hover:text-white transition-colors">
+            <Phone size={18} className="flex-shrink-0 mt-0.5" />
+            <span>+91 89859 93948</span>
+          </p>
+          <p className="flex items-start gap-3 hover:text-white transition-colors">
+            <Mail size={18} className="flex-shrink-0 mt-0.5" />
+            <span>infinitycustomizations@gmail.com</span>
+          </p>
+        </div>
+      </div>
+      <div>
+        <h3 className="text-lg font-semibold text-brand-accent mb-6">Quick Links</h3>
+        <div className="space-y-3 text-sm text-gray-300">
+          <Link to="/" className="block hover:text-brand-accent transition-colors duration-200">Home</Link>
+          <a href="https://wa.me/918985993948" target="_blank" rel="noreferrer" className="block hover:text-brand-accent transition-colors duration-200">Contact Us</a>
+          <a href="mailto:infinitycustomizations@gmail.com" className="block hover:text-brand-accent transition-colors duration-200">Support</a>
         </div>
       </div>
     </div>
-    <div className="max-w-7xl mx-auto px-4 pt-8 border-t border-white/10 text-center text-xs text-blue-200">
+    <div className="max-w-7xl mx-auto px-4 pt-8 border-t border-white/10 text-center text-xs text-gray-400">
       <p>© 2026 Infinity Customizations. All rights reserved.</p>
     </div>
   </footer>

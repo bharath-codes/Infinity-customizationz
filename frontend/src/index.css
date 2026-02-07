@@ -1,41 +1,78 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body {
-  background-color: #FFF5F5;
-  color: #2A0A0A;
-  font-family: 'Inter', sans-serif;
+/* Base Styles */
+html {
+  scroll-behavior: smooth;
 }
 
+body {
+  background-color: #F9FAFB;
+  color: #1F2937;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  letter-spacing: 0.25px;
+}
+
+/* Headings */
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
 }
 
-/* Hide Scrollbar but allow scrolling */
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+/* Links */
+a {
+  color: #6366F1;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #4F46E5;
+}
+
+/* Scrollbar Styling */
 .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-}
-.scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+  display: none;
 }
 
-/* Marquee Animation for Top Bar */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Transitions & Animations */
 @keyframes scroll-text {
   0% { transform: translateX(100%); }
   100% { transform: translateX(-100%); }
 }
 
-.animate-marquee {
-  display: inline-block;
-  white-space: nowrap;
-  animation: scroll-text 15s linear infinite;
-}
-
-/* Login Page Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -58,10 +95,81 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.animate-marquee {
+  animation: scroll-text 15s linear infinite;
+}
+
 .animate-fadeIn {
   animation: fadeIn 0.5s ease-out;
 }
 
 .animate-slideIn {
   animation: slideIn 0.4s ease-out;
+}
+
+.animate-slideInUp {
+  animation: slideInUp 0.5s ease-out;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+/* Button Base Styles */
+button {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.25px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Form Elements */
+input, textarea, select {
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.25px;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+}
+
+/* Selection */
+::selection {
+  background-color: #6366F1;
+  color: white;
+}
+
+::-moz-selection {
+  background-color: #6366F1;
+  color: white;
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

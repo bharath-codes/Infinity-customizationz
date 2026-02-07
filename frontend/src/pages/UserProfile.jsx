@@ -67,41 +67,41 @@ const UserProfile = () => {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-blue/5 to-brand-gold/5">
-        <Loader className="w-8 h-8 animate-spin text-brand-blue" />
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-surface-light to-surface-elevated">
+        <Loader className="w-8 h-8 animate-spin text-brand-secondary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-blue/5 to-brand-gold/5 py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-surface-light to-surface-elevated py-12 px-4">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="mb-2"><BackButton to="/" /></div>
-          <h1 className="text-4xl font-serif font-bold text-brand-blue">
-            My Profile
+          <h1 className="text-4xl font-serif font-bold text-brand-primary">
+            Account Settings
           </h1>
         </div>
 
         {/* Main Card */}
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-brand-gold/20">
+        <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-border-light">
           {/* Profile Header */}
-          <div className="bg-gradient-to-r from-brand-blue to-brand-blue/80 text-white p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="bg-gradient-to-r from-brand-primary to-brand-secondary text-white p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center border-2 border-white">
                 <User className="w-8 h-8" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold">{formData.name || 'User'}</h2>
-                <p className="text-brand-gold/80 text-sm">+91 {formData.phoneNumber}</p>
+                <h2 className="text-2xl font-semibold">{formData.name || 'User'}</h2>
+                <p className="text-white/80 text-sm">+91 {formData.phoneNumber}</p>
               </div>
             </div>
             <div className="flex flex-col md:flex-row gap-2 items-center w-full md:w-auto">
               {!isEditing && (
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="w-full md:w-auto bg-white text-brand-blue hover:bg-brand-gold/20 font-semibold px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
+                  className="w-full md:w-auto bg-white text-brand-secondary hover:bg-surface-light font-semibold px-4 py-2.5 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
                 >
                   <Edit2 className="w-4 h-4" />
                   Edit Profile
@@ -109,10 +109,10 @@ const UserProfile = () => {
               )}
               <button
                 onClick={handleLogout}
-                className="w-full md:w-auto bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-2"
+                className="w-full md:w-auto bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2.5 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
               >
                 <LogOut className="w-4 h-4" />
-                Logout
+                Sign Out
               </button>
             </div>
           </div>
@@ -121,14 +121,14 @@ const UserProfile = () => {
           {error && (
             <div className="bg-red-50 border-b border-red-200 p-4 flex items-start gap-3">
               <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-red-800">{error}</p>
+              <p className="text-sm text-red-800 font-medium">{error}</p>
             </div>
           )}
 
           {success && (
             <div className="bg-green-50 border-b border-green-200 p-4 flex items-start gap-3">
               <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-green-800">{success}</p>
+              <p className="text-sm text-green-800 font-medium">{success}</p>
             </div>
           )}
 
@@ -137,7 +137,7 @@ const UserProfile = () => {
             {/* Name */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div>
-                <label className="block text-sm font-semibold text-brand-blue mb-2">
+                <label className="block text-sm font-semibold text-brand-primary mb-2">
                   Full Name
                 </label>
                 <input
@@ -147,14 +147,14 @@ const UserProfile = () => {
                   onChange={handleChange}
                   disabled={!isEditing}
                   placeholder="John Doe"
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-brand-blue disabled:bg-gray-50 disabled:text-gray-500"
+                  className="w-full px-4 py-3 border-2 border-border-light rounded-lg focus:outline-none focus:border-brand-secondary focus:ring-2 focus:ring-brand-secondary/10 disabled:bg-surface-elevated disabled:text-brand-primary/50 transition-all duration-200 text-sm"
                 />
               </div>
 
               {/* Email */}
               <div>
-                <label className="block text-sm font-semibold text-brand-blue mb-2 flex items-center gap-2">
-                  <Mail className="w-4 h-4" />
+                <label className="block text-sm font-semibold text-brand-primary mb-2 flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-brand-secondary" />
                   Email Address
                 </label>
                 <input
@@ -164,30 +164,30 @@ const UserProfile = () => {
                   onChange={handleChange}
                   disabled={!isEditing}
                   placeholder="john@example.com"
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-brand-blue disabled:bg-gray-50 disabled:text-gray-500"
+                  className="w-full px-4 py-3 border-2 border-border-light rounded-lg focus:outline-none focus:border-brand-secondary focus:ring-2 focus:ring-brand-secondary/10 disabled:bg-surface-elevated disabled:text-brand-primary/50 transition-all duration-200 text-sm"
                 />
               </div>
             </div>
 
             {/* Phone Number (Read-only) */}
             <div className="mb-6">
-              <label className="block text-sm font-semibold text-brand-blue mb-2 flex items-center gap-2">
-                <Phone className="w-4 h-4" />
+              <label className="block text-sm font-semibold text-brand-primary mb-2 flex items-center gap-2">
+                <Phone className="w-4 h-4 text-brand-secondary" />
                 Phone Number
               </label>
               <input
                 type="text"
                 value={`+91 ${formData.phoneNumber}`}
                 disabled
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg bg-gray-50 text-gray-500"
+                className="w-full px-4 py-3 border-2 border-border-light rounded-lg bg-surface-elevated text-brand-primary/50 text-sm"
               />
-              <p className="text-xs text-gray-500 mt-2">Phone number cannot be changed</p>
+              <p className="text-xs text-brand-primary/50 mt-2">Phone number is fixed to your account</p>
             </div>
 
             {/* Address */}
             <div className="mb-6">
-              <label className="block text-sm font-semibold text-brand-blue mb-2 flex items-center gap-2">
-                <MapPin className="w-4 h-4" />
+              <label className="block text-sm font-semibold text-brand-primary mb-2 flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-brand-secondary" />
                 Street Address
               </label>
               <input
@@ -197,14 +197,14 @@ const UserProfile = () => {
                 onChange={handleChange}
                 disabled={!isEditing}
                 placeholder="123 Main Street"
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-brand-blue disabled:bg-gray-50 disabled:text-gray-500"
+                className="w-full px-4 py-3 border-2 border-border-light rounded-lg focus:outline-none focus:border-brand-secondary focus:ring-2 focus:ring-brand-secondary/10 disabled:bg-surface-elevated disabled:text-brand-primary/50 transition-all duration-200 text-sm"
               />
             </div>
 
             {/* City, State, Pincode */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
               <div>
-                <label className="block text-sm font-semibold text-brand-blue mb-2">City</label>
+                <label className="block text-sm font-semibold text-brand-primary mb-2">City</label>
                 <input
                   type="text"
                   name="city"
@@ -212,12 +212,12 @@ const UserProfile = () => {
                   onChange={handleChange}
                   disabled={!isEditing}
                   placeholder="Mumbai"
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-brand-blue disabled:bg-gray-50 disabled:text-gray-500"
+                  className="w-full px-4 py-3 border-2 border-border-light rounded-lg focus:outline-none focus:border-brand-secondary focus:ring-2 focus:ring-brand-secondary/10 disabled:bg-surface-elevated disabled:text-brand-primary/50 transition-all duration-200 text-sm"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-brand-blue mb-2">State</label>
+                <label className="block text-sm font-semibold text-brand-primary mb-2">State</label>
                 <input
                   type="text"
                   name="state"
@@ -225,12 +225,12 @@ const UserProfile = () => {
                   onChange={handleChange}
                   disabled={!isEditing}
                   placeholder="Maharashtra"
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-brand-blue disabled:bg-gray-50 disabled:text-gray-500"
+                  className="w-full px-4 py-3 border-2 border-border-light rounded-lg focus:outline-none focus:border-brand-secondary focus:ring-2 focus:ring-brand-secondary/10 disabled:bg-surface-elevated disabled:text-brand-primary/50 transition-all duration-200 text-sm"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-brand-blue mb-2">Pincode</label>
+                <label className="block text-sm font-semibold text-brand-primary mb-2">Postal Code</label>
                 <input
                   type="text"
                   name="pincode"
@@ -238,28 +238,28 @@ const UserProfile = () => {
                   onChange={handleChange}
                   disabled={!isEditing}
                   placeholder="400001"
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-brand-blue disabled:bg-gray-50 disabled:text-gray-500"
+                  className="w-full px-4 py-3 border-2 border-border-light rounded-lg focus:outline-none focus:border-brand-secondary focus:ring-2 focus:ring-brand-secondary/10 disabled:bg-surface-elevated disabled:text-brand-primary/50 transition-all duration-200 text-sm"
                 />
               </div>
             </div>
 
             {/* Buttons */}
             {isEditing && (
-              <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex flex-col md:flex-row gap-3">
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full md:flex-1 bg-brand-blue hover:bg-brand-blue/90 disabled:bg-gray-300 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
+                  className="w-full md:flex-1 bg-brand-secondary hover:bg-brand-secondary/90 disabled:bg-border-light text-white font-semibold py-3 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
                 >
                   {loading ? (
                     <>
                       <Loader className="w-4 h-4 animate-spin" />
-                      Saving...
+                      <span>Saving...</span>
                     </>
                   ) : (
                     <>
                       <Save className="w-4 h-4" />
-                      Save Changes
+                      <span>Save Changes</span>
                     </>
                   )}
                 </button>
@@ -279,31 +279,31 @@ const UserProfile = () => {
                     setError('');
                     setSuccess('');
                   }}
-                  className="w-full md:flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
+                  className="w-full md:flex-1 bg-border-light hover:bg-border-dark text-brand-primary font-semibold py-3 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
                 >
                   <X className="w-4 h-4" />
-                  Cancel
+                  <span>Cancel</span>
                 </button>
               </div>
             )}
           </form>
 
           {/* Account Info */}
-          <div className="bg-gray-50 border-t border-gray-200 p-8">
-            <h3 className="font-semibold text-brand-blue mb-4">Account Information</h3>
+          <div className="bg-surface-elevated border-t border-border-light p-8">
+            <h3 className="font-semibold text-brand-primary mb-4">Account Information</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
               <div>
-                <p className="text-gray-600 mb-1">Account Type</p>
-                <p className="font-semibold text-brand-blue capitalize">{user?.role || 'user'}</p>
+                <p className="text-brand-primary/60 mb-1 text-xs uppercase tracking-wide font-semibold">Account Type</p>
+                <p className="font-semibold text-brand-primary capitalize">{user?.role || 'Customer'}</p>
               </div>
               <div>
-                <p className="text-gray-600 mb-1">Status</p>
-                <p className="font-semibold text-green-600">{user?.isVerified ? '✓ Verified' : 'Pending'}</p>
+                <p className="text-brand-primary/60 mb-1 text-xs uppercase tracking-wide font-semibold">Verification Status</p>
+                <p className="font-semibold text-green-600">{user?.isVerified ? 'Verified' : 'Pending Verification'}</p>
               </div>
               <div>
-                <p className="text-gray-600 mb-1">Member Since</p>
-                <p className="font-semibold text-brand-blue">
-                  {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
+                <p className="text-brand-primary/60 mb-1 text-xs uppercase tracking-wide font-semibold">Member Since</p>
+                <p className="font-semibold text-brand-primary">
+                  {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A'}
                 </p>
               </div>
             </div>
@@ -314,31 +314,31 @@ const UserProfile = () => {
         <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
           <Link
             to="/orders"
-            className="bg-white border-2 border-brand-blue/20 hover:border-brand-blue rounded-lg p-4 text-center hover:shadow-lg transition-all"
+            className="bg-white border-2 border-border-light hover:border-brand-secondary rounded-xl p-4 text-center hover:shadow-lg transition-all duration-200"
           >
-            <p className="text-2xl mb-2">📦</p>
-            <p className="text-sm font-semibold text-brand-blue">My Orders</p>
+            <div className="text-3xl mb-2 select-none">📋</div>
+            <p className="text-sm font-semibold text-brand-primary">My Orders</p>
           </Link>
           <Link
             to="/cart"
-            className="bg-white border-2 border-brand-blue/20 hover:border-brand-blue rounded-lg p-4 text-center hover:shadow-lg transition-all"
+            className="bg-white border-2 border-border-light hover:border-brand-secondary rounded-xl p-4 text-center hover:shadow-lg transition-all duration-200"
           >
-            <p className="text-2xl mb-2">🛒</p>
-            <p className="text-sm font-semibold text-brand-blue">Shopping Cart</p>
+            <div className="text-3xl mb-2 select-none">🛒</div>
+            <p className="text-sm font-semibold text-brand-primary">Shopping Cart</p>
           </Link>
           <Link
             to="/shop"
-            className="bg-white border-2 border-brand-blue/20 hover:border-brand-blue rounded-lg p-4 text-center hover:shadow-lg transition-all"
+            className="bg-white border-2 border-border-light hover:border-brand-secondary rounded-xl p-4 text-center hover:shadow-lg transition-all duration-200"
           >
-            <p className="text-2xl mb-2">🛍️</p>
-            <p className="text-sm font-semibold text-brand-blue">Continue Shopping</p>
+            <div className="text-3xl mb-2 select-none">🏪</div>
+            <p className="text-sm font-semibold text-brand-primary">Browse Store</p>
           </Link>
           <button
             onClick={handleLogout}
-            className="bg-red-50 border-2 border-red-200 hover:border-red-400 rounded-lg p-4 text-center hover:shadow-lg transition-all"
+            className="bg-red-50 border-2 border-red-200 hover:border-red-400 rounded-xl p-4 text-center hover:shadow-lg transition-all duration-200"
           >
-            <p className="text-2xl mb-2">🚪</p>
-            <p className="text-sm font-semibold text-red-600">Logout</p>
+            <div className="text-3xl mb-2 select-none">🚪</div>
+            <p className="text-sm font-semibold text-red-600">Sign Out</p>
           </button>
         </div>
       </div>
