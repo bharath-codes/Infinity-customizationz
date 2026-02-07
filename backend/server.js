@@ -4,7 +4,17 @@ const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+const isCloudinaryConfigured = process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET;
 
 const app = express();
 
@@ -161,10 +171,10 @@ app.delete('/api/products/:id/reviews/:reviewIndex', authAdmin, authorize(['mana
 });
 
 // FILE UPLOAD CONFIGURATION
-const storage = multer.diskStorage({
+// Use memory storage for Cloudinary, or disk storage as fallback
+const storage = isCloudinaryConfigured ? multer.memoryStorage() : multer.diskStorage({
   destination: function (req, file, cb) {
     const uploadDir = path.join(__dirname, 'uploads');
-    // Ensure directory exists (recursive to be safe)
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
@@ -176,21 +186,50 @@ const storage = multer.diskStorage({
   }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage, limits: { fileSize: 10 * 1024 * 1024 } }); // 10MB limit
 
 // UPLOAD ENDPOINT (Admin only - for product images, hero images, etc.)
-app.post('/api/upload', authAdmin, authorize(['manage_products', 'manage_categories']), upload.single('image'), (req, res) => {
+app.post('/api/upload', authAdmin, authorize(['manage_products', 'manage_categories']), upload.single('image'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: 'No file uploaded' });
   }
 
-  // Build both absolute URL and relative path for backwards compatibility
-  const relativePath = `/uploads/${req.file.filename}`;
-  const host = req.get('host');
-  const protocol = req.protocol || (req.secure ? 'https' : 'http');
-  const absoluteUrl = `${protocol}://${host}${relativePath}`;
-
-  res.json({ filePath: relativePath, url: absoluteUrl });
+  try {
+    // If Cloudinary is configured, upload to Cloudinary
+    if (isCloudinaryConfigured) {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: 'infinity-shop',
+          resource_type: 'auto',
+          quality: 'auto',
+          fetch_format: 'auto'
+        },
+        (error, result) => {
+          if (error) {
+            console.error('Cloudinary upload error:', error);
+            return res.status(500).json({ message: 'Upload failed', error: error.message });
+          }
+          // Return Cloudinary secure_url as the primary URL
+          res.json({ 
+            filePath: result.secure_url,
+            url: result.secure_url,
+            cloudinary_id: result.public_id
+          });
+        }
+      );
+      uploadStream.end(req.file.buffer);
+    } else {
+      // Fallback to local disk storage
+      const relativePath = `/uploads/${req.file.filename}`;
+      const host = req.get('host');
+      const protocol = req.protocol || (req.secure ? 'https' : 'http');
+      const absoluteUrl = `${protocol}://${host}${relativePath}`;
+      res.json({ filePath: relativePath, url: absoluteUrl });
+    }
+  } catch (error) {
+    console.error('Upload error:', error);
+    res.status(500).json({ message: 'Upload failed', error: error.message });
+  }
 });
 
 // Admin Product Management
