@@ -2,27 +2,33 @@ const jwt = require('jsonwebtoken');
 
 // Generate JWT Token
 const generateToken = (userId, role) => {
+  const secret = process.env.JWT_SECRET || 'infinity_shop_user_secret_key_2026_with_random_entropy';
   return jwt.sign(
     { userId, role },
-    process.env.JWT_SECRET || 'your-secret-key-change-in-env',
+    secret,
     { expiresIn: '7d' }
   );
 };
 
 // Generate Admin JWT Token
 const generateAdminToken = (adminId, email) => {
-  return jwt.sign(
+  const secret = process.env.JWT_ADMIN_SECRET || 'infinity_shop_admin_secret_key_2026_super_secure_key';
+  const token = jwt.sign(
     { adminId, email, isAdmin: true },
-    process.env.JWT_ADMIN_SECRET || 'admin-secret-key-change-in-env',
+    secret,
     { expiresIn: '7d' }
   );
+  console.log(`🔐 Generated admin token for: ${email} (ID: ${adminId})`);
+  return token;
 };
 
 // Verify JWT Token
 const verifyToken = (token) => {
   try {
-    return jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key-change-in-env');
+    const secret = process.env.JWT_SECRET || 'infinity_shop_user_secret_key_2026_with_random_entropy';
+    return jwt.verify(token, secret);
   } catch (err) {
+    console.warn(`⚠️ User token verification failed: ${err.message}`);
     return null;
   }
 };
@@ -30,8 +36,12 @@ const verifyToken = (token) => {
 // Verify Admin JWT Token
 const verifyAdminToken = (token) => {
   try {
-    return jwt.verify(token, process.env.JWT_ADMIN_SECRET || 'admin-secret-key-change-in-env');
+    const secret = process.env.JWT_ADMIN_SECRET || 'infinity_shop_admin_secret_key_2026_super_secure_key';
+    const decoded = jwt.verify(token, secret);
+    console.log(`✅ Admin token verified for: ${decoded.email}`);
+    return decoded;
   } catch (err) {
+    console.warn(`⚠️ Admin token verification failed: ${err.message}`);
     return null;
   }
 };
