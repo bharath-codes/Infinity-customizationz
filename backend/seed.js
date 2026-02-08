@@ -581,8 +581,8 @@ const products = [
     categoryId: "smart-digital",
     name: "Digital Video Invitation",
     price: 399,
-    image: "/images/DI2.JPG",
-    images: ["/images/DI2.JPG", "/images/DI1.JPG", "/images/DI3.JPG"],
+    image: "/images/dvi.jpg",
+    images: ["/images/dvi.jpg", "/images/dvi1.jpg", "/images/dvi2.jpg"],
     description: "Animated digital video invitations with custom music and motion graphics. Shareable via WhatsApp and Instagram. Watch sample reels in the product section.",
     instagramLinks: [
       "https://www.instagram.com/reel/DJZPJJdSvhA/?igsh=MTNjazVnaDJ4cW9vdg==",
