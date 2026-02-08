@@ -858,12 +858,12 @@ const ProductPage = ({ addToCart }) => {
     if (!type || type === 'none') return 0;
     const p = Number(price || 0);
     if (type === 'normal') {
-      // Normal wrap: ₹39 for products below ₹300, ₹69 for ₹300 and above
-      return p < 300 ? 39 : 69;
+      // Normal wrap: ₹89 for products ₹399-799, ₹119 for products >₹800
+      return p > 800 ? 119 : 89;
     }
     if (type === 'premium') {
-      // Premium wrap: ₹79 for products below ₹300, ₹99 for ₹300 and above
-      return p < 300 ? 79 : 99;
+      // Premium wrap: ₹149 for products ₹399-799, ₹189 for products >₹800
+      return p > 800 ? 189 : 149;
     }
     return 0;
   };
