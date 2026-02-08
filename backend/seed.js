@@ -169,7 +169,11 @@ const products = [
     image: "/images/aniv1.jpeg", 
     images: ["/images/aniv1.jpeg", "/images/aniv2.jpeg", "/images/aniv3.jpeg", "/images/aniv4.jpeg", "/images/aniv5.jpeg"],
     description: "Premium hardcover anniversary magazine with custom photos and personalized layouts.",
-    inStock: true 
+    inStock: true,
+    pageOptions: [
+      { pages: 8, priceAddition: 0 },
+      { pages: 12, priceAddition: 150 }
+    ]
   },
   { 
     _id: "m2",
@@ -179,7 +183,11 @@ const products = [
     image: "/images/mag 12pgs 599.jpg", 
     images: ["/images/mag 12pgs 599.jpg", "/images/mag 12pgs 599 p3.jpg", "/images/mag 12pgs 599 p4.jpg", "/images/mag 12pgs 599 p5.jpg", "/images/mag 12pgs 599 p6.jpg", "/images/mag 12pgs 599 p7.jpg", "/images/mag 12pgs 599 p8.jpg"],
     description: "Beautiful hardcover magazine with 12 premium pages for your special memories.",
-    inStock: true 
+    inStock: true,
+    pageOptions: [
+      { pages: 8, priceAddition: 0 },
+      { pages: 12, priceAddition: 150 }
+    ]
   },
   { 
     _id: "m3",
@@ -190,7 +198,11 @@ const products = [
     images: ["/images/MAG design2.jpg", "/images/MAG design2 p6.jpg", "/images/MAG design2 p7.jpg", "/images/MAG design2 p8.jpg", "/images/MAG design2 p9.jpg"],
     description: "Stylish magazine with alternative design layout. Perfect for modern memories.",
     inStock: true,
-    isBestSeller: true
+    isBestSeller: true,
+    pageOptions: [
+      { pages: 8, priceAddition: 0 },
+      { pages: 12, priceAddition: 150 }
+    ]
   },
 
 
