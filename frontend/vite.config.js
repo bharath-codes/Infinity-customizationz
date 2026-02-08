@@ -9,6 +9,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
+    publicDir: 'public', // Ensure public folder is included
     server: {
       allowedHosts: true,
       host: true,
@@ -18,8 +19,20 @@ export default defineConfig(({ mode }) => {
           target: env.VITE_API_URL || 'http://localhost:5000',
           changeOrigin: true,
           secure: false,
+        },
+        '/uploads': {
+          // Proxy /uploads requests to the backend
+          target: env.VITE_API_URL || 'http://localhost:5000',
+          changeOrigin: true,
+          secure: false,
         }
       }
+    },
+    build: {
+      outDir: 'dist',
+      assetsDir: 'assets',
+      minify: 'terser',
+      sourcemap: false
     }
   }
 })
