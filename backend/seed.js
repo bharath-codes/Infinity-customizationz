@@ -275,8 +275,8 @@ const products = [
     categoryId: "hampers", 
     name: "Premium Hamper", 
     price: 999, 
-    image: "/images/hamper.jpg", 
-    images: ["/images/hamper.jpg", "/images/hamper .jpg", "/images/HAMPER.jpg"],
+    image: "/images/hamper .jpg", 
+    images: ["/images/hamper .jpg", "/images/HAMPER.jpg"],
     description: "Luxury gift hamper with premium items for special occasions.",
     inStock: true 
   },
@@ -314,16 +314,6 @@ const products = [
     description: "Personalized cap with custom design. Great gift for any season.",
     inStock: true 
   },
-  { 
-    _id: "pouch1",
-    categoryId: "apparel", 
-    name: "Photo Pouch 299", 
-    price: 299, 
-    image: "/images/photo cup p2 299.jpg", 
-    images: ["/images/photo cup p2 299.jpg"],
-    description: "Stylish pouch for carrying your essentials with custom photo print.",
-    inStock: true 
-  },
 
 
   // ===== NEW TSHIRT VARIANTS =====
@@ -358,8 +348,8 @@ const products = [
     subcategoryName: "Collarless",
     name: "Collarless T-Shirts",
     price: 399,
-    image: "/images/cless.jpeg",
-    images: ["/images/cless.jpeg", "/images/cless1.jpeg", "/images/cless2.jpeg", "/images/cless3.jpeg", "/images/cless4.jpeg", "/images/cless5.jpeg","/images/cless6.jpeg","/images/cless7.jpeg","/images/cless8.jpeg","/images/cless9.jpeg",""],
+    image: "/images/cless1.jpeg",
+    images: ["/images/cless1.jpeg", "/images/cless.jpeg", "/images/cless2.jpeg", "/images/cless3.jpeg", "/images/cless4.jpeg", "/images/cless5.jpeg","/images/cless6.jpeg","/images/cless7.jpeg","/images/cless8.jpeg","/images/cless9.jpeg",""],
     description: "Comfortable collarless t-shirts in nylon and pure cotton options. Sizes S to XXL. Perfect for casual wear with vibrant colors. Bulk discounts available at 5, 10, and 20+ pieces.",
     inStock: true,
     pricingType: "fabric-based",
@@ -409,7 +399,7 @@ const products = [
     name: "Customized Phone Case", 
     price: 199, 
     image: "/images/phonec.jpeg", 
-    images: ["/images/Phonec.jpeg", "/images/phonec1.jpeg"],
+    images: ["/images/phonec.jpeg", "/images/phonec1.jpeg"],
     description: "Durable custom phone case with your favorite photo or design.",
     inStock: true 
   },
@@ -541,8 +531,8 @@ const products = [
     categoryId: "smart-digital", 
     name: "NFC Review Board 799", 
     price: 799, 
-    image: "/images/REVIEW BOARD NFC 799.jpg", 
-    images: ["/images/REVIEW BOARD NFC 799.jpg"],
+    image: "/images/nfc.jpeg", 
+    images: ["/images/nfc.jpeg"],
     description: "Smart NFC review board for interactive memories and feedback.",
     inStock: true 
   },
@@ -695,7 +685,7 @@ const categories = [
     title: 'T-Shirts & Accessories',
     desc: 'Customized & printed t-shirts, keychains & pouches with your designs.',
     emoji: '👕',
-    showcaseProducts: ['t1', 'cap1'],
+    showcaseProducts: ['collared-tshirt', 'cap1'],
     subCategories: [
       { name: 'Collared', description: 'Premium collared t-shirts with fabric options' },
       { name: 'Collarless', description: 'Comfortable collarless t-shirts' },
