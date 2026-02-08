@@ -577,6 +577,46 @@ const AdminProducts = () => {
                 </div>
               </div>
 
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t-2 border-gray-200">
+                <button
+                  type="submit"
+                  disabled={uploading}
+                  className="flex-1 px-8 py-4 bg-gradient-to-r from-brand-blue to-brand-blue/90 text-white rounded-lg hover:from-brand-blue/90 hover:to-brand-blue transition-all font-bold text-lg shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {editingId ? '✓ Update Product' : '✓ Save Product'}
+                </button>
+                <button
+                  type="button"
+                  onClick={resetForm}
+                  className="flex-1 px-8 py-4 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition-all font-bold text-lg shadow-md hover:shadow-lg"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
+        {/* Search Bar */}
+        <div className="bg-white rounded-2xl shadow-md p-6 mb-8 sticky top-20 z-30">
+          <div className="flex flex-col sm:flex-row gap-4 items-center">
+            <div className="flex-1 relative">
+              <Search className="absolute left-4 top-3.5 w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="🔍 Search by product name..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-brand-blue focus:bg-blue-50 transition-all text-base"
+              />
+            </div>
+            <div className="text-sm font-semibold text-gray-600 whitespace-nowrap">
+              {filteredProducts.length} {filteredProducts.length === 1 ? 'Product' : 'Products'} Found
+            </div>
+          </div>
+        </div>
+
         {/* Products Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {loading ? (
