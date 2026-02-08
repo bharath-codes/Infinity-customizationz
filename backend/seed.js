@@ -27,6 +27,26 @@ const products = [
     inStock: true,
     isBestSeller: true
   },
+  {
+    _id: "pol1",
+    categoryId: "memories",
+    name: "Polaroids Mini - 8 Pack",
+    price: 169,
+    image: "/images/polaroids.jpg",
+    images: ["/images/polaroids.jpg", "/images/polaroids album 169.jpg"],
+    description: "Classic mini polaroids set (8 prints) — perfect for scrapbooks and gifts.",
+    inStock: true
+  },
+  {
+    _id: "pol2",
+    categoryId: "memories",
+    name: "Polaroids Medium - 8 Pack",
+    price: 199,
+    image: "/images/POLAROIDS MEDIUM 8 PER EACH.jpg",
+    images: ["/images/POLAROIDS MEDIUM 8 PER EACH.jpg", "/images/polaroids album 169.jpg"],
+    description: "Medium polaroids set (8 prints) — larger size for better detail.",
+    inStock: true
+  },
   { 
     _id: "f2",
     categoryId: "frames", 
@@ -607,7 +627,7 @@ const products = [
   categoryId: "smart-digital",
   name: "Photo restoration premium",
   price: 299,
-  image: "/images/prp.jpg",
+  image: "/images/photo restore.png",
   images: ["/images/prp.jpg", "/images/prp1.jpg", "/images/prp1.jpg"],
   description: "Premium photo restoration service - restore old, damaged, or faded photographs with professional editing and colorization.",
   inStock: true
