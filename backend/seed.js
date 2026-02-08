@@ -569,8 +569,8 @@ const products = [
     categoryId: "smart-digital", 
     name: "Digital Invitation", 
     price: 299, 
-    image: "/images/DT2.JPG", 
-    images: ["/images/DT2.JPG", "/images/DI1.JPG", "/images/DI3.JPG", "/images/digital invitation p2.JPG"],
+    image: "/images/DI2.JPG", 
+    images: ["/images/DI2.JPG", "/images/DI1.JPG", "/images/DI3.JPG", "/images/digital invitation p2.JPG"],
     description: "Beautiful digital invitation designs for your special events.",
     inStock: true 
   },
