@@ -324,11 +324,26 @@ app.put('/api/products/:id', authAdmin, authorize(['manage_products']), async (r
 
 app.delete('/api/products/:id', authAdmin, authorize(['manage_products']), async (req, res) => {
   try {
-    const product = await Product.findByIdAndDelete(req.params.id);
+    const productId = req.params.id;
+    
+    // Delete the product
+    const product = await Product.findByIdAndDelete(productId);
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
-    res.json({ message: 'Product deleted' });
+
+    // Remove product from all categories' showcaseProducts and products arrays
+    await Category.updateMany(
+      {},
+      {
+        $pull: {
+          showcaseProducts: productId,
+          products: productId
+        }
+      }
+    );
+
+    res.json({ message: 'Product deleted and references removed from categories' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
