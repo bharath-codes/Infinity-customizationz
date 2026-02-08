@@ -197,20 +197,32 @@ const products = [
     _id: "pol1",
     categoryId: "memories", 
     name: "Polaroids Mini", 
-    price: 199, 
-    image: "/images/pmini.jpg", 
+    price: 60,
+    image: "/images/polaroids.jpg", 
     images: ["/images/pmini.jpg"],
     description: "Set of instant-style polaroid prints perfect for scrapbooking and memories.",
+      pricingType: "quantity-based",
+      unitPrice: 5,
+      minimumOrder: 12,
+      minimumOrderPrice: 60,
+      incrementQuantity: 6,
+      incrementPrice: 30,
     inStock: true 
   },
   { 
     _id: "pol2",
     categoryId: "memories", 
     name: "Polaroids Medium 8 Per Set", 
-    price: 199, 
+    price: 64,
     image: "/images/POLAROIDS MEDIUM 8 PER EACH.jpg", 
     images: ["/images/POLAROIDS MEDIUM 8 PER EACH.jpg"],
-    description: "Premium polaroid set of 8 instant prints with great quality.",
+    description: "Medium polaroid prints - 8 rupees each. Minimum order: 8 polaroids (64 rupees). Each + click adds 4 polaroids (32 rupees).",
+    pricingType: "quantity-based",
+    unitPrice: 8,
+    minimumOrder: 8,
+    minimumOrderPrice: 64,
+    incrementQuantity: 4,
+    incrementPrice: 32,
     inStock: true 
   },
   { 
@@ -220,44 +232,46 @@ const products = [
     price: 169, 
     image: "/images/polaroids album 169.jpg", 
     images: ["/images/polaroids album 169.jpg"],
-    description: "Beautiful leather-bound album for preserving your polaroid collection.",
+    description: "Premium Polaroid Album - 169 rupees for 10 pages. Each + click adds 2 pages (30 rupees).",
+    pricingType: "quantity-based",
+    basePrice: 169,
+    basePages: 10,
+    incrementPages: 2,
+    incrementPrice: 30,
+    inStock: true 
+  },
+  { 
+    _id: "pol4",
+    categoryId: "memories", 
+    name: "Polaroids Large", 
+    price: 60,
+    image: "/images/polaroids-large.jpg", 
+    images: ["/images/polaroids-large.jpg"],
+    description: "Large polaroid prints - 15 rupees each. Minimum order: 4 polaroids (60 rupees). Each + click adds 2 polaroids (30 rupees).",
+    pricingType: "quantity-based",
+    unitPrice: 15,
+    minimumOrder: 4,
+    minimumOrderPrice: 60,
+    incrementQuantity: 2,
+    incrementPrice: 30,
     inStock: true 
   },
   // ===== CATEGORY 4: FLOWERS & BOUQUETS (7 Products) =====
   { 
     _id: "bou1",
     categoryId: "flowers", 
-    name: "Real Flower Bouquet 249", 
+    name: "Real Flower Bouquet", 
     price: 249, 
-    image: "/images/real flower boq 249.jpg", 
-    images: ["/images/real flower boq 249.jpg", "/images/real flower boq 249(1).jpg"],
+    image: "/images/real flower boq 249(1).jpg", 
+    images: ["/images/real flower boq 249(1).jpg"],
     description: "Fresh and beautiful bouquet with real flowers. Perfect for all occasions.",
     inStock: true 
   },
-  { 
-    _id: "bou2",
-    categoryId: "flowers", 
-    name: "Real Flowers Bouquet 249", 
-    price: 249, 
-    image: "/images/real flwr 249.jpg", 
-    images: ["/images/real flwr 249.jpg", "/images/real flwrs 249 p2.jpg", "/images/real flwrs p3 249.jpg"],
-    description: "Premium fresh flower arrangement with beautiful presentation.",
-    inStock: true 
-  },
-  { 
-    _id: "bou3",
-    categoryId: "flowers", 
-    name: "Premium Rose Bouquet 899", 
-    price: 899, 
-    image: "/images/real flwr boq 899.jpg", 
-    images: ["/images/real flwr boq 899.jpg"],
-    description: "Luxurious bouquet with premium roses. Perfect for special romantic moments.",
-    inStock: true 
-  },
+ 
   { 
     _id: "bou4",
     categoryId: "flowers", 
-    name: "Artificial Single Flower Bouquet 199", 
+    name: "Artificial Single Flower Bouquet", 
     price: 199, 
     image: "/images/artificial single flower boq 199.jpg", 
     images: ["/images/artificial single flower boq 199.jpg", "/images/artificial single flower boq 199 p2.jpg"],
@@ -267,23 +281,14 @@ const products = [
   { 
     _id: "bou5",
     categoryId: "flowers", 
-    name: "Red Bouquet Arrangement", 
+    name: "Artificial Bouquet", 
     price: 249, 
     image: "/images/red boq p2.jpg", 
     images: ["/images/red boq p2.jpg", "/images/red boq p3.jpg"],
-    description: "Stunning red bouquet arrangement for romantic occasions.",
+    description: "It includes artificial flowers, poloroids and chocolates",
     inStock: true 
   },
-  { 
-    _id: "bou6",
-    categoryId: "flowers", 
-    name: "Art Bouquet with Flowers", 
-    price: 899, 
-    image: "/images/artboqwith,pol,flow,choc 899.jpg", 
-    images: ["/images/artboqwith,pol,flow,choc 899.jpg", "/images/artboqwith,pol,flow,cktpr, 899.jpg"],
-    description: "Beautiful artistic bouquet with mix of flowers and premium elements.",
-    inStock: true 
-  },
+
   { 
     _id: "bou7",
     categoryId: "flowers", 
@@ -660,7 +665,7 @@ const categories = [
     title: 'Photo Frames',
     desc: 'Premium wooden, wall & table frames (including customized frames) to cherish your memories.',
     emoji: '📸',
-    showcaseProducts: ['f4', 'f6'],  // 8x12 Wall Mount & 12x18 Premium
+    showcaseProducts: ['f1', 'f2'],  // 8x12 Wall Mount & 12x18 Premium
     subCategories: [
       { name: 'Wooden photo frames', description: 'Classic wooden frames' },
       { name: 'Wall frames', description: 'For wall mounting' },
@@ -685,7 +690,7 @@ const categories = [
     title: 'Polaroids & Photo Books',
     desc: 'Small, medium & large polaroids plus premium photo books & mini albums.',
     emoji: '🎞️',
-    showcaseProducts: ['pol1', 'pol2'],  // Polaroids Medium Set & Large Polaroids
+    showcaseProducts: ['pol1', 'pol2', 'pol4'],  // Mini, Medium & Large Polaroids
     subCategories: [
       { name: 'Polaroids', description: 'Classic polaroid prints' },
       { name: 'Photo books', description: 'Premium photo collections' },
