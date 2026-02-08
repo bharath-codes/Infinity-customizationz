@@ -71,7 +71,7 @@ const products = [
     categoryId: "frames", 
     name: "12x18 Premium Mount Frame", 
     price: 2199, 
-    image: "/images/12 x 18 mount 2199.jpg", 
+    image: "/images/12x18 main.jpg", 
     images: ["/images/12 x 18 mount 2199.jpg", "/images/12 x 18 mount 2199(1).jpg", "/images/12 x 18 mount 2199(2).jpg"],
     description: "Large premium 12x18 frame with professional mount. Perfect for gallery walls.",
     inStock: true 
@@ -162,9 +162,9 @@ const products = [
     _id: "m3",
     categoryId: "magazines", 
     name: "Magazine Design 2", 
-    price: 599, 
+    price: 499, 
     image: "/images/MAG design2.jpg", 
-    images: ["/images/MAG design2.jpg", "/images/MAG design2 p2.jpg", "/images/MAG design2 p3.jpg", "/images/MAG design2 p4.jpg", "/images/MAG design2 p5.jpg", "/images/MAG design2 p6.jpg", "/images/MAG design2 p7.jpg", "/images/MAG design2 p8.jpg", "/images/MAG design2 p9.jpg"],
+    images: ["/images/MAG design2.jpg", "/images/MAG design2 p6.jpg", "/images/MAG design2 p7.jpg", "/images/MAG design2 p8.jpg", "/images/MAG design2 p9.jpg"],
     description: "Stylish magazine with alternative design layout. Perfect for modern memories.",
     inStock: true 
   },
@@ -769,7 +769,7 @@ const categories = [
     title: 'T-Shirts & Accessories',
     desc: 'Customized & printed t-shirts, keychains & pouches with your designs.',
     emoji: '👕',
-    showcaseProducts: ['collared-tshirt', 'collarless-tshirt', 'signature-tshirt'],
+    showcaseProducts: ['t1', 'cap1'],
     subCategories: [
       { name: 'Collared', description: 'Premium collared t-shirts with fabric options' },
       { name: 'Collarless', description: 'Comfortable collarless t-shirts' },
