@@ -1321,16 +1321,18 @@ const ProductPage = ({ addToCart }) => {
             <button onClick={handleBuyNow} className="w-full bg-brand-blue text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition">Buy Now</button>
             <button onClick={handleAddToCart} className="w-full bg-gray-200 text-brand-dark py-4 rounded-xl font-bold text-lg hover:bg-gray-300 transition">Add to Cart</button>
 
-            {/* Instagram Reels / Links provided by admin */}
-            {product.instagramLinks && product.instagramLinks.length > 0 && (
+            {/* Instagram Reels - Clickable Image Gallery */}
+            {product.instagramLinks && product.instagramLinks.length > 0 && product.images && product.images.length >= product.instagramLinks.length && (
               <div className="mt-4 space-y-2">
-                <p className="text-sm font-semibold text-gray-700">🎬 Watch Reels / Samples</p>
-                <div className="flex gap-3 flex-wrap">
+                <p className="text-sm font-semibold text-gray-700">🎬 Watch Sample Reels - Click Images</p>
+                <div className="grid grid-cols-2 gap-3">
                   {product.instagramLinks.map((lnk, i) => (
-                    lnk ? (
-                      <a key={i} href={lnk} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-3 py-2 bg-white border rounded-lg shadow-sm hover:shadow-md">
-                        <Instagram size={18} className="text-pink-600" />
-                        <span className="text-sm text-brand-dark">Watch Reel</span>
+                    lnk && product.images[i] ? (
+                      <a key={i} href={lnk} target="_blank" rel="noopener noreferrer" className="relative group overflow-hidden rounded-lg shadow-md hover:shadow-lg transition cursor-pointer">
+                        <img src={product.images[i]} alt={`Reel ${i + 1}`} className="w-full h-32 object-cover group-hover:scale-105 transition" />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition flex items-center justify-center">
+                          <Instagram size={32} className="text-white opacity-0 group-hover:opacity-100 transition" />
+                        </div>
                       </a>
                     ) : null
                   ))}

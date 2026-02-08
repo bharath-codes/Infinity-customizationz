@@ -582,12 +582,12 @@ const products = [
     name: "Digital Video Invitation",
     price: 399,
     image: "/images/dvi.jpg",
-    images: ["/images/dvi.jpg", "/images/dvi1.jpg", "/images/dvi2.jpg"],
+    images: ["/images/dvi.jpg", "/images/dvi1.jpg", "/images/dvi2.jpg", "/images/dvi3.jpg"],
     description: "Animated digital video invitations with custom music and motion graphics. Shareable via WhatsApp and Instagram. Watch sample reels in the product section.",
     instagramLinks: [
       "https://www.instagram.com/reel/DJZPJJdSvhA/?igsh=MTNjazVnaDJ4cW9vdg==",
       "https://www.instagram.com/reel/DJfx-NCy9o-/?igsh=cWZkemk1NjJ0dDBk",
-      "https://www.instagram.com/reel/DJfrGKBSfKb/?igsh=b3dhdmdqdTMya2hz",
+      "https://www.instagram.com/reel/DGTDnYoSW0X/?igsh=YzFtZmNxY2h6djF5",
       "https://www.instagram.com/reel/DJfyBiPsfYv/?igsh=MXhwMzlkcmtrMWJkOA=="
     ],
     inStock: true
