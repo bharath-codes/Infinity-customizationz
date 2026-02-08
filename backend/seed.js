@@ -210,7 +210,7 @@ const products = [
     name: "Single Artificial Flower",
     price: 199,
     image: "/images/artificial single flower boq 199.jpg",
-    images: ["/images/artificial single flower boq 199.jpg", "/images/artificial single flower boq 199 p2.jpg"],
+    images: ["/images/artificial single flower boq 199.jpg"],
     description: "Single high-quality artificial flower. Long-lasting and maintenance free.",
     inStock: true,
     deliveryCharge: 249
@@ -221,7 +221,7 @@ const products = [
     name: "Artificial Bouquet Design 1",
     price: 899,
     image: "/images/artboqwith,pol,flow,choc 899.jpg",
-    images: ["/images/artboqwith,pol,flow,choc 899.jpg", "/images/artboqwith,pol,flow,cktpr, 899.jpg"],
+    images: ["/images/artboqwith,pol,flow,choc 899.jpg", "/images/artf1.jpeg", "/images/artf2.jpeg"],
     description: "Artificial bouquet design 1: includes 12 medium polaroids, 12 artificial flowers, 6 chocolates. Optional addon: decorative lights for +₹50.",
     inStock: true,
     deliveryCharge: 249,
