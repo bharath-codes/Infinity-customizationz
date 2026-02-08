@@ -26,11 +26,7 @@ const LoaderContext = createContext();
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
-  useEffect(() => { 
-    // Scroll to top on route change with slight delay for DOM updates
-    setTimeout(() => window.scrollTo(0, 0), 0);
-    document.documentElement.scrollTop = 0;
-  }, [pathname]);
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
   return null;
 };
 
@@ -323,7 +319,7 @@ const HeroCarousel = () => {
   }, [slides.length]);
 
   return (
-    <div className="mx-2 sm:mx-3 md:mx-4 mt-3 sm:mt-4 rounded-lg sm:rounded-2xl overflow-hidden shadow-lg relative h-[140px] sm:h-[180px] md:h-[350px] group border border-white/20">
+    <div className="mx-4 mt-4 rounded-2xl overflow-hidden shadow-lg relative h-[200px] md:h-[350px] group border border-white/20">
       <div className="flex transition-transform duration-700 h-full" style={{ transform: `translateX(-${current * 100}%)` }}>
         {slides.map(s => {
           const src = getImageSrc(s.image);
@@ -338,12 +334,12 @@ const HeroCarousel = () => {
                   <img loading="lazy" decoding="async" src={src} srcSet={`${src}?q=60&w=400 400w, ${src}?q=60&w=800 800w, ${src}?q=60&w=1200 1200w`} sizes="100vw" className="w-full h-full object-cover" alt="" />
                 </picture>
               )}
-              <div className="absolute inset-0 bg-black/30 flex items-center px-3 sm:px-6 md:px-10"><h2 className="text-lg sm:text-2xl md:text-5xl font-serif font-bold text-white">{s.title}</h2></div>
+              <div className="absolute inset-0 bg-black/30 flex items-center px-10"><h2 className="text-3xl md:text-5xl font-serif font-bold text-white">{s.title}</h2></div>
             </div>
           );
         })}
       </div>
-      <div className="absolute bottom-2 sm:bottom-3 left-1/2 -translate-x-1/2 flex gap-1">{slides.map((_, i) => (<div key={i} className={`h-1 rounded-full transition-all ${current === i ? 'w-6 bg-brand-gold' : 'w-2 bg-white/50'}`}></div>))}</div>
+      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1">{slides.map((_, i) => (<div key={i} className={`h-1 rounded-full transition-all ${current === i ? 'w-6 bg-brand-gold' : 'w-2 bg-white/50'}`}></div>))}</div>
     </div>
   );
 };
@@ -369,8 +365,6 @@ const ShowcaseCard = ({ product, activeIdx, hidePriceOnHome }) => {
   if (!product) return null;
   const productId = product._id || product.id;
   const images = product.images || [product.image];
-  const currentIndex = images.findIndex(img => img === mainImage);
-  const currentInstagramLink = (product.instagramLinks && currentIndex >= 0) ? product.instagramLinks[currentIndex] : null;
   return (
     <SmartLink to={`/product/${productId}`} className="block group w-full">
       <div className="relative w-full aspect-[4/5] md:h-[400px] rounded-xl overflow-hidden shadow-sm border border-gray-100 bg-gray-100">
@@ -547,20 +541,7 @@ const Home = () => {
           const cats = await res.json();
           if (Array.isArray(cats) && cats.length > 0) {
             const filtered = cats.filter(c => c._id !== 'hero'); // hero is for banner images only
-            const fetchedMap = new Map(filtered.map(c => [c._id, c]));
-            // Preserve default ordering but prefer backend titles when available
-            const merged = defaultShowcaseCategories.map(d => {
-              if (fetchedMap.has(d.categoryId)) {
-                const c = fetchedMap.get(d.categoryId);
-                return { categoryId: c._id, categoryTitle: c.title || d.categoryTitle };
-              }
-              return d;
-            });
-            // Append any additional categories returned by backend that aren't in defaults
-            filtered.forEach(c => {
-              if (!merged.find(m => m.categoryId === c._id)) merged.push({ categoryId: c._id, categoryTitle: c.title || c._id });
-            });
-            setShowcaseCategories(merged);
+            setShowcaseCategories(filtered.map(c => ({ categoryId: c._id, categoryTitle: c.title || c._id })));
           }
         }
       } catch (err) {
@@ -686,9 +667,6 @@ const ProductPage = ({ addToCart }) => {
   const [wrapPrice, setWrapPrice] = useState(0);
   const [hamperItems, setHamperItems] = useState([]);
   const [hamperItemTotal, setHamperItemTotal] = useState(0);
-  // Magazine page options (8 or 12 pages)
-  const [magazinePages, setMagazinePages] = useState(8); // 8 pages is default
-  const [magazinePriceAddition, setMagazinePriceAddition] = useState(0); // ₹150 for 12 pages
   // T-Shirt configuration states
   const [tshirtMaterial, setTshirtMaterial] = useState('poly-cotton');
   const [tshirtNeck, setTshirtNeck] = useState('round');
@@ -728,7 +706,6 @@ const ProductPage = ({ addToCart }) => {
 
   const isPhoneCase = product && (product.id === 'case1' || (product.name || '').toLowerCase().includes('phone case'));
   const isHamper = product && (product.categoryId === 'hampers' || (product.name || '').toLowerCase().includes('hamper'));
-  const isMagazine = product && (product.categoryId === 'magazines' || (product.name || '').toLowerCase().includes('magazine'));
   const isTShirt = product && (product.categoryId === 'apparel' && ((product.name || '').toLowerCase().includes('t-shirt') || (product.name || '').toLowerCase().includes('tshirt')));
   const isCustomizedTShirt = product && product.id === 't1';
   const isSignatureDayTShirt = product && product.id === 't2';
@@ -860,12 +837,12 @@ const ProductPage = ({ addToCart }) => {
     if (!type || type === 'none') return 0;
     const p = Number(price || 0);
     if (type === 'normal') {
-      // Normal wrap: ₹89 for products ₹399-799, ₹119 for products >₹800
-      return p > 800 ? 119 : 89;
+      // Normal wrap: ₹39 for products below ₹300, ₹69 for ₹300 and above
+      return p < 300 ? 39 : 69;
     }
     if (type === 'premium') {
-      // Premium wrap: ₹149 for products ₹399-799, ₹189 for products >₹800
-      return p > 800 ? 189 : 149;
+      // Premium wrap: ₹79 for products below ₹300, ₹99 for ₹300 and above
+      return p < 300 ? 79 : 99;
     }
     return 0;
   };
@@ -906,9 +883,6 @@ const ProductPage = ({ addToCart }) => {
     } else if (isSignatureDayTShirt) {
       customizationDetails = `Signature Day T-Shirt, Neck: ${signatureDayTShirtNeck}, Color: ${signatureDaySelectedColor}, Qty: ${qty} pcs`;
       itemPrice = signatureDayBasePrice;
-    } else if (isMagazine) {
-      customizationDetails = `Magazine: ${magazinePages} Pages`;
-      itemPrice = product.price + magazinePriceAddition;
     } else if (isPhoneCase) {
       customizationDetails = `Phone: ${phoneCompany} / ${phoneModel}`;
     } else if (isHamper) {
@@ -955,9 +929,6 @@ const ProductPage = ({ addToCart }) => {
     } else if (isSignatureDayTShirt) {
       customizationDetails = `Signature Day T-Shirt, Neck: ${signatureDayTShirtNeck}, Color: ${signatureDaySelectedColor}, Qty: ${qty} pcs`;
       itemPrice = signatureDayBasePrice;
-    } else if (isMagazine) {
-      customizationDetails = `Magazine: ${magazinePages} Pages`;
-      itemPrice = product.price + magazinePriceAddition;
     } else if (isPhoneCase) {
       customizationDetails = `Phone: ${phoneCompany} / ${phoneModel}`;
     } else if (isHamper) {
@@ -980,11 +951,11 @@ const ProductPage = ({ addToCart }) => {
     <div className="min-h-screen bg-white pb-24 md:pb-12">
       <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-2 gap-12">
         <div>
-          <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-sm border border-gray-100 relative group">
+          <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-sm border border-gray-100">
             {(() => {
               const src = getImageSrc(mainImage);
               if (!src) return <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100">No image</div>;
-              const imgElement = isDataUrl(src) ? (
+              return isDataUrl(src) ? (
                 <img loading="lazy" src={src} className="w-full h-full object-cover" alt="" />
               ) : (
                 <picture>
@@ -992,44 +963,18 @@ const ProductPage = ({ addToCart }) => {
                   <img loading="lazy" decoding="async" src={src} srcSet={`${src}?q=60&w=400 400w, ${src}?q=60&w=800 800w, ${src}?q=60&w=1200 1200w`} sizes="(max-width: 768px) 80vw, 40vw" className="w-full h-full object-cover" alt="" />
                 </picture>
               );
-
-              // If Digital Video Invitation and current image maps to an instagram link, make main image clickable
-              if (product._id === 'd4' && currentInstagramLink) {
-                return (
-                  <a href={currentInstagramLink} target="_blank" rel="noopener noreferrer" className="block w-full h-full">
-                    {imgElement}
-                  </a>
-                );
-              }
-
-              return imgElement;
             })()}
           </div>
 
-          {/* Thumbnails - with Instagram Reel Links for Digital Video Invitation */}
+          {/* Thumbnails */}
           {images && images.length > 1 && (
             <div className="mt-3 flex gap-3">
               {images.map((img, idx) => {
                 const thumbSrc = getImageSrc(img);
                 if (!thumbSrc) return null;
-                const instagramLink = product.instagramLinks?.[idx];
-                
-                // For Digital Video Invitation, make thumbnails clickable to Instagram reels
-                if (product._id === 'd4' && instagramLink) {
-                  return (
-                    <a key={idx} href={instagramLink} target="_blank" rel="noopener noreferrer" className="relative group w-16 h-16 rounded overflow-hidden border shadow-sm hover:shadow-md transition">
-                      <img src={thumbSrc} alt={`thumbnail-${idx}`} className="w-full h-full object-cover group-hover:scale-105 transition" />
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition flex items-center justify-center">
-                        <Instagram size={16} className="text-white opacity-0 group-hover:opacity-100 transition" />
-                      </div>
-                    </a>
-                  );
-                }
-                
-                // Regular clickable thumbnail for other products
                 return (
                   <button key={idx} onClick={() => setMainImage(img)} className={`w-16 h-16 rounded overflow-hidden border ${img === mainImage ? 'ring-2 ring-brand-blue' : ''}`}>
-                    <img src={thumbSrc} alt={`thumbnail-${idx}`} className="w-full h-full object-cover" />
+                    <img src={thumbSrc} alt={`thumb-${idx}`} className="w-full h-full object-cover" />
                   </button>
                 );
               })}
@@ -1039,7 +984,7 @@ const ProductPage = ({ addToCart }) => {
         <div className="space-y-6">
           <div className="mb-2"><BackButton /></div>
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-brand-dark">{product.name}</h1>
-          <p className="text-3xl font-bold text-brand-blue">₹{isNewStyleTShirt ? currentVariant.totalPrice : isCustomizedTShirt ? (tshirtBasePrice * qty) : isSignatureDayTShirt ? (signatureDayBasePrice * qty) : isMagazine ? ((product.price + magazinePriceAddition) * qty) : (product.price * qty)}</p>
+          <p className="text-3xl font-bold text-brand-blue">₹{isNewStyleTShirt ? currentVariant.totalPrice : isCustomizedTShirt ? (tshirtBasePrice * qty) : isSignatureDayTShirt ? (signatureDayBasePrice * qty) : (product.price * qty)}</p>
           
           {!isNewStyleTShirt && (
             <div className="bg-gray-50 p-6 rounded-xl border space-y-6">
@@ -1227,50 +1172,6 @@ const ProductPage = ({ addToCart }) => {
           )}
 
           <div className="space-y-3">
-            {isMagazine && (
-              <div className="bg-purple-50 p-6 rounded-xl border border-purple-200 space-y-4">
-                <h3 className="text-lg font-bold text-purple-900">📖 Magazine Pages</h3>
-                <p className="text-sm text-purple-700">Select number of pages for your magazine</p>
-                
-                <div className="space-y-3">
-                  <label className="flex items-center p-4 bg-white rounded-lg border-2 cursor-pointer transition" style={{borderColor: magazinePages === 8 ? '#a78bfa' : '#e5e7eb'}}>
-                    <input 
-                      type="radio" 
-                      name="pages" 
-                      value="8" 
-                      checked={magazinePages === 8}
-                      onChange={() => { setMagazinePages(8); setMagazinePriceAddition(0); }}
-                      className="w-4 h-4"
-                    />
-                    <span className="ml-4 flex-1">
-                      <span className="block font-bold text-brand-dark">8 Pages (Included)</span>
-                      <span className="text-xs text-gray-600">Standard magazine with 8 pages</span>
-                    </span>
-                    <span className="font-bold text-purple-600">₹{product.price}</span>
-                  </label>
-                  
-                  <label className="flex items-center p-4 bg-white rounded-lg border-2 cursor-pointer transition" style={{borderColor: magazinePages === 12 ? '#a78bfa' : '#e5e7eb'}}>
-                    <input 
-                      type="radio" 
-                      name="pages" 
-                      value="12" 
-                      checked={magazinePages === 12}
-                      onChange={() => { setMagazinePages(12); setMagazinePriceAddition(150); }}
-                      className="w-4 h-4"
-                    />
-                    <span className="ml-4 flex-1">
-                      <span className="block font-bold text-brand-dark">12 Pages ⭐</span>
-                      <span className="text-xs text-gray-600">Extended magazine with 4 extra pages</span>
-                    </span>
-                    <span className="font-bold text-purple-600">₹{product.price + 150}</span>
-                  </label>
-                </div>
-
-                <div className="bg-purple-100 p-3 rounded-lg text-sm text-purple-900 font-semibold">
-                  💰 Total: ₹{(product.price + magazinePriceAddition) * qty} (₹{product.price + magazinePriceAddition}/pc × {qty} pcs)
-                </div>
-              </div>
-            )}
             {isHamper && (
               <div className="bg-blue-50 p-5 rounded-xl border border-blue-200 space-y-4">
                 <div>
@@ -1348,7 +1249,6 @@ const ProductPage = ({ addToCart }) => {
 
             <button onClick={handleBuyNow} className="w-full bg-brand-blue text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition">Buy Now</button>
             <button onClick={handleAddToCart} className="w-full bg-gray-200 text-brand-dark py-4 rounded-xl font-bold text-lg hover:bg-gray-300 transition">Add to Cart</button>
-
 
             {/* Professional Share Button */}
             <button 
@@ -1605,40 +1505,10 @@ const ProductPage = ({ addToCart }) => {
 };
 
 const RelatedProducts = ({ currentProduct }) => {
-  const [related, setRelated] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (!currentProduct) return;
-    
-    const fetchRelated = async () => {
-      try {
-        setLoading(true);
-        // Fetch all products from backend
-        const res = await fetch(`${API_BASE_URL}/products`);
-        if (res.ok) {
-          const allProducts = await res.json();
-          // Filter products in same category, exclude current product
-          const filtered = (Array.isArray(allProducts) ? allProducts : [])
-            .filter(p => p.categoryId === currentProduct.categoryId && (p._id || p.id) !== (currentProduct._id || currentProduct.id))
-            .slice(0, 4);
-          setRelated(filtered);
-        }
-      } catch (err) {
-        console.log('Error fetching related products:', err);
-        // Fallback to local data
-        const fallback = products.filter(
-          p => p.categoryId === currentProduct.categoryId && (p._id || p.id) !== (currentProduct._id || currentProduct.id)
-        ).slice(0, 4);
-        setRelated(fallback);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRelated();
-  }, [currentProduct]);
-
+  if (!currentProduct) return null;
+  const related = products.filter(
+    p => p.categoryId === currentProduct.categoryId && (p._id || p.id) !== (currentProduct._id || currentProduct.id)
+  ).slice(0, 4);
   if (related.length === 0) return null;
   return (
     <div className="max-w-7xl mx-auto px-4 pb-12">
@@ -1647,7 +1517,7 @@ const RelatedProducts = ({ currentProduct }) => {
         {related.map(p => (
           <SmartLink to={`/product/${p._id || p.id}`} key={p._id || p.id} className="block group">
             <div className="rounded-xl overflow-hidden aspect-[4/5] bg-gray-100">
-              <img src={getImageSrc(p.images?.[0] || p.image) || p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition" onError={(e) => e.currentTarget.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><rect width="100%" height="100%" fill="%23f3f4f6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="10" fill="%239ca3af">no image</text></svg>'} />
+              <img src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-105 transition" />
             </div>
             <h4 className="font-serif font-bold text-brand-dark text-sm mt-3 truncate">{p.name}</h4>
             <p className="text-brand-blue font-bold text-sm">₹{p.price}</p>
