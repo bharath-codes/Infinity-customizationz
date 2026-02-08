@@ -24,7 +24,8 @@ const products = [
     image: "/images/4 x 6 white frame 199.jpg", 
     images: ["/images/4 x 6 white frame 199.jpg"],
     description: "Elegant white frame for 4x6 prints. Modern and minimalist design.",
-    inStock: true 
+    inStock: true,
+    isBestSeller: true
   },
   { 
     _id: "f2",
@@ -188,7 +189,8 @@ const products = [
     image: "/images/MAG design2.jpg", 
     images: ["/images/MAG design2.jpg", "/images/MAG design2 p6.jpg", "/images/MAG design2 p7.jpg", "/images/MAG design2 p8.jpg", "/images/MAG design2 p9.jpg"],
     description: "Stylish magazine with alternative design layout. Perfect for modern memories.",
-    inStock: true 
+    inStock: true,
+    isBestSeller: true
   },
 
 
@@ -202,6 +204,7 @@ const products = [
     images: ["/images/nf.jpeg"],
     description: "Fresh and beautiful natural flower bouquet. Perfect for all occasions.",
     inStock: true,
+    isBestSeller: true,
     deliveryCharge: 249
   },
   {
@@ -327,6 +330,7 @@ const products = [
     images: ["/images/ct.jpeg", "/imaages/ct1.jpeg", "/images/ct2.jpeg", "/images/ct3.jpega", "/images/ct4.jpeg", "images/ct5.jpeg"],
     description: "Premium collared t-shirts available in poly cotton and pure cotton. Choose your fabric and color from our amazing collection. Sizes S to XXL. Bulk discounts available at 5, 10, and 20+ pieces.",
     inStock: true,
+    isBestSeller: true,
     pricingType: "fabric-based",
     fabrics: [
       { name: "Poly Cotton", price: 499, priceDifference: 0 },
@@ -418,6 +422,7 @@ const products = [
     price: 199,
     image: "/images/phonec4.jpeg",
     images: ["/images/phonec4.jpeg", "/images/phonec3.jpeg"],
+    isBestSeller: true
   },
 
   {_id : "case4",
@@ -457,7 +462,8 @@ const products = [
     image: "/images/exam.jpeg", 
     images: ["/images/exam.jpeg", "/images/exam1.jpeg"],
     description: "Premium customized exam pads with personalized designs. Perfect for students and professionals.",
-    inStock: true 
+    inStock: true,
+    isBestSeller: true
   },
 
 
