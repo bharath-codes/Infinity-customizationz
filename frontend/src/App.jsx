@@ -978,7 +978,7 @@ const ProductPage = ({ addToCart }) => {
     <div className="min-h-screen bg-white pb-24 md:pb-12">
       <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-2 gap-12">
         <div>
-          <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+          <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-sm border border-gray-100 relative group">
             {(() => {
               const src = getImageSrc(mainImage);
               if (!src) return <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100">No image</div>;
@@ -991,6 +991,17 @@ const ProductPage = ({ addToCart }) => {
                 </picture>
               );
             })()}
+            
+            {/* Instagram Icon Button for Digital Video Invitation */}
+            {product._id === 'd4' && product.instagramLinks && product.instagramLinks.length > 0 && (
+              <div className="absolute top-4 right-4 flex gap-2">
+                {product.instagramLinks.map((link, idx) => (
+                  <a key={idx} href={link} target="_blank" rel="noopener noreferrer" className="bg-white/90 hover:bg-white p-3 rounded-full shadow-lg hover:shadow-xl transition transform hover:scale-110">
+                    <Instagram size={24} className="text-pink-600" />
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Thumbnails - with Instagram Reel Links for Digital Video Invitation */}
