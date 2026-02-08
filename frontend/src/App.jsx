@@ -541,7 +541,20 @@ const Home = () => {
           const cats = await res.json();
           if (Array.isArray(cats) && cats.length > 0) {
             const filtered = cats.filter(c => c._id !== 'hero'); // hero is for banner images only
-            setShowcaseCategories(filtered.map(c => ({ categoryId: c._id, categoryTitle: c.title || c._id })));
+            const fetchedMap = new Map(filtered.map(c => [c._id, c]));
+            // Preserve default ordering but prefer backend titles when available
+            const merged = defaultShowcaseCategories.map(d => {
+              if (fetchedMap.has(d.categoryId)) {
+                const c = fetchedMap.get(d.categoryId);
+                return { categoryId: c._id, categoryTitle: c.title || d.categoryTitle };
+              }
+              return d;
+            });
+            // Append any additional categories returned by backend that aren't in defaults
+            filtered.forEach(c => {
+              if (!merged.find(m => m.categoryId === c._id)) merged.push({ categoryId: c._id, categoryTitle: c.title || c._id });
+            });
+            setShowcaseCategories(merged);
           }
         }
       } catch (err) {
