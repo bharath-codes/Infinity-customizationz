@@ -369,6 +369,8 @@ const ShowcaseCard = ({ product, activeIdx, hidePriceOnHome }) => {
   if (!product) return null;
   const productId = product._id || product.id;
   const images = product.images || [product.image];
+  const currentIndex = images.findIndex(img => img === mainImage);
+  const currentInstagramLink = (product.instagramLinks && currentIndex >= 0) ? product.instagramLinks[currentIndex] : null;
   return (
     <SmartLink to={`/product/${productId}`} className="block group w-full">
       <div className="relative w-full aspect-[4/5] md:h-[400px] rounded-xl overflow-hidden shadow-sm border border-gray-100 bg-gray-100">
@@ -982,7 +984,7 @@ const ProductPage = ({ addToCart }) => {
             {(() => {
               const src = getImageSrc(mainImage);
               if (!src) return <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100">No image</div>;
-              return isDataUrl(src) ? (
+              const imgElement = isDataUrl(src) ? (
                 <img loading="lazy" src={src} className="w-full h-full object-cover" alt="" />
               ) : (
                 <picture>
@@ -990,18 +992,18 @@ const ProductPage = ({ addToCart }) => {
                   <img loading="lazy" decoding="async" src={src} srcSet={`${src}?q=60&w=400 400w, ${src}?q=60&w=800 800w, ${src}?q=60&w=1200 1200w`} sizes="(max-width: 768px) 80vw, 40vw" className="w-full h-full object-cover" alt="" />
                 </picture>
               );
-            })()}
-            
-            {/* Instagram Icon Button for Digital Video Invitation */}
-            {product._id === 'd4' && product.instagramLinks && product.instagramLinks.length > 0 && (
-              <div className="absolute top-4 right-4 flex gap-2">
-                {product.instagramLinks.map((link, idx) => (
-                  <a key={idx} href={link} target="_blank" rel="noopener noreferrer" className="bg-white/90 hover:bg-white p-3 rounded-full shadow-lg hover:shadow-xl transition transform hover:scale-110">
-                    <Instagram size={24} className="text-pink-600" />
+
+              // If Digital Video Invitation and current image maps to an instagram link, make main image clickable
+              if (product._id === 'd4' && currentInstagramLink) {
+                return (
+                  <a href={currentInstagramLink} target="_blank" rel="noopener noreferrer" className="block w-full h-full">
+                    {imgElement}
                   </a>
-                ))}
-              </div>
-            )}
+                );
+              }
+
+              return imgElement;
+            })()}
           </div>
 
           {/* Thumbnails - with Instagram Reel Links for Digital Video Invitation */}
