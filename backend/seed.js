@@ -141,8 +141,8 @@ const products = [
     categoryId: "frames", 
     name: "8x12 Black Frame 1 Inch", 
     price: 599, 
-    image: "/images/8x12-1inch-black-frame.jpg", 
-    images: ["/images/8x12-1inch-black-frame.jpg"],
+    image: "/images/modi.jpg", 
+    images: ["/images/modi.jpg", "/images/1nch.jpg"],
     description: "Premium 8x12 black frame with 1 inch border. Perfect for large photo displays.",
     inStock: true 
   },
@@ -151,8 +151,8 @@ const products = [
     categoryId: "frames", 
     name: "8x12 Black Frame Half Inch", 
     price: 499, 
-    image: "/images/8x12-half-inch-black-frame.jpg", 
-    images: ["/images/8x12-half-inch-black-frame.jpg"],
+    image: "/images/half inch2.jpg", 
+    images: ["/images/half inch2.jpg"],
     description: "Elegant 8x12 black frame with half inch border. Slim and modern design.",
     inStock: true 
   },
