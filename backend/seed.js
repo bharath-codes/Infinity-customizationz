@@ -602,7 +602,7 @@ const products = [
   price: 299,
   image: "/images/photor.jpeg",
   images: ["/images/photor.jpeg", "/images/photor1.jpeg", "/images/photor2.jpeg"],
-  description: "High-quality digital photo frame with customizable display settings.",
+  description: "Premium photo restoration service - restore old, damaged, or faded photographs with professional editing and colorization.",
   inStock: true
   }
   
