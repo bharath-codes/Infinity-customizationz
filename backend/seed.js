@@ -365,7 +365,7 @@ const products = [
     name: "Collarless T-Shirts",
     price: 399,
     image: "/images/cless2.jpg",
-    images: ["/images/cless2.jpg", "/images/cless3.jpeg", "/images/cless4.jpeg", "/images/cless5.jpeg", "/images/cless6.jpeg", "/images/cless7.jpeg", "/images/cless8.jpeg","/images/cless9.jpeg","/images/cless1.jpeg","/images/cless.jpeg"],
+    images: ["/images/cless2.jpg", "/images/cless3.jpeg", "/images/cless4.jpeg", "/images/cless5.jpeg", "/images/cless6.jpeg", "/images/cless8.jpeg","/images/cless9.jpeg","/images/cless1.jpeg","/images/cless.jpeg"],
     description: "Comfortable collarless t-shirts in nylon and pure cotton options. Sizes S to XXL. Perfect for casual wear with vibrant colors. Bulk discounts available at 5, 10, and 20+ pieces.",
     inStock: true,
     pricingType: "fabric-based",
@@ -575,6 +575,17 @@ const products = [
     inStock: true 
   },
   { 
+    _id: "d4",
+    categoryId: "smart-digital",
+    name: "Digital Video Invitation",
+    price: 399,
+    image: "/images/DI2.JPG",
+    images: ["/images/DI2.JPG", "/images/DI1.JPG", "/images/DI3.JPG"],
+    description: "Animated digital video invitations with custom music and motion graphics. Shareable via WhatsApp and Instagram. Watch sample reels in the product section.",
+    instagramLinks: [],
+    inStock: true
+  },
+  { 
     _id: "d2",
     categoryId: "smart-digital", 
     name: "Photo Restoration", 
@@ -584,7 +595,16 @@ const products = [
     description: "Professional photo restoration service bringing old photos back to life.",
     inStock: true 
   },
- 
+  {
+  _id: "d3",
+  categoryId: "smart-digital",
+  name: "Photo restoration premium",
+  price: 299,
+  image: "/images/photor.jpeg",
+  images: ["/images/photor.jpeg", "/images/photor1.jpeg", "/images/photor2.jpeg"],
+  description: "High-quality digital photo frame with customizable display settings.",
+  inStock: true
+  }
   
 ];
 
@@ -706,7 +726,7 @@ const categories = [
     title: 'Smart & Digital Services',
     desc: 'NFC cards, review boards, poster design, photo & video editing services.',
     emoji: '🤖',
-    showcaseProducts: ['nfc1', 'id1'],  // NFC Review Board & ID Card
+    showcaseProducts: ['d1', 'id1'],  // NFC Review Board & ID Card
     subCategories: [
       { name: 'NFC cards', description: 'Digital enabled cards' },
       { name: 'Poster design', description: 'Custom posters' },

@@ -46,6 +46,8 @@ const productSchema = new mongoose.Schema({
     comment: { type: String },
     createdAt: { type: Date, default: Date.now }
   }],
+  // Instagram reels / links related to this product (admin can add multiple)
+  instagramLinks: [{ type: String }],
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 }, { timestamps: true, strict: true, castObjectIdStrings: false });

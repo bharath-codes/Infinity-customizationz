@@ -31,6 +31,7 @@ const AdminProducts = () => {
     pricingType: 'standard', // standard or quantity-based
     pricing: { "40": 179, "50": 169, "60-70": 159, "70+": 149 }, // for signature day tshirts
     colorPriceDiff: 50 // color price difference
+    ,instagramLinks: []
   };
 
   const [formData, setFormData] = useState(initialFormState);
@@ -86,6 +87,7 @@ const AdminProducts = () => {
             dimensions: product.dimensions || '',
             image: product.image || '',
             images: product.images || [],
+            instagramLinks: product.instagramLinks || [],
             inStock: product.inStock,
             isBestSeller: product.isBestSeller || false,
             pricingType: product.pricingType || 'standard',
@@ -206,6 +208,7 @@ const AdminProducts = () => {
       dimensions: product.dimensions || '',
       image: product.image || '',
       images: product.images || [],
+      instagramLinks: product.instagramLinks || [],
       inStock: product.inStock,
       isBestSeller: product.isBestSeller || false,
       pricingType: product.pricingType || 'standard',
@@ -573,6 +576,38 @@ const AdminProducts = () => {
                       <span className="text-2xl">+</span>
                     </button>
                     <p className="text-xs text-gray-600 mt-2 text-center">Add Image</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Instagram Links for product (admin can add multiple reel links) */}
+              <div className="bg-white border-2 border-gray-100 rounded-lg p-6">
+                <label className="text-lg font-bold text-brand-primary mb-4 block">📎 Instagram Reel Links</label>
+                <p className="text-sm text-gray-600 mb-4">Add Instagram reel URLs so users can view sample videos for this product. Paste full URL (https://www.instagram.com/reel/...).</p>
+                <div className="space-y-3">
+                  {(formData.instagramLinks || []).map((link, idx) => (
+                    <div key={idx} className="flex items-center gap-3">
+                      <input
+                        type="url"
+                        placeholder="https://www.instagram.com/reel/..."
+                        value={link}
+                        onChange={(e) => {
+                          const arr = [...(formData.instagramLinks || [])];
+                          arr[idx] = e.target.value;
+                          setFormData({ ...formData, instagramLinks: arr });
+                        }}
+                        className="flex-1 px-4 py-2 border rounded-lg"
+                      />
+                      <button type="button" onClick={() => {
+                        const arr = [...(formData.instagramLinks || [])];
+                        arr.splice(idx, 1);
+                        setFormData({ ...formData, instagramLinks: arr });
+                      }} className="text-red-500 font-bold px-3 py-2">Remove</button>
+                    </div>
+                  ))}
+
+                  <div>
+                    <button type="button" onClick={() => setFormData(prev => ({ ...prev, instagramLinks: [...(prev.instagramLinks || []), ''] }))} className="px-4 py-2 bg-brand-blue text-white rounded-lg">+ Add Instagram Link</button>
                   </div>
                 </div>
               </div>

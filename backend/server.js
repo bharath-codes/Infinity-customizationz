@@ -282,6 +282,8 @@ app.post('/api/products', authAdmin, authorize(['manage_products']), async (req,
     colorPriceDiff: req.body.colorPriceDiff,
     pricingType: req.body.pricingType,
     quantityBasedPricing: req.body.quantityBasedPricing
+    ,
+    instagramLinks: req.body.instagramLinks || []
   });
 
   try {
@@ -314,6 +316,7 @@ app.put('/api/products/:id', authAdmin, authorize(['manage_products']), async (r
     if ('colorPriceDiff' in req.body) product.colorPriceDiff = req.body.colorPriceDiff;
     if ('pricingType' in req.body) product.pricingType = req.body.pricingType;
     if ('quantityBasedPricing' in req.body) product.quantityBasedPricing = req.body.quantityBasedPricing;
+    if ('instagramLinks' in req.body) product.instagramLinks = req.body.instagramLinks || [];
 
     const updatedProduct = await product.save();
     res.json(updatedProduct);
