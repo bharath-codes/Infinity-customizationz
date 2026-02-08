@@ -459,6 +459,16 @@ const products = [
     description: "High-quality photo cup ideal for tea, coffee, or as a gift.",
     inStock: true 
   },
+  { 
+    _id: "exampads1",
+    categoryId: "essentials", 
+    name: "Customized Exam Pads", 
+    price: 149, 
+    image: "/images/exam-pads.jpg", 
+    images: ["/images/exam-pads.jpg"],
+    description: "Premium customized exam pads with personalized designs. Perfect for students and professionals.",
+    inStock: true 
+  },
 
 
   // ===== CATEGORY 8: CALENDARS & MAGNETS (3 Products) =====
