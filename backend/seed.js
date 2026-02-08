@@ -5,7 +5,7 @@ const Admin = require('./models/admin');
 require('dotenv').config();
 
 const products = [
-  // ===== CATEGORY 1: PHOTO FRAMES (15 Products) =====
+  // ===== CATEGORY 1: PHOTO FRAMES (16 Products) =====
   { 
     _id: "f1",
     categoryId: "frames", 
@@ -46,16 +46,7 @@ const products = [
     description: "Beautiful white wooden frame for 5x7 photos. Perfect for shelves and walls.",
     inStock: true 
   },
-  { 
-    _id: "f4",
-    categoryId: "frames", 
-    name: "8x12 Wall Mount Frame", 
-    price: 599, 
-    image: "/images/8 x 12 599.jpg", 
-    images: ["/images/8 x 12 599.jpg", "/images/8 x 12 (1_2 inch) 499.jpg", "/images/8 x 12 599(1_2 inch).jpg", "/images/8 x 12 mount.jpg"],
-    description: "Large 8x12 frame with easy wall mounting. Premium finish for any room.",
-    inStock: true 
-  },
+ 
   { 
     _id: "f13",
     categoryId: "frames", 
@@ -109,10 +100,10 @@ const products = [
   { 
     _id: "f7",
     categoryId: "frames", 
-    name: "12x18 Brown & Classic Frame", 
+    name: "12x18 Brown Frame", 
     price: 1499, 
-    image: "/images/12 x 18 brown frame 1499.jpg", 
-    images: ["/images/12 x 18 brown frame 1499.jpg", "/images/12 x 18 brown p2 1499.jpg", "/images/12 x 18 1499 .jpg"],
+    image: "/images/brown frame.jpg", 
+    images: ["/images/brown frame.jpg", "/images/12 x 18 1499 .jpg"],
     description: "Elegant 12x18 frame available in warm brown and classic styles. Perfect for all photo types.",
     inStock: true 
   },
@@ -126,16 +117,7 @@ const products = [
     description: "Special milestone frame for celebrating important moments.",
     inStock: true 
   },
-  { 
-    _id: "f10",
-    categoryId: "frames", 
-    name: "Customized Photo Frame 199", 
-    price: 199, 
-    image: "/images/customized song frame 199.jpg", 
-    images: ["/images/customized song frame 199.jpg"],
-    description: "Personalized photo frame with custom design and text.",
-    inStock: true 
-  },
+ 
   { 
     _id: "f11",
     categoryId: "frames", 
@@ -154,6 +136,16 @@ const products = [
     image: "/images/vintage frame.jpg", 
     images: ["/images/vintage frame.jpg", "/images/vintage frames p2.jpg", "/images/vintage frames p3.jpg", "/images/vintage frames p4.jpg"],
     description: "Charming vintage-style frame for a nostalgic touch to any space.",
+    inStock: true 
+  },
+  { 
+    _id: "f16",
+    categoryId: "frames", 
+    name: "12x18 Frame", 
+    price: 1499, 
+    image: "/images/12x18 new.jpg", 
+    images: ["/images/12x18 new.jpg"],
+    description: "Premium 12x18 frame for showcasing your favorite memories and artwork.",
     inStock: true 
   },
 
