@@ -153,8 +153,8 @@ const products = [
     categoryId: "frames", 
     name: "8x12 Wedding Frame", 
     price: 499, 
-    image: "/images/wedding-frame.jpg", 
-    images: ["/images/wedding-frame.jpg"],
+    image: "/images/wed frame.jpg", 
+    images: ["/images/wed frame.jpg"],
     description: "Beautiful 8x12 wedding frame perfect for displaying your special moments and cherished wedding memories.",
     inStock: true 
   },
@@ -191,15 +191,15 @@ const products = [
     inStock: true 
   },
 
-  
+
   // ===== CATEGORY 3: POLAROIDS & MEMORIES (4 Products) =====
   { 
     _id: "pol1",
     categoryId: "memories", 
-    name: "Polaroids Medium Set", 
+    name: "Polaroids Mini", 
     price: 199, 
-    image: "/images/polaroids.jpg", 
-    images: ["/images/polaroids.jpg"],
+    image: "/images/pmini.jpg", 
+    images: ["/images/pmini.jpg"],
     description: "Set of instant-style polaroid prints perfect for scrapbooking and memories.",
     inStock: true 
   },
