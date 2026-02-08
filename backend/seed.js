@@ -624,7 +624,7 @@ const categories = [
     title: 'Photo Frames',
     desc: 'Premium wooden, wall & table frames (including customized frames) to cherish your memories.',
     emoji: '📸',
-    showcaseProducts: ['f1', 'f2'],  // 8x12 Wall Mount & 12x18 Premium
+    showcaseProducts: ['f1', 'f16'],  // 8x12 Wall Mount & 12x18 Premium
     subCategories: [
       { name: 'Wooden photo frames', description: 'Classic wooden frames' },
       { name: 'Wall frames', description: 'For wall mounting' },
