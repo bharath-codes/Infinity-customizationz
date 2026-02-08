@@ -425,7 +425,9 @@ const products = [
     name: "Customized Phone Case Premium",
     price: 199,
     image: "/images/phonec2.jpeg",
-    images: ["/images/phonec2.jpeg", "/images/phonec3.jpeg", "/images/phonec2-2.jpeg"],
+    images: ["/images/phonec2.jpeg", "/images/phonec3.jpeg", "/images/phonec1.jpeg"],
+    description: "Premium customized phone case with protective design and vibrant prints.",
+    inStock: true
   },
 
   {_id : "case3",
