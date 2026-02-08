@@ -5,8 +5,8 @@ export const storyCategories = [
   { id: "magazines", name: "Photo Books & Albums", image: "/images/polaroids album 169.jpg" },
   { id: "memories", name: "Polaroids", image: "/images/POLAROIDS MEDIUM 8 PER EACH.jpg" },
   { id: "flowers", name: "Flowers & Bouquets", image: "/images/real flwr 249.jpg" },
-  { id: "hampers", name: "Hampers", image: "/images/artboqwith,pol,flow,cktpr,choc 999.jpg" },
-  { id: "apparel", name: "T-Shirts", image: "/images/CUSTOMIZED T-SHIRTS P2 499.jpg" },
+  { id: "hampers", name: "Hampers", image: "/images/HAMPER(1).jpg" },
+  { id: "apparel", name: "T-Shirts", image: "/images/ct.jpeg" },
   { id: "apparel", name: "Caps", image: "/images/cap1.jpeg" },
   { id: "essentials", name: "Phone Cases", image: "/images/CUSTOMIZED PHONE CASE P2.jpg" },
   { id: "essentials", name: "Photo Cups", image: "/images/photo cup p2 299.jpg" },
@@ -14,7 +14,7 @@ export const storyCategories = [
   { id: "addons", name: "Calendars", image: "/images/calender 199.jpg" },
   { id: "addons", name: "Magnets", image: "/images/magnizes 499.jpg" },
   { id: "smart-digital", name: "ID Cards", image: "/images/ID.jpeg" },
-  { id: "smart-digital", name: "NFC Boards", image: "/images/REVIEW BOARD NFC 799.jpg" },
+  { id: "smart-digital", name: "NFC Boards", image: "/images/nfc.jpeg" },
   { id: "smart-digital", name: "Digital Invites", image: "/images/digital invitation p2.JPG" },
 ];
 

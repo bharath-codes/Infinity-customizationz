@@ -569,8 +569,8 @@ const products = [
     categoryId: "smart-digital", 
     name: "Digital Invitation", 
     price: 299, 
-    image: "/images/digital invitation.jpg", 
-    images: ["/images/digital invitation.jpg", "/images/DI1.JPG", "/images/DI2.JPG", "/images/DI3.JPG", "/images/digital invitation p2.JPG"],
+    image: "/images/DT2.JPG", 
+    images: ["/images/DT2.JPG", "/images/DI1.JPG", "/images/DI3.JPG", "/images/digital invitation p2.JPG"],
     description: "Beautiful digital invitation designs for your special events.",
     inStock: true 
   },
@@ -584,56 +584,8 @@ const products = [
     description: "Professional photo restoration service bringing old photos back to life.",
     inStock: true 
   },
-  { 
-    _id: "sd5",
-    categoryId: "smart-digital", 
-    name: "Smart Digital Package", 
-    price: 999, 
-    image: "/images/REVIEW BOARD NFC 799.jpg", 
-    images: ["/images/REVIEW BOARD NFC 799.jpg", "/images/ID.jpeg"],
-    description: "Complete smart digital services package for modern memory management.",
-    inStock: true 
-  },
-  { 
-    _id: "sd6",
-    categoryId: "smart-digital", 
-    name: "Digital Services Suite", 
-    price: 1299, 
-    image: "/images/digital invitation.jpg", 
-    images: ["/images/digital invitation.jpg", "/images/photo restoration (after).JPEG"],
-    description: "Comprehensive digital services including invitations and restoration.",
-    inStock: true 
-  },
-  { 
-    _id: "sd7",
-    categoryId: "smart-digital", 
-    name: "NFC & ID Combo", 
-    price: 899, 
-    image: "/images/REVIEW BOARD NFC 799.jpg", 
-    images: ["/images/REVIEW BOARD NFC 799.jpg", "/images/ID.jpeg"],
-    description: "Premium combination of NFC technology and ID card services.",
-    inStock: true 
-  },
-  { 
-    _id: "sd8",
-    categoryId: "smart-digital", 
-    name: "Digital Experience Package", 
-    price: 1499, 
-    image: "/images/digital invitation.jpg", 
-    images: ["/images/digital invitation.jpg", "/images/REVIEW BOARD NFC 799.jpg", "/images/photo restoration (after).JPEG"],
-    description: "Premium digital experience with all smart services included.",
-    inStock: true 
-  },
-  { 
-    _id: "sd9",
-    categoryId: "smart-digital", 
-    name: "Smart Memory Management", 
-    price: 599, 
-    image: "/images/REVIEW BOARD NFC 799.jpg", 
-    images: ["/images/REVIEW BOARD NFC 799.jpg"],
-    description: "Smart solution for organizing and managing your digital memories.",
-    inStock: true 
-  }
+ 
+  
 ];
 
 const categories = [
