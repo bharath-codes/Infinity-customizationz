@@ -166,7 +166,7 @@ const products = [
     name: "Anniversary Magazine", 
     price: 499, 
     image: "/images/aniv1.jpeg", 
-    images: ["/images/aniv1.jpeg", "/images/aniv2.jpeg", "/images/anniv3.jpeg", "/images/anniv4.jpeg", "/images/anniv5.jpeg"],
+    images: ["/images/aniv1.jpeg", "/images/aniv2.jpeg", "/images/aniv3.jpeg", "/images/aniv4.jpeg", "/images/aniv5.jpeg"],
     description: "Premium hardcover anniversary magazine with custom photos and personalized layouts.",
     inStock: true 
   },
