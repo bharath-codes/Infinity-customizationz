@@ -17,18 +17,37 @@ cloudinary.config({
 const app = express();
 
 // MIDDLEWARE
-const allowedOrigins = [
-  'https://infinitycustomizationss.vercel.app',
-  'http://localhost:5173',
-  'https://infinitycustomizations.com',
-  'https://www.infinitycustomizations.com'
-];
+// Allowed origins can be configured via environment variable `ALLOWED_ORIGINS`
+// as a comma-separated list (e.g. "https://site.com,https://app.vercel.app").
+const envAllowed = (process.env.ALLOWED_ORIGINS || '').split(',').map(s => s.trim()).filter(Boolean);
 
 app.use(cors({
   origin: (origin, callback) => {
+    // Log origin for debugging CORS issues in production
+    console.log('CORS check - origin:', origin);
+
     // allow requests with no origin (e.g. curl, server-to-server)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
+
+    // Exact matches from environment variable
+    try {
+      if (envAllowed.includes(origin) || envAllowed.includes(new URL(origin).hostname)) return callback(null, true);
+
+      const hostname = new URL(origin).hostname;
+      // Allow any Vercel preview/production domain under vercel.app
+      if (hostname.endsWith('.vercel.app') || hostname === 'vercel.app') return callback(null, true);
+      // Allow Render services and *.onrender.com
+      if (hostname.endsWith('.onrender.com') || hostname === 'onrender.com') return callback(null, true);
+      // Permit localhost development origins
+      if (hostname === 'localhost' || hostname === '127.0.0.1') return callback(null, true);
+    } catch (e) {
+      // If origin is malformed, reject
+      console.warn('CORS origin parse error:', e && e.message);
+      return callback(new Error('Not allowed by CORS'));
+    }
+
+    // Not allowed
+    console.warn('Blocked by CORS:', origin);
     return callback(new Error('Not allowed by CORS'));
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
