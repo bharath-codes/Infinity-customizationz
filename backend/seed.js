@@ -464,8 +464,8 @@ const products = [
     categoryId: "essentials", 
     name: "Customized Exam Pads", 
     price: 149, 
-    image: "/images/exam-pads.jpg", 
-    images: ["/images/exam-pads.jpg"],
+    image: "/images/exam.jpeg", 
+    images: ["/images/exam.jpeg", "/images/exam1.jpeg"],
     description: "Premium customized exam pads with personalized designs. Perfect for students and professionals.",
     inStock: true 
   },
