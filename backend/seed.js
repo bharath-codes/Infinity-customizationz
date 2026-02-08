@@ -41,8 +41,8 @@ const products = [
     categoryId: "frames", 
     name: "5x7 White Frame", 
     price: 299, 
-    image: "/images/5 x 7 white 299.jpg", 
-    images: ["/images/5 x 7 white 299.jpg", "/images/5 x 7 299.jpg"],
+    image: "/images/white frame1.jpg", 
+    images: ["/images/white frame1.jpg", "/images/whiteframe2.jpg"],
     description: "Beautiful white wooden frame for 5x7 photos. Perfect for shelves and walls.",
     inStock: true 
   },
@@ -134,6 +134,36 @@ const products = [
     image: "/images/vintage frame.jpg", 
     images: ["/images/vintage frame.jpg", "/images/vintage frames p2.jpg", "/images/vintage frames p3.jpg", "/images/vintage frames p4.jpg"],
     description: "Charming vintage-style frame for a nostalgic touch to any space.",
+    inStock: true 
+  },
+  { 
+    _id: "f13",
+    categoryId: "frames", 
+    name: "8x12 Black Frame 1 Inch", 
+    price: 599, 
+    image: "/images/8x12-1inch-black-frame.jpg", 
+    images: ["/images/8x12-1inch-black-frame.jpg"],
+    description: "Premium 8x12 black frame with 1 inch border. Perfect for large photo displays.",
+    inStock: true 
+  },
+  { 
+    _id: "f14",
+    categoryId: "frames", 
+    name: "8x12 Black Frame Half Inch", 
+    price: 499, 
+    image: "/images/8x12-half-inch-black-frame.jpg", 
+    images: ["/images/8x12-half-inch-black-frame.jpg"],
+    description: "Elegant 8x12 black frame with half inch border. Slim and modern design.",
+    inStock: true 
+  },
+  { 
+    _id: "f15",
+    categoryId: "frames", 
+    name: "8x12 Mount Frame", 
+    price: 699, 
+    image: "/images/8x12-mount-frame.jpg", 
+    images: ["/images/8x12-mount-frame.jpg"],
+    description: "Premium 8x12 mount frame with professional finish. Perfect for gallery walls.",
     inStock: true 
   },
 
@@ -260,17 +290,6 @@ const products = [
     description: "Beautiful leather-bound album for preserving your polaroid collection.",
     inStock: true 
   },
-  { 
-    _id: "mem1",
-    categoryId: "memories", 
-    name: "Memory Storage Set", 
-    price: 299, 
-    image: "/images/photo book 269.jpg", 
-    images: ["/images/photo book 269.jpg"],
-    description: "Premium set for organizing and storing your cherished memories.",
-    inStock: true 
-  },
-
   // ===== CATEGORY 4: FLOWERS & BOUQUETS (7 Products) =====
   { 
     _id: "bou1",
