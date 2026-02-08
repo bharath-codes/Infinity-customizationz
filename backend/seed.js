@@ -5,7 +5,7 @@ const Admin = require('./models/admin');
 require('dotenv').config();
 
 const products = [
-  // ===== CATEGORY 1: PHOTO FRAMES (16 Products) =====
+  // ===== CATEGORY 1: PHOTO FRAMES (17 Products) =====
   { 
     _id: "f1",
     categoryId: "frames", 
@@ -42,7 +42,7 @@ const products = [
     name: "5x7 White Frame", 
     price: 299, 
     image: "/images/white frame1.jpg", 
-    images: ["/images/white frame1.jpg", "/images/whiteframe2.jpg"],
+    images: ["/images/white frame1.jpg", "/images/white frame2.jpg"],
     description: "Beautiful white wooden frame for 5x7 photos. Perfect for shelves and walls.",
     inStock: true 
   },
@@ -93,7 +93,7 @@ const products = [
     name: "12x18 Premium Mount Frame", 
     price: 2199, 
     image: "/images/12x18 main.jpg", 
-    images: ["/images/12 x 18 main.jpg", "/images/12 x 18 mount 2199(1).jpg", "/images/12 x 18 mount 2199(2).jpg"],
+    images: ["/images/12x18 main.jpg", "/images/12 x 18 mount 2199(1).jpg", "/images/12 x 18 mount 2199(2).jpg"],
     description: "Large premium 12x18 frame with professional mount. Perfect for gallery walls.",
     inStock: true 
   },
@@ -146,6 +146,16 @@ const products = [
     image: "/images/12x18 new.jpg", 
     images: ["/images/12x18 new.jpg"],
     description: "Premium 12x18 frame for showcasing your favorite memories and artwork.",
+    inStock: true 
+  },
+  { 
+    _id: "f17",
+    categoryId: "frames", 
+    name: "8x12 Wedding Frame", 
+    price: 499, 
+    image: "/images/wedding-frame.jpg", 
+    images: ["/images/wedding-frame.jpg"],
+    description: "Beautiful 8x12 wedding frame perfect for displaying your special moments and cherished wedding memories.",
     inStock: true 
   },
 
