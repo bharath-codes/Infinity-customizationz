@@ -192,113 +192,82 @@ const products = [
   },
 
 
-  // ===== CATEGORY 3: POLAROIDS & MEMORIES (4 Products) =====
-  { 
-    _id: "pol1",
-    categoryId: "memories", 
-    name: "Polaroids Mini", 
-    price: 60,
-    image: "/images/polaroids.jpg", 
-    images: ["/images/pmini.jpg"],
-    description: "Set of instant-style polaroid prints perfect for scrapbooking and memories.",
-      pricingType: "quantity-based",
-      unitPrice: 5,
-      minimumOrder: 12,
-      minimumOrderPrice: 60,
-      incrementQuantity: 6,
-      incrementPrice: 30,
-    inStock: true 
-  },
-  { 
-    _id: "pol2",
-    categoryId: "memories", 
-    name: "Polaroids Medium 8 Per Set", 
-    price: 64,
-    image: "/images/POLAROIDS MEDIUM 8 PER EACH.jpg", 
-    images: ["/images/POLAROIDS MEDIUM 8 PER EACH.jpg"],
-    description: "Medium polaroid prints - 8 rupees each. Minimum order: 8 polaroids (64 rupees). Each + click adds 4 polaroids (32 rupees).",
-    pricingType: "quantity-based",
-    unitPrice: 8,
-    minimumOrder: 8,
-    minimumOrderPrice: 64,
-    incrementQuantity: 4,
-    incrementPrice: 32,
-    inStock: true 
-  },
-  { 
-    _id: "pol3",
-    categoryId: "memories", 
-    name: "Polaroid Album 169", 
-    price: 169, 
-    image: "/images/polaroids album 169.jpg", 
-    images: ["/images/polaroids album 169.jpg"],
-    description: "Premium Polaroid Album - 169 rupees for 10 pages. Each + click adds 2 pages (30 rupees).",
-    pricingType: "quantity-based",
-    basePrice: 169,
-    basePages: 10,
-    incrementPages: 2,
-    incrementPrice: 30,
-    inStock: true 
-  },
-  { 
-    _id: "pol4",
-    categoryId: "memories", 
-    name: "Polaroids Large", 
-    price: 60,
-    image: "/images/polaroids-large.jpg", 
-    images: ["/images/polaroids-large.jpg"],
-    description: "Large polaroid prints - 15 rupees each. Minimum order: 4 polaroids (60 rupees). Each + click adds 2 polaroids (30 rupees).",
-    pricingType: "quantity-based",
-    unitPrice: 15,
-    minimumOrder: 4,
-    minimumOrderPrice: 60,
-    incrementQuantity: 2,
-    incrementPrice: 30,
-    inStock: true 
-  },
-  // ===== CATEGORY 4: FLOWERS & BOUQUETS (7 Products) =====
-  { 
+  // ===== CATEGORY 4: FLOWERS & BOUQUETS (5 Products) =====
+  {
     _id: "bou1",
-    categoryId: "flowers", 
-    name: "Real Flower Bouquet", 
-    price: 249, 
-    image: "/images/real flower boq 249(1).jpg", 
-    images: ["/images/real flower boq 249(1).jpg"],
-    description: "Fresh and beautiful bouquet with real flowers. Perfect for all occasions.",
-    inStock: true 
+    categoryId: "flowers",
+    name: "Natural Flower Bouquet",
+    price: 249,
+    image: "/images/real-flower-bouquet.jpg",
+    images: ["/images/real-flower-bouquet.jpg"],
+    description: "Fresh and beautiful natural flower bouquet. Perfect for all occasions.",
+    inStock: true,
+    deliveryCharge: 249
   },
- 
-  { 
+  {
+    _id: "bou2",
+    categoryId: "flowers",
+    name: "Single Artificial Flower",
+    price: 199,
+    image: "/images/artificial-single-flower.jpg",
+    images: ["/images/artificial-single-flower.jpg"],
+    description: "Single high-quality artificial flower. Long-lasting and maintenance free.",
+    inStock: true,
+    deliveryCharge: 249
+  },
+  {
+    _id: "bou3",
+    categoryId: "flowers",
+    name: "Artificial Bouquet Design 1",
+    price: 899,
+    image: "/images/artificial-bouquet-design1.jpg",
+    images: ["/images/artificial-bouquet-design1.jpg"],
+    description: "Artificial bouquet design 1: includes 12 medium polaroids, 12 artificial flowers, 6 chocolates. Optional addon: decorative lights for +₹50.",
+    inStock: true,
+    deliveryCharge: 249,
+    components: [
+      { item: "Polaroids Medium", sku: "pol2", quantity: 12 },
+      { item: "Artificial Flowers", quantity: 12 },
+      { item: "Chocolates", quantity: 6 }
+    ],
+    optionalAddons: { lights: 50 }
+  },
+  {
     _id: "bou4",
-    categoryId: "flowers", 
-    name: "Artificial Single Flower Bouquet", 
-    price: 199, 
-    image: "/images/artificial single flower boq 199.jpg", 
-    images: ["/images/artificial single flower boq 199.jpg", "/images/artificial single flower boq 199 p2.jpg"],
-    description: "Beautiful artificial flower arrangement that lasts forever.",
-    inStock: true 
+    categoryId: "flowers",
+    name: "Artificial Bouquet Design 2",
+    price: 899,
+    image: "/images/artificial-bouquet-design2.jpg",
+    images: ["/images/artificial-bouquet-design2.jpg"],
+    description: "Artificial bouquet design 2: same as design 1 but chocolates are replaced by a cake topper. Optional addon: decorative lights for +₹50.",
+    inStock: true,
+    deliveryCharge: 249,
+    components: [
+      { item: "Polaroids Medium", sku: "pol2", quantity: 12 },
+      { item: "Artificial Flowers", quantity: 12 },
+      { item: "Cake Topper", quantity: 1 }
+    ],
+    optionalAddons: { lights: 50 }
   },
-  { 
+  {
     _id: "bou5",
-    categoryId: "flowers", 
-    name: "Artificial Bouquet", 
-    price: 249, 
-    image: "/images/red boq p2.jpg", 
-    images: ["/images/red boq p2.jpg", "/images/red boq p3.jpg"],
-    description: "It includes artificial flowers, poloroids and chocolates",
-    inStock: true 
+    categoryId: "flowers",
+    name: "Artificial Bouquet Deluxe",
+    price: 999,
+    image: "/images/artificial-bouquet-deluxe.jpg",
+    images: ["/images/artificial-bouquet-deluxe.jpg"],
+    description: "Deluxe artificial bouquet: includes polaroids, chocolates, artificial flowers and a cake topper. Best for premium gifting.",
+    inStock: true,
+    deliveryCharge: 249,
+    components: [
+      { item: "Polaroids Medium", sku: "pol2", quantity: 12 },
+      { item: "Artificial Flowers", quantity: 12 },
+      { item: "Chocolates", quantity: 6 },
+      { item: "Cake Topper", quantity: 1 }
+    ],
+    optionalAddons: { lights: 50 }
   },
-
-  { 
-    _id: "bou7",
-    categoryId: "flowers", 
-    name: "Bouquet with Multiple Items", 
-    price: 999, 
-    image: "/images/artboqwith,pol,flow,cktpr,choc 999.jpg", 
-    images: ["/images/artboqwith,pol,flow,cktpr,choc 999.jpg", "/images/artboqwith,pol,flow,cktpr,choc 999 p2.jpg", "/images/artboqwith,pol,flow,cktpr,choc 999 p3.jpg"],
-    description: "Premium combo bouquet with flowers, polaroids, and special touches.",
-    inStock: true 
-  },
+  
 
   // ===== CATEGORY 5: HAMPERS & GIFT COMBOS (3 Products) =====
   { 
@@ -690,7 +659,7 @@ const categories = [
     title: 'Polaroids & Photo Books',
     desc: 'Small, medium & large polaroids plus premium photo books & mini albums.',
     emoji: '🎞️',
-    showcaseProducts: ['pol1', 'pol2', 'pol4'],  // Mini, Medium & Large Polaroids
+    showcaseProducts: ['pol1', 'pol2'],  // Mini, Medium & Large Polaroids
     subCategories: [
       { name: 'Polaroids', description: 'Classic polaroid prints' },
       { name: 'Photo books', description: 'Premium photo collections' },
