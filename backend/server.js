@@ -281,8 +281,7 @@ app.post('/api/products', authAdmin, authorize(['manage_products']), async (req,
     pricing: req.body.pricing,
     colorPriceDiff: req.body.colorPriceDiff,
     pricingType: req.body.pricingType,
-    quantityBasedPricing: req.body.quantityBasedPricing
-    ,
+    quantityBasedPricing: req.body.quantityBasedPricing,
     instagramLinks: req.body.instagramLinks || []
   });
 
@@ -327,26 +326,11 @@ app.put('/api/products/:id', authAdmin, authorize(['manage_products']), async (r
 
 app.delete('/api/products/:id', authAdmin, authorize(['manage_products']), async (req, res) => {
   try {
-    const productId = req.params.id;
-    
-    // Delete the product
-    const product = await Product.findByIdAndDelete(productId);
+    const product = await Product.findByIdAndDelete(req.params.id);
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
-
-    // Remove product from all categories' showcaseProducts and products arrays
-    await Category.updateMany(
-      {},
-      {
-        $pull: {
-          showcaseProducts: productId,
-          products: productId
-        }
-      }
-    );
-
-    res.json({ message: 'Product deleted and references removed from categories' });
+    res.json({ message: 'Product deleted' });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
