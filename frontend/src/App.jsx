@@ -993,15 +993,30 @@ const ProductPage = ({ addToCart }) => {
             })()}
           </div>
 
-          {/* Thumbnails */}
+          {/* Thumbnails - with Instagram Reel Links for Digital Video Invitation */}
           {images && images.length > 1 && (
             <div className="mt-3 flex gap-3">
               {images.map((img, idx) => {
                 const thumbSrc = getImageSrc(img);
                 if (!thumbSrc) return null;
+                const instagramLink = product.instagramLinks?.[idx];
+                
+                // For Digital Video Invitation, make thumbnails clickable to Instagram reels
+                if (product._id === 'd4' && instagramLink) {
+                  return (
+                    <a key={idx} href={instagramLink} target="_blank" rel="noopener noreferrer" className="relative group w-16 h-16 rounded overflow-hidden border shadow-sm hover:shadow-md transition">
+                      <img src={thumbSrc} alt={`thumbnail-${idx}`} className="w-full h-full object-cover group-hover:scale-105 transition" />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition flex items-center justify-center">
+                        <Instagram size={16} className="text-white opacity-0 group-hover:opacity-100 transition" />
+                      </div>
+                    </a>
+                  );
+                }
+                
+                // Regular clickable thumbnail for other products
                 return (
                   <button key={idx} onClick={() => setMainImage(img)} className={`w-16 h-16 rounded overflow-hidden border ${img === mainImage ? 'ring-2 ring-brand-blue' : ''}`}>
-                    <img src={thumbSrc} alt={`thumb-${idx}`} className="w-full h-full object-cover" />
+                    <img src={thumbSrc} alt={`thumbnail-${idx}`} className="w-full h-full object-cover" />
                   </button>
                 );
               })}
@@ -1321,24 +1336,6 @@ const ProductPage = ({ addToCart }) => {
             <button onClick={handleBuyNow} className="w-full bg-brand-blue text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition">Buy Now</button>
             <button onClick={handleAddToCart} className="w-full bg-gray-200 text-brand-dark py-4 rounded-xl font-bold text-lg hover:bg-gray-300 transition">Add to Cart</button>
 
-            {/* Instagram Reels - Clickable Image Gallery */}
-            {product.instagramLinks && product.instagramLinks.length > 0 && product.images && product.images.length >= product.instagramLinks.length && (
-              <div className="mt-4 space-y-2">
-                <p className="text-sm font-semibold text-gray-700">🎬 Watch Sample Reels - Click Images</p>
-                <div className="grid grid-cols-2 gap-3">
-                  {product.instagramLinks.map((lnk, i) => (
-                    lnk && product.images[i] ? (
-                      <a key={i} href={lnk} target="_blank" rel="noopener noreferrer" className="relative group overflow-hidden rounded-lg shadow-md hover:shadow-lg transition cursor-pointer">
-                        <img src={product.images[i]} alt={`Reel ${i + 1}`} className="w-full h-32 object-cover group-hover:scale-105 transition" />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition flex items-center justify-center">
-                          <Instagram size={32} className="text-white opacity-0 group-hover:opacity-100 transition" />
-                        </div>
-                      </a>
-                    ) : null
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* Professional Share Button */}
             <button 
