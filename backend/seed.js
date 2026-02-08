@@ -582,12 +582,12 @@ const products = [
     name: "Digital Video Invitation",
     price: 399,
     image: "/images/dvi.jpg",
-    images: ["/images/dvi.jpg", "/images/dvi1.jpg", "/images/dvi2.jpg", "/images/dvi3.jpg"],
+    images: ["/images/dvi.jpg", "/images/dvi1.jpg", "/images/dvi2.jpg"],
     description: "Animated digital video invitations with custom music and motion graphics. Shareable via WhatsApp and Instagram. Watch sample reels in the product section.",
     instagramLinks: [
       "https://www.instagram.com/reel/DJZPJJdSvhA/?igsh=MTNjazVnaDJ4cW9vdg==",
       "https://www.instagram.com/reel/DJfx-NCy9o-/?igsh=cWZkemk1NjJ0dDBk",
-      "https://www.instagram.com/reel/DGTDnYoSW0X/?igsh=YzFtZmNxY2h6djF5",
+      "https://www.instagram.com/reel/DJfrGKBSfKb/?igsh=b3dhdmdqdTMya2hz",
       "https://www.instagram.com/reel/DJfyBiPsfYv/?igsh=MXhwMzlkcmtrMWJkOA=="
     ],
     inStock: true
@@ -607,8 +607,8 @@ const products = [
   categoryId: "smart-digital",
   name: "Photo restoration premium",
   price: 299,
-  image: "/images/photo restoreb.png",
-  images: ["/images/photo restoreb.png", "/images/prp1.jpg", "/images/photo restorea.png"],
+  image: "/images/prp.jpg",
+  images: ["/images/prp.jpg", "/images/prp1.jpg", "/images/prp1.jpg"],
   description: "Premium photo restoration service - restore old, damaged, or faded photographs with professional editing and colorization.",
   inStock: true
   }
@@ -622,7 +622,6 @@ const categories = [
     desc: 'Premium wooden, wall & table frames (including customized frames) to cherish your memories.',
     emoji: '📸',
     showcaseProducts: ['f1', 'f16'],  // 8x12 Wall Mount & 12x18 Premium
-    disclaimer: '12x18 frames are only deliverable in Shankarpally, Hyderabad.',
     subCategories: [
       { name: 'Wooden photo frames', description: 'Classic wooden frames' },
       { name: 'Wall frames', description: 'For wall mounting' },
