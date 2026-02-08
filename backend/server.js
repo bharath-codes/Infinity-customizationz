@@ -4,7 +4,15 @@ const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 const app = express();
 
@@ -161,20 +169,7 @@ app.delete('/api/products/:id/reviews/:reviewIndex', authAdmin, authorize(['mana
 });
 
 // FILE UPLOAD CONFIGURATION
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const uploadDir = path.join(__dirname, 'uploads');
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  }
-});
-
+const storage = multer.memoryStorage(); // Use memory storage for streaming to Cloudinary
 const upload = multer({ storage: storage, limits: { fileSize: 10 * 1024 * 1024 } }); // 10MB limit
 
 // Helper: Detect protocol correctly behind proxies (Render, Railway, etc.)
@@ -185,19 +180,62 @@ const getProtocol = (req) => {
 };
 
 // UPLOAD ENDPOINT (Admin only - for product images, hero images, etc.)
-app.post('/api/upload', authAdmin, authorize(['manage_products', 'manage_categories']), upload.single('image'), (req, res) => {
+app.post('/api/upload', authAdmin, authorize(['manage_products', 'manage_categories']), upload.single('image'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: 'No file uploaded' });
   }
 
   try {
-    // Local disk storage - return absolute URL
-    const relativePath = `/uploads/${req.file.filename}`;
-    const host = req.get('host');
-    const protocol = getProtocol(req);
-    const absoluteUrl = `${protocol}://${host}${relativePath}`;
-    console.log('📁 Image saved to disk:', absoluteUrl);
-    res.json({ filePath: relativePath, url: absoluteUrl });
+    // Check if Cloudinary is configured
+    const isCloudinaryConfigured = process.env.CLOUDINARY_CLOUD_NAME && 
+                                    process.env.CLOUDINARY_API_KEY && 
+                                    process.env.CLOUDINARY_API_SECRET;
+
+    if (isCloudinaryConfigured) {
+      // Upload to Cloudinary
+      const result = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { 
+            resource_type: 'auto',
+            folder: 'infinity-customizations',
+            quality: 'auto',
+            fetch_format: 'auto'
+          },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        );
+        stream.end(req.file.buffer);
+      });
+
+      console.log('☁️ Image uploaded to Cloudinary:', result.secure_url);
+      res.json({ 
+        filePath: result.secure_url, 
+        url: result.secure_url,
+        cloudinaryId: result.public_id
+      });
+    } else {
+      // Fallback: Local disk storage (for local development)
+      const uploadDir = path.join(__dirname, 'uploads');
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+      
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      const filename = uniqueSuffix + path.extname(req.file.originalname);
+      const filepath = path.join(uploadDir, filename);
+      
+      fs.writeFileSync(filepath, req.file.buffer);
+      
+      const relativePath = `/uploads/${filename}`;
+      const host = req.get('host');
+      const protocol = getProtocol(req);
+      const absoluteUrl = `${protocol}://${host}${relativePath}`;
+      
+      console.log('📁 Image saved to disk:', absoluteUrl);
+      res.json({ filePath: relativePath, url: absoluteUrl });
+    }
   } catch (error) {
     console.error('❌ Upload error:', error);
     res.status(500).json({ message: 'Upload failed', error: error.message });
