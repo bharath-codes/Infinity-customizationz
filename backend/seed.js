@@ -607,8 +607,8 @@ const products = [
   categoryId: "smart-digital",
   name: "Photo restoration premium",
   price: 299,
-  image: "/images/photo restoreb.jpg",
-  images: ["/images/photo restoreb.jpg", "/images/prp1.jpg", "/images/photo restorea.jpg"],
+  image: "/images/photo restoreb.png",
+  images: ["/images/photo restoreb.png", "/images/prp1.jpg", "/images/photo restorea.png"],
   description: "Premium photo restoration service - restore old, damaged, or faded photographs with professional editing and colorization.",
   inStock: true
   }
