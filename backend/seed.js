@@ -415,7 +415,7 @@ const products = [
     name: "Customized Phone Case", 
     price: 199, 
     image: "/images/phonec.jpeg", 
-    images: ["/images/phonec.jpeg", "/images/phonec1.jpeg"],
+    images: ["/images/phonec.jpeg"],
     description: "Durable custom phone case with your favorite photo or design.",
     inStock: true 
   },
@@ -581,8 +581,8 @@ const products = [
     categoryId: "smart-digital",
     name: "Digital Video Invitation",
     price: 399,
-    image: "/images/dvi.jpg",
-    images: ["/images/dvi.jpg", "/images/dvi1.jpg", "/images/dvi2.jpg"],
+    image: "/images/reel1.jpeg",
+    images: ["/images/reel1.jpeg", "/images/reel2.jpeg", "/images/reel3.jpeg","/images/reel4.jpeg"],
     description: "Animated digital video invitations with custom music and motion graphics. Shareable via WhatsApp and Instagram. Watch sample reels in the product section.",
     instagramLinks: [
       "https://www.instagram.com/reel/DJZPJJdSvhA/?igsh=MTNjazVnaDJ4cW9vdg==",
