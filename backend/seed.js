@@ -165,8 +165,8 @@ const products = [
     categoryId: "magazines", 
     name: "Anniversary Magazine", 
     price: 499, 
-    image: "/images/anniversary MAG.jpg", 
-    images: ["/images/anniversary MAG.jpg", "/images/anniversary MAG p2.jpg", "/images/anniversary MAG p3.jpg", "/images/anniversary MAG(1).jpg"],
+    image: "/images/aniv1.jpeg", 
+    images: ["/images/aniv1.jpeg", "/images/aniv2.jpeg", "/images/anniv3.jpeg", "/images/anniv4.jpeg", "/images/anniv5.jpeg"],
     description: "Premium hardcover anniversary magazine with custom photos and personalized layouts.",
     inStock: true 
   },
@@ -176,7 +176,7 @@ const products = [
     name: "Magazine 12 Pages", 
     price: 599, 
     image: "/images/mag 12pgs 599.jpg", 
-    images: ["/images/mag 12pgs 599.jpg", "/images/mag 12pgs 599 p2.jpg", "/images/mag 12pgs 599 p3.jpg", "/images/mag 12pgs 599 p4.jpg", "/images/mag 12pgs 599 p5.jpg", "/images/mag 12pgs 599 p6.jpg", "/images/mag 12pgs 599 p7.jpg", "/images/mag 12pgs 599 p8.jpg"],
+    images: ["/images/mag 12pgs 599.jpg", "/images/mag 12pgs 599 p3.jpg", "/images/mag 12pgs 599 p4.jpg", "/images/mag 12pgs 599 p5.jpg", "/images/mag 12pgs 599 p6.jpg", "/images/mag 12pgs 599 p7.jpg", "/images/mag 12pgs 599 p8.jpg"],
     description: "Beautiful hardcover magazine with 12 premium pages for your special memories.",
     inStock: true 
   },
@@ -190,67 +190,8 @@ const products = [
     description: "Stylish magazine with alternative design layout. Perfect for modern memories.",
     inStock: true 
   },
-  { 
-    _id: "m4",
-    categoryId: "magazines", 
-    name: "Premium Magazine", 
-    price: 699, 
-    image: "/images/mag(1).jpg", 
-    images: ["/images/mag(1).jpg"],
-    description: "Premium quality magazine with rich layout and vibrant printing.",
-    inStock: true 
-  },
-  { 
-    _id: "m5",
-    categoryId: "magazines", 
-    name: "Classic Magazine Design", 
-    price: 599, 
-    image: "/images/mag.jpg", 
-    images: ["/images/mag.jpg"],
-    description: "Classic design magazine for timeless memories and special occasions.",
-    inStock: true 
-  },
-  { 
-    _id: "m6",
-    categoryId: "magazines", 
-    name: "Magazine Premium Edition", 
-    price: 799, 
-    image: "/images/MAG(2).jpg", 
-    images: ["/images/MAG(2).jpg"],
-    description: "Premium edition magazine with superior paper quality and printing.",
-    inStock: true 
-  },
-  { 
-    _id: "m7",
-    categoryId: "magazines", 
-    name: "Photo Book Premium", 
-    price: 269, 
-    image: "/images/photo book 269.jpg", 
-    images: ["/images/photo book 269.jpg"],
-    description: "Elegant photo book for preserving your cherished memories beautifully.",
-    inStock: true 
-  },
-  { 
-    _id: "m8",
-    categoryId: "magazines", 
-    name: "Polaroid Album 169", 
-    price: 169, 
-    image: "/images/polaroids album 169.jpg", 
-    images: ["/images/polaroids album 169.jpg", "/images/pol album 169.jpg"],
-    description: "Beautiful album for organizing your polaroid prints and instant photos.",
-    inStock: true 
-  },
-  { 
-    _id: "m9",
-    categoryId: "magazines", 
-    name: "Custom Magnets Magazine", 
-    price: 499, 
-    image: "/images/magnizes 499.jpg", 
-    images: ["/images/magnizes 499.jpg"],
-    description: "Unique magazine-style collection with custom magnetic prints.",
-    inStock: true 
-  },
 
+  
   // ===== CATEGORY 3: POLAROIDS & MEMORIES (4 Products) =====
   { 
     _id: "pol1",
