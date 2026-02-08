@@ -603,7 +603,7 @@ const products = [
   name: "Photo restoration premium",
   price: 299,
   image: "/images/photor.jpg",
-  images: ["/images/photor.jpg", "/images/photor1.jpg", "/images/photor2.jpg"],
+  images: ["/images/photor.jpg", "/images/photor1 .jpg", "/images/photor2 .jpg"],
   description: "Premium photo restoration service - restore old, damaged, or faded photographs with professional editing and colorization.",
   inStock: true
   }
