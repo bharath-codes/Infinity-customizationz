@@ -225,7 +225,7 @@ const products = [
     name: "Single Artificial Flower",
     price: 199,
     image: "/images/artificial single flower boq 199.jpg",
-    images: ["/images/artificial single flower boq 199.jpg"],
+    images: ["/images/artificial single flower boq 199.jpg","/images/saf.jpg"],
     description: "Single high-quality artificial flower. Long-lasting and maintenance free.",
     inStock: true,
     deliveryCharge: 249
