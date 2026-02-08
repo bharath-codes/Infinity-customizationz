@@ -5,7 +5,7 @@ const Admin = require('./models/admin');
 require('dotenv').config();
 
 const products = [
-  // ===== CATEGORY 1: PHOTO FRAMES (13 Products) =====
+  // ===== CATEGORY 1: PHOTO FRAMES (15 Products) =====
   { 
     _id: "f1",
     categoryId: "frames", 
@@ -57,6 +57,36 @@ const products = [
     inStock: true 
   },
   { 
+    _id: "f13",
+    categoryId: "frames", 
+    name: "8x12 Black Frame 1 Inch", 
+    price: 599, 
+    image: "/images/modi.jpg", 
+    images: ["/images/modi.jpg", "/images/1nch.jpg"],
+    description: "Premium 8x12 black frame with 1 inch border. Perfect for large photo displays.",
+    inStock: true 
+  },
+  { 
+    _id: "f14",
+    categoryId: "frames", 
+    name: "8x12 Black Frame Half Inch", 
+    price: 499, 
+    image: "/images/half inch2.jpg", 
+    images: ["/images/half inch2.jpg", "/images/8 x 12 (1_2 inch) 499.jpg", "/images/8 x 12 599(1_2 inch).jpg"],
+    description: "Elegant 8x12 black frame with half inch border. Slim and modern design.",
+    inStock: true 
+  },
+  { 
+    _id: "f15",
+    categoryId: "frames", 
+    name: "8x12 Mount Frame", 
+    price: 699, 
+    image: "/images/8x12-mount-frame.jpg", 
+    images: ["/images/8 x 12 mount.jpg"],
+    description: "Premium 8x12 mount frame with professional finish. Perfect for gallery walls.",
+    inStock: true 
+  },
+  { 
     _id: "f5",
     categoryId: "frames", 
     name: "10x12 Modern Frame", 
@@ -72,28 +102,18 @@ const products = [
     name: "12x18 Premium Mount Frame", 
     price: 2199, 
     image: "/images/12x18 main.jpg", 
-    images: ["/images/12 x 18 mount 2199.jpg", "/images/12 x 18 mount 2199(1).jpg", "/images/12 x 18 mount 2199(2).jpg"],
+    images: ["/images/12 x 18 main.jpg", "/images/12 x 18 mount 2199(1).jpg", "/images/12 x 18 mount 2199(2).jpg"],
     description: "Large premium 12x18 frame with professional mount. Perfect for gallery walls.",
     inStock: true 
   },
   { 
     _id: "f7",
     categoryId: "frames", 
-    name: "12x18 Brown Wooden Frame", 
+    name: "12x18 Brown & Classic Frame", 
     price: 1499, 
     image: "/images/12 x 18 brown frame 1499.jpg", 
-    images: ["/images/12 x 18 brown frame 1499.jpg", "/images/12 x 18 brown p2 1499.jpg"],
-    description: "Warm brown wooden 12x18 frame with elegant finish.",
-    inStock: true 
-  },
-  { 
-    _id: "f8",
-    categoryId: "frames", 
-    name: "12x18 Classic Frame", 
-    price: 1499, 
-    image: "/images/12 x 18 1499 .jpg", 
-    images: ["/images/12 x 18 1499 .jpg"],
-    description: "Timeless 12x18 frame in classic style. Great for all photo types.",
+    images: ["/images/12 x 18 brown frame 1499.jpg", "/images/12 x 18 brown p2 1499.jpg", "/images/12 x 18 1499 .jpg"],
+    description: "Elegant 12x18 frame available in warm brown and classic styles. Perfect for all photo types.",
     inStock: true 
   },
   { 
@@ -134,36 +154,6 @@ const products = [
     image: "/images/vintage frame.jpg", 
     images: ["/images/vintage frame.jpg", "/images/vintage frames p2.jpg", "/images/vintage frames p3.jpg", "/images/vintage frames p4.jpg"],
     description: "Charming vintage-style frame for a nostalgic touch to any space.",
-    inStock: true 
-  },
-  { 
-    _id: "f13",
-    categoryId: "frames", 
-    name: "8x12 Black Frame 1 Inch", 
-    price: 599, 
-    image: "/images/modi.jpg", 
-    images: ["/images/modi.jpg", "/images/1nch.jpg"],
-    description: "Premium 8x12 black frame with 1 inch border. Perfect for large photo displays.",
-    inStock: true 
-  },
-  { 
-    _id: "f14",
-    categoryId: "frames", 
-    name: "8x12 Black Frame Half Inch", 
-    price: 499, 
-    image: "/images/half inch2.jpg", 
-    images: ["/images/half inch2.jpg"],
-    description: "Elegant 8x12 black frame with half inch border. Slim and modern design.",
-    inStock: true 
-  },
-  { 
-    _id: "f15",
-    categoryId: "frames", 
-    name: "8x12 Mount Frame", 
-    price: 699, 
-    image: "/images/8x12-mount-frame.jpg", 
-    images: ["/images/8x12-mount-frame.jpg"],
-    description: "Premium 8x12 mount frame with professional finish. Perfect for gallery walls.",
     inStock: true 
   },
 
