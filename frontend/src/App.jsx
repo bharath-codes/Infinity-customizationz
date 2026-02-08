@@ -412,10 +412,10 @@ const CuratedCategorySection = ({ categoryId, categoryTitle, hidePriceOnHome }) 
         const data = await res.json();
         if (data.showcaseProducts && data.showcaseProducts.length > 0) {
           try {
-            const productPromises = data.showcaseProducts.map(productId =>
-              fetch(`${API_BASE_URL}/products/${productId}`)
-                .then(r => r.ok ? r.json() : null)
-            );
+            const productPromises = data.showcaseProducts.map(item => {
+              const productId = (typeof item === 'string') ? item : (item && (item._id || item.id));
+              return fetch(`${API_BASE_URL}/products/${productId}`).then(r => r.ok ? r.json() : null);
+            });
             const prods = await Promise.all(productPromises);
             const validProds = prods.filter(p => p !== null);
             setShowcaseProducts(validProds.length > 0 ? validProds : []);

@@ -51,7 +51,12 @@ const AdminCategories = () => {
     setLoading(true);
     try {
       const catsData = await api.categories.getAll();
-      setCategories(catsData);
+      // Normalize showcaseProducts to contain only IDs (backend may return product docs)
+      const normalized = Array.isArray(catsData) ? catsData.map(cat => ({
+        ...cat,
+        showcaseProducts: (cat.showcaseProducts || []).map(p => (typeof p === 'string' ? p : (p && (p._id || p.id))))
+      })) : [];
+      setCategories(normalized);
     } catch (err) {
       setError(err.message || 'Failed to load categories');
     } finally {
