@@ -198,8 +198,8 @@ const products = [
     categoryId: "flowers",
     name: "Natural Flower Bouquet",
     price: 249,
-    image: "/images/real flower boq 249.jpg",
-    images: ["/images/real flower boq 249.jpg", "/images/real flower boq 249(1).jpg"],
+    image: "/images/nf.jpeg",
+    images: ["/images/nf.jpeg"],
     description: "Fresh and beautiful natural flower bouquet. Perfect for all occasions.",
     inStock: true,
     deliveryCharge: 249
@@ -237,8 +237,8 @@ const products = [
     categoryId: "flowers",
     name: "Artificial Bouquet Design 2",
     price: 899,
-    image: "/images/artboqwith,pol,flow,cktpr, 899.jpg",
-    images: ["/images/artboqwith,pol,flow,cktpr, 899.jpg", "/images/artboqwith,pol,flow,cktpr,choc 999 p2.jpg"],
+    image: "/images/aflower2.jpeg",
+    images: ["/images/aflower2.jpeg"],
     description: "Artificial bouquet design 2: same as design 1 but chocolates are replaced by a cake topper. Optional addon: decorative lights for +₹50.",
     inStock: true,
     deliveryCharge: 249,
@@ -283,7 +283,7 @@ const products = [
   { 
     _id: "ham2",
     categoryId: "hampers", 
-    name: "Premium Hamper Edition", 
+    name: "Premium Transparent Hamper", 
     price: 999, 
     image: "/images/HAMPER(1).jpg", 
     images: ["/images/HAMPER(1).jpg"],
@@ -293,35 +293,17 @@ const products = [
   { 
     _id: "ham3",
     categoryId: "hampers", 
-    name: "Artistic Hamper Combo", 
+    name: "Premium Hamper Combo", 
     price: 999, 
     image: "/images/hamperc.jpeg", 
-    images: ["/images/hamperc.jpeg", "/images/artboqwith,pol,flow,cktpr,choc 999 p2.jpg"],
+    images: ["/images/hamperc.jpeg", "/images/phc.jpg", "/images/phc1.jpg", "/images/phc2.jpg"],
     description: "Artistic combination hamper with flowers, polaroids, and special gifts.",
     inStock: true 
   },
 
+  
   // ===== CATEGORY 6: APPAREL (T-SHIRTS) (5 Products) =====
-  { 
-    _id: "t1",
-    categoryId: "apparel", 
-    name: "Customized T-Shirt 499", 
-    price: 499, 
-    image: "/images/CUSTOMIZED T-SHIRTS 499.jpg", 
-    images: ["/images/CUSTOMIZED T-SHIRTS 499.jpg", "/images/CUSTOMIZED T-SHIRTS P2 499.jpg", "/images/CUSTOMIZED T-SHIRTS P3 499.jpg"],
-    description: "Premium custom t-shirt with personalized photo print on quality cotton.",
-    inStock: true 
-  },
-  { 
-    _id: "t2",
-    categoryId: "apparel", 
-    name: "Classic T-Shirt", 
-    price: 499, 
-    image: "/images/Tshirt.jpeg", 
-    images: ["/images/Tshirt.jpeg"],
-    description: "Classic comfort t-shirt perfect for casual wear and memories.",
-    inStock: true 
-  },
+
   { 
     _id: "cap1",
     categoryId: "apparel", 
@@ -342,16 +324,7 @@ const products = [
     description: "Stylish pouch for carrying your essentials with custom photo print.",
     inStock: true 
   },
-  { 
-    _id: "apparel5",
-    categoryId: "apparel", 
-    name: "Apparel Collection", 
-    price: 599, 
-    image: "/images/CUSTOMIZED T-SHIRTS 499.jpg", 
-    images: ["/images/CUSTOMIZED T-SHIRTS 499.jpg", "/images/CUSTOMIZED T-SHIRTS P2 499.jpg"],
-    description: "Premium apparel collection with custom personalization options.",
-    inStock: true 
-  },
+
 
   // ===== NEW TSHIRT VARIANTS =====
   {
@@ -360,8 +333,8 @@ const products = [
     subcategoryName: "Collared",
     name: "Collared T-Shirts",
     price: 499,
-    image: "/images/collared-tshirt.jpg",
-    images: ["/images/collared-tshirt.jpg"],
+    image: "/images/ct.jpeg",
+    images: ["/images/ct.jpeg", "/imaages/ct1.jpeg", "/images/ct2.jpeg", "/images/ct3.jpega", "/images/ct4.jpeg"],
     description: "Premium collared t-shirts available in poly cotton and pure cotton. Choose your fabric and color from our amazing collection. Sizes S to XXL. Bulk discounts available at 5, 10, and 20+ pieces.",
     inStock: true,
     pricingType: "fabric-based",
@@ -385,8 +358,8 @@ const products = [
     subcategoryName: "Collarless",
     name: "Collarless T-Shirts",
     price: 399,
-    image: "/images/collarless-tshirt.jpg",
-    images: ["/images/collarless-tshirt.jpg"],
+    image: "/images/cless.jpeg",
+    images: ["/images/cless.jpeg"],
     description: "Comfortable collarless t-shirts in nylon and pure cotton options. Sizes S to XXL. Perfect for casual wear with vibrant colors. Bulk discounts available at 5, 10, and 20+ pieces.",
     inStock: true,
     pricingType: "fabric-based",
@@ -405,7 +378,7 @@ const products = [
     ]
   },
   {
-    _id: "signature-tshirt",
+    _id: "signature day tshirts",
     categoryId: "apparel",
     subcategoryName: "Signature",
     name: "Signature T-Shirts",
@@ -418,7 +391,7 @@ const products = [
     fabrics: [
       { name: "Polyester", price: 179, priceDifference: 0 }
     ],
-    colors: ["White", "Light Blue", "Light Pink", "Light Yellow"],
+    colors: ["White"],
     sizes: ["S", "M", "L", "XL", "XXL"],
     minimumOrderQuantity: 10,
     quantityBasedPricing: [
@@ -460,16 +433,7 @@ const products = [
     description: "High-quality photo cup ideal for tea, coffee, or as a gift.",
     inStock: true 
   },
-  { 
-    _id: "ess4",
-    categoryId: "essentials", 
-    name: "Daily Essentials Set", 
-    price: 399, 
-    image: "/images/PC.jpeg", 
-    images: ["/images/PC.jpeg", "/images/photo cup 299.jpg"],
-    description: "Collection of personalized daily essentials for your lifestyle.",
-    inStock: true 
-  },
+
 
   // ===== CATEGORY 8: CALENDARS & MAGNETS (3 Products) =====
   { 
