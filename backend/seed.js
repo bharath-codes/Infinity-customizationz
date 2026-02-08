@@ -24,28 +24,7 @@ const products = [
     image: "/images/4 x 6 white frame 199.jpg", 
     images: ["/images/4 x 6 white frame 199.jpg"],
     description: "Elegant white frame for 4x6 prints. Modern and minimalist design.",
-    inStock: true,
-    isBestSeller: true
-  },
-  {
-    _id: "pol1",
-    categoryId: "memories",
-    name: "Polaroids Mini - 8 Pack",
-    price: 169,
-    image: "/images/polaroids.jpg",
-    images: ["/images/polaroids.jpg", "/images/polaroids album 169.jpg"],
-    description: "Classic mini polaroids set (8 prints) — perfect for scrapbooks and gifts.",
-    inStock: true
-  },
-  {
-    _id: "pol2",
-    categoryId: "memories",
-    name: "Polaroids Medium - 8 Pack",
-    price: 199,
-    image: "/images/POLAROIDS MEDIUM 8 PER EACH.jpg",
-    images: ["/images/POLAROIDS MEDIUM 8 PER EACH.jpg", "/images/polaroids album 169.jpg"],
-    description: "Medium polaroids set (8 prints) — larger size for better detail.",
-    inStock: true
+    inStock: true 
   },
   { 
     _id: "f2",
@@ -123,8 +102,8 @@ const products = [
     categoryId: "frames", 
     name: "12x18 Brown Frame", 
     price: 1499, 
-    image: "/images/frame brown.jpeg", 
-    images: ["/images/frame brown.jpeg", "/images/12 x 18 1499 .jpg"],
+    image: "/images/brown frame.jpg", 
+    images: ["/images/brown frame.jpg", "/images/12 x 18 1499 .jpg"],
     description: "Elegant 12x18 frame available in warm brown and classic styles. Perfect for all photo types.",
     inStock: true 
   },
@@ -174,8 +153,8 @@ const products = [
     categoryId: "frames", 
     name: "8x12 Wedding Frame", 
     price: 499, 
-    image: "/images/wed frame.jpg", 
-    images: ["/images/wed frame.jpg"],
+    image: "/images/wedding-frame.jpg", 
+    images: ["/images/wedding-frame.jpg"],
     description: "Beautiful 8x12 wedding frame perfect for displaying your special moments and cherished wedding memories.",
     inStock: true 
   },
@@ -187,13 +166,9 @@ const products = [
     name: "Anniversary Magazine", 
     price: 499, 
     image: "/images/aniv1.jpeg", 
-    images: ["/images/aniv1.jpeg", "/images/aniv2.jpeg", "/images/aniv3.jpeg", "/images/aniv4.jpeg", "/images/aniv5.jpeg"],
+    images: ["/images/aniv1.jpeg", "/images/aniv2.jpeg", "/images/anniv3.jpeg", "/images/anniv4.jpeg", "/images/anniv5.jpeg"],
     description: "Premium hardcover anniversary magazine with custom photos and personalized layouts.",
-    inStock: true,
-    pageOptions: [
-      { pages: 8, priceAddition: 0 },
-      { pages: 12, priceAddition: 150 }
-    ]
+    inStock: true 
   },
   { 
     _id: "m2",
@@ -203,11 +178,7 @@ const products = [
     image: "/images/mag 12pgs 599.jpg", 
     images: ["/images/mag 12pgs 599.jpg", "/images/mag 12pgs 599 p3.jpg", "/images/mag 12pgs 599 p4.jpg", "/images/mag 12pgs 599 p5.jpg", "/images/mag 12pgs 599 p6.jpg", "/images/mag 12pgs 599 p7.jpg", "/images/mag 12pgs 599 p8.jpg"],
     description: "Beautiful hardcover magazine with 12 premium pages for your special memories.",
-    inStock: true,
-    pageOptions: [
-      { pages: 8, priceAddition: 0 },
-      { pages: 12, priceAddition: 150 }
-    ]
+    inStock: true 
   },
   { 
     _id: "m3",
@@ -217,92 +188,137 @@ const products = [
     image: "/images/MAG design2.jpg", 
     images: ["/images/MAG design2.jpg", "/images/MAG design2 p6.jpg", "/images/MAG design2 p7.jpg", "/images/MAG design2 p8.jpg", "/images/MAG design2 p9.jpg"],
     description: "Stylish magazine with alternative design layout. Perfect for modern memories.",
-    inStock: true,
-    isBestSeller: true,
-    pageOptions: [
-      { pages: 8, priceAddition: 0 },
-      { pages: 12, priceAddition: 150 }
-    ]
+    inStock: true 
   },
 
 
-  // ===== CATEGORY 4: FLOWERS & BOUQUETS (5 Products) =====
-  {
+  // ===== CATEGORY 3: POLAROIDS & MEMORIES (4 Products) =====
+  { 
+    _id: "pol1",
+    categoryId: "memories", 
+    name: "Polaroids Mini", 
+    price: 60,
+    image: "/images/polaroids.jpg", 
+    images: ["/images/polaroids.jpg"],
+    description: "Instant-style mini polaroid prints. Starting with 12 pieces at ₹5 each. Add 6 more with each click.",
+    inStock: true,
+    pricingType: "standard",
+    pricePerUnit: 5,
+    minimumOrderQuantity: 12,
+    quantityIncrement: 6,
+    basePrice: 60
+  },
+  { 
+    _id: "pol2",
+    categoryId: "memories", 
+    name: "Polaroids Medium", 
+    price: 64,
+    image: "/images/POLAROIDS MEDIUM 8 PER EACH.jpg", 
+    images: ["/images/POLAROIDS MEDIUM 8 PER EACH.jpg"],
+    description: "Premium medium polaroid prints at ₹8 each. Minimum order 8 pieces (₹64). Add 4 more with each click (₹32).",
+    inStock: true,
+    pricingType: "standard",
+    pricePerUnit: 8,
+    minimumOrderQuantity: 8,
+    quantityIncrement: 4,
+    basePrice: 64
+  },
+  { 
+    _id: "pol_large",
+    categoryId: "memories", 
+    name: "Polaroids Large", 
+    price: 60,
+    image: "/images/polaroids.jpg", 
+    images: ["/images/polaroids.jpg"],
+    description: "Beautiful large format polaroid prints at ₹15 each. Minimum order 4 pieces (₹60). Add 2 more with each click (₹30).",
+    inStock: true,
+    pricingType: "standard",
+    pricePerUnit: 15,
+    minimumOrderQuantity: 4,
+    quantityIncrement: 2,
+    basePrice: 60
+  },
+  { 
+    _id: "pol3",
+    categoryId: "memories", 
+    name: "Polaroid Album", 
+    price: 169, 
+    image: "/images/polaroids album 169.jpg", 
+    images: ["/images/polaroids album 169.jpg"],
+    description: "Beautiful leather-bound album for preserving your polaroid collection.",
+    inStock: true 
+  },
+  // ===== CATEGORY 4: FLOWERS & BOUQUETS (7 Products) =====
+  { 
     _id: "bou1",
-    categoryId: "flowers",
-    name: "Natural Flower Bouquet",
-    price: 249,
-    image: "/images/nf.jpeg",
-    images: ["/images/nf.jpeg"],
-    description: "Fresh and beautiful natural flower bouquet. Perfect for all occasions.",
-    inStock: true,
-    isBestSeller: true,
-    deliveryCharge: 249
+    categoryId: "flowers", 
+    name: "Real Flower Bouquet 249", 
+    price: 249, 
+    image: "/images/real flower boq 249.jpg", 
+    images: ["/images/real flower boq 249.jpg", "/images/real flower boq 249(1).jpg"],
+    description: "Fresh and beautiful bouquet with real flowers. Perfect for all occasions.",
+    inStock: true 
   },
-  {
+  { 
     _id: "bou2",
-    categoryId: "flowers",
-    name: "Single Artificial Flower",
-    price: 199,
-    image: "/images/artificial single flower boq 199.jpg",
-    images: ["/images/artificial single flower boq 199.jpg","/images/saf.jpg"],
-    description: "Single high-quality artificial flower. Long-lasting and maintenance free.",
-    inStock: true,
-    deliveryCharge: 249
+    categoryId: "flowers", 
+    name: "Real Flowers Bouquet 249", 
+    price: 249, 
+    image: "/images/real flwr 249.jpg", 
+    images: ["/images/real flwr 249.jpg", "/images/real flwrs 249 p2.jpg", "/images/real flwrs p3 249.jpg"],
+    description: "Premium fresh flower arrangement with beautiful presentation.",
+    inStock: true 
   },
-  {
+  { 
     _id: "bou3",
-    categoryId: "flowers",
-    name: "Artificial Bouquet Design 1",
-    price: 899,
-    image: "/images/artboqwith,pol,flow,choc 899.jpg",
-    images: ["/images/artboqwith,pol,flow,choc 899.jpg", ],
-    description: "Artificial bouquet design 1: includes 12 medium polaroids, 12 artificial flowers, 6 chocolates. Optional addon: decorative lights for +₹50.",
-    inStock: true,
-    deliveryCharge: 249,
-    components: [
-      { item: "Polaroids Medium", sku: "pol2", quantity: 12 },
-      { item: "Artificial Flowers", quantity: 12 },
-      { item: "Chocolates", quantity: 6 }
-    ],
-    optionalAddons: { lights: 50 }
+    categoryId: "flowers", 
+    name: "Premium Rose Bouquet 899", 
+    price: 899, 
+    image: "/images/real flwr boq 899.jpg", 
+    images: ["/images/real flwr boq 899.jpg"],
+    description: "Luxurious bouquet with premium roses. Perfect for special romantic moments.",
+    inStock: true 
   },
-  {
+  { 
     _id: "bou4",
-    categoryId: "flowers",
-    name: "Artificial Bouquet Design 2",
-    price: 899,
-    image: "/images/aflower2.jpeg",
-    images: ["/images/aflower2.jpeg", "/images/artf1.jpeg", "/images/artf.jpeg"], 
-    description: "Artificial bouquet design 2: same as design 1 but chocolates are replaced by a cake topper. Optional addon: decorative lights for +₹50.",
-    inStock: true,
-    deliveryCharge: 249,
-    components: [
-      { item: "Polaroids Medium", sku: "pol2", quantity: 12 },
-      { item: "Artificial Flowers", quantity: 12 },
-      { item: "Cake Topper", quantity: 1 }
-    ],
-    optionalAddons: { lights: 50 }
+    categoryId: "flowers", 
+    name: "Artificial Single Flower Bouquet 199", 
+    price: 199, 
+    image: "/images/artificial single flower boq 199.jpg", 
+    images: ["/images/artificial single flower boq 199.jpg", "/images/artificial single flower boq 199 p2.jpg"],
+    description: "Beautiful artificial flower arrangement that lasts forever.",
+    inStock: true 
   },
-  {
+  { 
     _id: "bou5",
-    categoryId: "flowers",
-    name: "Artificial Bouquet Deluxe",
-    price: 999,
-    image: "/images/artboqwith,pol,flow,cktpr,choc 999.jpg",
-    images: ["/images/artboqwith,pol,flow,cktpr,choc 999.jpg", "/images/artboqwith,pol,flow,cktpr,choc 999 p2.jpg", "/images/artboqwith,pol,flow,cktpr,choc 999 p3.jpg"],
-    description: "Deluxe artificial bouquet: includes polaroids, chocolates, artificial flowers and a cake topper. Best for premium gifting.",
-    inStock: true,
-    deliveryCharge: 249,
-    components: [
-      { item: "Polaroids Medium", sku: "pol2", quantity: 12 },
-      { item: "Artificial Flowers", quantity: 12 },
-      { item: "Chocolates", quantity: 6 },
-      { item: "Cake Topper", quantity: 1 }
-    ],
-    optionalAddons: { lights: 50 }
+    categoryId: "flowers", 
+    name: "Red Bouquet Arrangement", 
+    price: 249, 
+    image: "/images/red boq p2.jpg", 
+    images: ["/images/red boq p2.jpg", "/images/red boq p3.jpg"],
+    description: "Stunning red bouquet arrangement for romantic occasions.",
+    inStock: true 
   },
-  
+  { 
+    _id: "bou6",
+    categoryId: "flowers", 
+    name: "Art Bouquet with Flowers", 
+    price: 899, 
+    image: "/images/artboqwith,pol,flow,choc 899.jpg", 
+    images: ["/images/artboqwith,pol,flow,choc 899.jpg", "/images/artboqwith,pol,flow,cktpr, 899.jpg"],
+    description: "Beautiful artistic bouquet with mix of flowers and premium elements.",
+    inStock: true 
+  },
+  { 
+    _id: "bou7",
+    categoryId: "flowers", 
+    name: "Bouquet with Multiple Items", 
+    price: 999, 
+    image: "/images/artboqwith,pol,flow,cktpr,choc 999.jpg", 
+    images: ["/images/artboqwith,pol,flow,cktpr,choc 999.jpg", "/images/artboqwith,pol,flow,cktpr,choc 999 p2.jpg", "/images/artboqwith,pol,flow,cktpr,choc 999 p3.jpg"],
+    description: "Premium combo bouquet with flowers, polaroids, and special touches.",
+    inStock: true 
+  },
 
   // ===== CATEGORY 5: HAMPERS & GIFT COMBOS (3 Products) =====
   { 
@@ -310,15 +326,15 @@ const products = [
     categoryId: "hampers", 
     name: "Premium Hamper", 
     price: 999, 
-    image: "/images/hamper .jpg", 
-    images: ["/images/hamper .jpg", "/images/HAMPER.jpg"],
+    image: "/images/hamper.jpg", 
+    images: ["/images/hamper.jpg", "/images/hamper .jpg", "/images/HAMPER.jpg"],
     description: "Luxury gift hamper with premium items for special occasions.",
     inStock: true 
   },
   { 
     _id: "ham2",
     categoryId: "hampers", 
-    name: "Premium Transparent Hamper", 
+    name: "Premium Hamper Edition", 
     price: 999, 
     image: "/images/HAMPER(1).jpg", 
     images: ["/images/HAMPER(1).jpg"],
@@ -328,28 +344,65 @@ const products = [
   { 
     _id: "ham3",
     categoryId: "hampers", 
-    name: "Premium Hamper Combo", 
+    name: "Artistic Hamper Combo", 
     price: 999, 
     image: "/images/hamperc.jpeg", 
-    images: ["/images/hamperc.jpeg", "/images/phc.jpg", "/images/phc1.jpg", "/images/phc2.jpg"],
+    images: ["/images/hamperc.jpeg", "/images/artboqwith,pol,flow,cktpr,choc 999 p2.jpg"],
     description: "Artistic combination hamper with flowers, polaroids, and special gifts.",
     inStock: true 
   },
 
-  
   // ===== CATEGORY 6: APPAREL (T-SHIRTS) (5 Products) =====
-
+  { 
+    _id: "t1",
+    categoryId: "apparel", 
+    name: "Customized T-Shirt 499", 
+    price: 499, 
+    image: "/images/CUSTOMIZED T-SHIRTS 499.jpg", 
+    images: ["/images/CUSTOMIZED T-SHIRTS 499.jpg", "/images/CUSTOMIZED T-SHIRTS P2 499.jpg", "/images/CUSTOMIZED T-SHIRTS P3 499.jpg"],
+    description: "Premium custom t-shirt with personalized photo print on quality cotton.",
+    inStock: true 
+  },
+  { 
+    _id: "t2",
+    categoryId: "apparel", 
+    name: "Classic T-Shirt", 
+    price: 499, 
+    image: "/images/Tshirt.jpeg", 
+    images: ["/images/Tshirt.jpeg"],
+    description: "Classic comfort t-shirt perfect for casual wear and memories.",
+    inStock: true 
+  },
   { 
     _id: "cap1",
     categoryId: "apparel", 
     name: "Custom Cap", 
     price: 99, 
-    image: "/images/cap1.jpeg", 
-    images: ["/images/cap1.jpeg"],
+    image: "/images/cap.jpeg", 
+    images: ["/images/cap.jpeg"],
     description: "Personalized cap with custom design. Great gift for any season.",
     inStock: true 
   },
-
+  { 
+    _id: "pouch1",
+    categoryId: "apparel", 
+    name: "Photo Pouch 299", 
+    price: 299, 
+    image: "/images/photo cup p2 299.jpg", 
+    images: ["/images/photo cup p2 299.jpg"],
+    description: "Stylish pouch for carrying your essentials with custom photo print.",
+    inStock: true 
+  },
+  { 
+    _id: "apparel5",
+    categoryId: "apparel", 
+    name: "Apparel Collection", 
+    price: 599, 
+    image: "/images/CUSTOMIZED T-SHIRTS 499.jpg", 
+    images: ["/images/CUSTOMIZED T-SHIRTS 499.jpg", "/images/CUSTOMIZED T-SHIRTS P2 499.jpg"],
+    description: "Premium apparel collection with custom personalization options.",
+    inStock: true 
+  },
 
   // ===== NEW TSHIRT VARIANTS =====
   {
@@ -358,11 +411,10 @@ const products = [
     subcategoryName: "Collared",
     name: "Collared T-Shirts",
     price: 499,
-    image: "/images/ct.jpeg",
-    images: ["/images/ct.jpeg", "/images/ct1.jpg", "/images/ct2.jpeg", "/images/ct3.jpg", "/images/ct4.jpeg", "/images/ct5.jpeg"],
+    image: "/images/collared-tshirt.jpg",
+    images: ["/images/collared-tshirt.jpg"],
     description: "Premium collared t-shirts available in poly cotton and pure cotton. Choose your fabric and color from our amazing collection. Sizes S to XXL. Bulk discounts available at 5, 10, and 20+ pieces.",
     inStock: true,
-    isBestSeller: true,
     pricingType: "fabric-based",
     fabrics: [
       { name: "Poly Cotton", price: 499, priceDifference: 0 },
@@ -384,8 +436,8 @@ const products = [
     subcategoryName: "Collarless",
     name: "Collarless T-Shirts",
     price: 399,
-    image: "/images/cless2.jpg",
-    images: ["/images/cless2.jpg", "/images/cless3.jpeg", "/images/cless4.jpeg", "/images/cless5.jpeg", "/images/cless6.jpeg", "/images/cless8.jpeg","/images/cless9.jpeg","/images/cless1.jpeg","/images/cless.jpeg"],
+    image: "/images/collarless-tshirt.jpg",
+    images: ["/images/collarless-tshirt.jpg"],
     description: "Comfortable collarless t-shirts in nylon and pure cotton options. Sizes S to XXL. Perfect for casual wear with vibrant colors. Bulk discounts available at 5, 10, and 20+ pieces.",
     inStock: true,
     pricingType: "fabric-based",
@@ -404,20 +456,20 @@ const products = [
     ]
   },
   {
-    _id: "signature day tshirts",
+    _id: "signature-tshirt",
     categoryId: "apparel",
     subcategoryName: "Signature",
     name: "Signature T-Shirts",
     price: 179,
-    image: "/images/st.jpg",
-    images: ["/images/st.jpg", "/images/st1.jpeg"],
+    image: "/images/signature-tshirt.jpg",
+    images: ["/images/signature-tshirt.jpg"],
     description: "Premium signature polyester t-shirts with minimum order of 10 pieces. Bulk discounts available. Perfect for corporate gifting and events.",
     inStock: true,
     pricingType: "quantity-based",
     fabrics: [
       { name: "Polyester", price: 179, priceDifference: 0 }
     ],
-    colors: ["White"],
+    colors: ["White", "Light Blue", "Light Pink", "Light Yellow"],
     sizes: ["S", "M", "L", "XL", "XXL"],
     minimumOrderQuantity: 10,
     quantityBasedPricing: [
@@ -433,41 +485,12 @@ const products = [
     _id: "case1",
     categoryId: "essentials", 
     name: "Customized Phone Case", 
-    price: 199, 
-    image: "/images/phonec.jpeg", 
-    images: ["/images/phonec.jpeg"],
+    price: 299, 
+    image: "/images/PC.jpeg", 
+    images: ["/images/PC.jpeg", "/images/CUSTOMIZED PHONE CASE.jpg", "/images/CUSTOMIZED PHONE CASE P2.jpg"],
     description: "Durable custom phone case with your favorite photo or design.",
     inStock: true 
   },
-
-  {_id : "case2",
-    categoryId: "essentials",
-    name: "Customized Phone Case Premium",
-    price: 199,
-    image: "/images/phonec2.jpeg",
-    images: ["/images/phonec2.jpeg", "/images/phonec3.jpeg", "/images/phonec1.jpeg"],
-    description: "Premium customized phone case with protective design and vibrant prints.",
-    inStock: true
-  },
-
-  {_id : "case3",
-    categoryId: "essentials",
-    name: "Customized Phone Case Premium",
-    price: 199,
-    image: "/images/phonec4.jpeg",
-    images: ["/images/phonec4.jpeg", "/images/phonec3.jpeg"],
-    isBestSeller: true
-  },
-
-  {_id : "case4",
-    categoryId: "essentials",
-    name: "Customized Phone Case Premium",
-    price: 199,
-    image: "/images/phonec5.jpeg",
-    images: ["/images/phonec5.jpeg", "/images/phonec6.jpeg", "/images/phonec7.jpeg"],
-  },
-
-
   { 
     _id: "cup1",
     categoryId: "essentials", 
@@ -489,17 +512,15 @@ const products = [
     inStock: true 
   },
   { 
-    _id: "exampads1",
+    _id: "ess4",
     categoryId: "essentials", 
-    name: "Customized Exam Pads", 
-    price: 279, 
-    image: "/images/exam.jpeg", 
-    images: ["/images/exam.jpeg", "/images/exam1.jpeg"],
-    description: "Premium customized exam pads with personalized designs. Perfect for students and professionals.",
-    inStock: true,
-    isBestSeller: true
+    name: "Daily Essentials Set", 
+    price: 399, 
+    image: "/images/PC.jpeg", 
+    images: ["/images/PC.jpeg", "/images/photo cup 299.jpg"],
+    description: "Collection of personalized daily essentials for your lifestyle.",
+    inStock: true 
   },
-
 
   // ===== CATEGORY 8: CALENDARS & MAGNETS (3 Products) =====
   { 
@@ -571,8 +592,8 @@ const products = [
     categoryId: "smart-digital", 
     name: "NFC Review Board 799", 
     price: 799, 
-    image: "/images/nfc.jpeg", 
-    images: ["/images/nfc.jpeg"],
+    image: "/images/REVIEW BOARD NFC 799.jpg", 
+    images: ["/images/REVIEW BOARD NFC 799.jpg"],
     description: "Smart NFC review board for interactive memories and feedback.",
     inStock: true 
   },
@@ -591,26 +612,10 @@ const products = [
     categoryId: "smart-digital", 
     name: "Digital Invitation", 
     price: 299, 
-    image: "/images/DI2.JPG", 
-    images: ["/images/DI2.JPG", "/images/DI1.JPG", "/images/DI3.JPG", "/images/digital invitation p2.JPG"],
+    image: "/images/digital invitation.jpg", 
+    images: ["/images/digital invitation.jpg", "/images/DI1.JPG", "/images/DI2.JPG", "/images/DI3.JPG", "/images/digital invitation p2.JPG"],
     description: "Beautiful digital invitation designs for your special events.",
     inStock: true 
-  },
-  { 
-    _id: "d4",
-    categoryId: "smart-digital",
-    name: "Digital Video Invitation",
-    price: 399,
-    image: "/images/reel1.jpeg",
-    images: ["/images/reel1.jpeg", "/images/reel2.jpeg", "/images/reel3.jpeg","/images/reel4.jpeg"],
-    description: "Animated digital video invitations with custom music and motion graphics. Shareable via WhatsApp and Instagram. Watch sample reels in the product section.",
-    instagramLinks: [
-      "https://www.instagram.com/reel/DJZPJJdSvhA/?igsh=MTNjazVnaDJ4cW9vdg==",
-      "https://www.instagram.com/reel/DJfx-NCy9o-/?igsh=cWZkemk1NjJ0dDBk",
-      "https://www.instagram.com/reel/DJfrGKBSfKb/?igsh=b3dhdmdqdTMya2hz",
-      "https://www.instagram.com/reel/DJfyBiPsfYv/?igsh=MXhwMzlkcmtrMWJkOA=="
-    ],
-    inStock: true
   },
   { 
     _id: "d2",
@@ -622,17 +627,56 @@ const products = [
     description: "Professional photo restoration service bringing old photos back to life.",
     inStock: true 
   },
-  {
-  _id: "d3",
-  categoryId: "smart-digital",
-  name: "Photo restoration premium",
-  price: 299,
-  image: "/images/photo restore.png",
-  images: ["/images/prp.jpg", "/images/prp1.jpg", "/images/prp1.jpg"],
-  description: "Premium photo restoration service - restore old, damaged, or faded photographs with professional editing and colorization.",
-  inStock: true
+  { 
+    _id: "sd5",
+    categoryId: "smart-digital", 
+    name: "Smart Digital Package", 
+    price: 999, 
+    image: "/images/REVIEW BOARD NFC 799.jpg", 
+    images: ["/images/REVIEW BOARD NFC 799.jpg", "/images/ID.jpeg"],
+    description: "Complete smart digital services package for modern memory management.",
+    inStock: true 
+  },
+  { 
+    _id: "sd6",
+    categoryId: "smart-digital", 
+    name: "Digital Services Suite", 
+    price: 1299, 
+    image: "/images/digital invitation.jpg", 
+    images: ["/images/digital invitation.jpg", "/images/photo restoration (after).JPEG"],
+    description: "Comprehensive digital services including invitations and restoration.",
+    inStock: true 
+  },
+  { 
+    _id: "sd7",
+    categoryId: "smart-digital", 
+    name: "NFC & ID Combo", 
+    price: 899, 
+    image: "/images/REVIEW BOARD NFC 799.jpg", 
+    images: ["/images/REVIEW BOARD NFC 799.jpg", "/images/ID.jpeg"],
+    description: "Premium combination of NFC technology and ID card services.",
+    inStock: true 
+  },
+  { 
+    _id: "sd8",
+    categoryId: "smart-digital", 
+    name: "Digital Experience Package", 
+    price: 1499, 
+    image: "/images/digital invitation.jpg", 
+    images: ["/images/digital invitation.jpg", "/images/REVIEW BOARD NFC 799.jpg", "/images/photo restoration (after).JPEG"],
+    description: "Premium digital experience with all smart services included.",
+    inStock: true 
+  },
+  { 
+    _id: "sd9",
+    categoryId: "smart-digital", 
+    name: "Smart Memory Management", 
+    price: 599, 
+    image: "/images/REVIEW BOARD NFC 799.jpg", 
+    images: ["/images/REVIEW BOARD NFC 799.jpg"],
+    description: "Smart solution for organizing and managing your digital memories.",
+    inStock: true 
   }
-  
 ];
 
 const categories = [
@@ -641,7 +685,7 @@ const categories = [
     title: 'Photo Frames',
     desc: 'Premium wooden, wall & table frames (including customized frames) to cherish your memories.',
     emoji: '📸',
-    showcaseProducts: ['f1', 'f16'],  // 8x12 Wall Mount & 12x18 Premium
+    showcaseProducts: ['f4', 'f6'],  // 8x12 Wall Mount & 12x18 Premium
     subCategories: [
       { name: 'Wooden photo frames', description: 'Classic wooden frames' },
       { name: 'Wall frames', description: 'For wall mounting' },
@@ -666,7 +710,7 @@ const categories = [
     title: 'Polaroids & Photo Books',
     desc: 'Small, medium & large polaroids plus premium photo books & mini albums.',
     emoji: '🎞️',
-    showcaseProducts: ['pol1', 'pol2'],  // Mini, Medium & Large Polaroids
+    showcaseProducts: ['pol1', 'pol2'],  // Polaroids Medium Set & Large Polaroids
     subCategories: [
       { name: 'Polaroids', description: 'Classic polaroid prints' },
       { name: 'Photo books', description: 'Premium photo collections' },
@@ -678,7 +722,7 @@ const categories = [
     title: 'Flowers & Bouquets',
     desc: 'Fresh bouquets, artificial arrangements, rose boxes & flowers with message cards.',
     emoji: '🌹',
-    showcaseProducts: ['bou1', 'bou5'],  // Real Flower Bouquets
+    showcaseProducts: ['bou1', 'bou2'],  // Real Flower Bouquets
     subCategories: [
       { name: 'Fresh bouquets', description: 'Real flowers' },
       { name: 'Rose boxes', description: 'Premium rose collections' },
@@ -702,7 +746,7 @@ const categories = [
     title: 'T-Shirts & Accessories',
     desc: 'Customized & printed t-shirts, keychains & pouches with your designs.',
     emoji: '👕',
-    showcaseProducts: ['collared-tshirt', 'cap1'],
+    showcaseProducts: ['t1', 'cap1'],
     subCategories: [
       { name: 'Collared', description: 'Premium collared t-shirts with fabric options' },
       { name: 'Collarless', description: 'Comfortable collarless t-shirts' },
@@ -753,7 +797,7 @@ const categories = [
     title: 'Smart & Digital Services',
     desc: 'NFC cards, review boards, poster design, photo & video editing services.',
     emoji: '🤖',
-    showcaseProducts: ['d1', 'id1'],  // NFC Review Board & ID Card
+    showcaseProducts: ['nfc1', 'id1'],  // NFC Review Board & ID Card
     subCategories: [
       { name: 'NFC cards', description: 'Digital enabled cards' },
       { name: 'Poster design', description: 'Custom posters' },
