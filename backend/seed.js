@@ -584,7 +584,12 @@ const products = [
     image: "/images/DI2.JPG",
     images: ["/images/DI2.JPG", "/images/DI1.JPG", "/images/DI3.JPG"],
     description: "Animated digital video invitations with custom music and motion graphics. Shareable via WhatsApp and Instagram. Watch sample reels in the product section.",
-    instagramLinks: [],
+    instagramLinks: [
+      "https://www.instagram.com/reel/DJZPJJdSvhA/?igsh=MTNjazVnaDJ4cW9vdg==",
+      "https://www.instagram.com/reel/DJfx-NCy9o-/?igsh=cWZkemk1NjJ0dDBk",
+      "https://www.instagram.com/reel/DJfrGKBSfKb/?igsh=b3dhdmdqdTMya2hz",
+      "https://www.instagram.com/reel/DJfyBiPsfYv/?igsh=MXhwMzlkcmtrMWJkOA=="
+    ],
     inStock: true
   },
   { 
